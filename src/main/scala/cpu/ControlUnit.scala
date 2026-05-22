@@ -4,64 +4,89 @@ import chisel3._
 import chisel3.util._
 import _root_.circt.stage.ChiselStage
 
+class ControlSignals extends Bundle {
+  // Where does the next PC come from? True => branching instruction, may be pc + literal, False => pc + 4
+  val pc_src = Output(Bool())
+
+  // What is written to register file? True => value from data memory, False => ALU result
+  val result_src = Output(Bool())
+
+  // Should we write to data memory on this instruction?
+  val mem_write = Output(Bool())
+
+  // What is 2nd operand of ALU? True => immediate from instruction, False => register value
+  val alu_src = Output(Bool())
+
+  // How do we decode the immediate from the instruction? Varies depending on instruction type
+  val imm_src = Output(UInt(2.W))
+
+  // Should we write to register on this instruction?
+  val reg_write = Output(Bool())
+
+  // What operation should the ALU perform?
+  val alu_op = Output(UInt(3.W))
+}
+
 class ControlUnit extends Module {
   val io = IO(new Bundle {
     val i_inst = Input(UInt(32.W))
     val i_zero = Input(Bool())
 
-    val o_pc_src = Input(Bool())
-    val o_result_src = Input(Bool())
-    val o_mem_write = Input(Bool())
-    val o_alu_src = Input(Bool())
-    val o_imm_src = Input(UInt(2.W))
-    val o_reg_write = Input(Bool())
-
-    val o_alu_control = Input(UInt(3.W))
+    val control = new ControlSignals
   })
 
-  // add,sub,and,or,lw,sw,beq
+  // Defaults to make chisel happy
+  io.control.pc_src := false.B
+  io.control.result_src := false.B
+  io.control.mem_write := false.B
+  io.control.alu_src := false.B
+  io.control.imm_src := 0.U
+  io.control.reg_write := false.B
+  io.control.alu_op := 0.U
+
+  // or,lw,sw,beq
   val op = Wire(UInt(7.W))
   op := io.i_inst(6, 0)
 
-  val branch = Wire(Bool())
-  val alu_op = Wire(UInt(2.W))
+  val branch = WireInit(Bool(), false.B)
+  val alu_op = WireInit(UInt(2.W), 0.U)
   switch(op) {
-    is("0b0110011".U) {
+    is("b0110011".U) {
       // R-type instruction (add, sub, etc.)
       branch := false.B
-      io.o_result_src := false.B
-      io.o_mem_write := false.B
-      io.o_alu_src := false.B
-      io.o_reg_write := true.B
-      alu_op := "0b10".U
+      io.control.result_src := false.B
+      io.control.mem_write := false.B
+      io.control.alu_src := false.B
+      io.control.reg_write := true.B
+      alu_op := "b10".U
     }
-    is("0b0000011".U) {
+    is("b0000011".U) {
       // I-type instruction (lw, lb, etc.)
       branch := false.B
-      io.o_result_src := true.B
-      io.o_mem_write := false.B
-      io.o_alu_src := true.B
-      io.o_imm_src := 0.U
-      io.o_reg_write := true.B
-      alu_op := "0b00".U
+      io.control.result_src := true.B
+      io.control.mem_write := false.B
+      io.control.alu_src := true.B
+      io.control.imm_src := 0.U
+      io.control.reg_write := true.B
+      alu_op := "b00".U
     }
-    is("0b0100011".U) {
+    is("b0100011".U) {
       // S-type instruction (sw, sb, etc.)
       branch := false.B
-      io.o_mem_write := true.B
-      io.o_alu_src := true.B
-      io.o_imm_src := 1.U
-      io.o_reg_write := false.B
-      alu_op := "0b00".U
+      io.control.mem_write := true.B
+      io.control.alu_src := true.B
+      io.control.imm_src := 1.U
+      io.control.reg_write := false.B
+      alu_op := "b00".U
     }
-    is("0b1100011".U) {
+    is("b1100011".U) {
       // B-type instruction (beq, bge, etc.)
       branch := true.B
-      io.o_mem_write := false.B
-      io.o_alu_src := false.B
-      io.o_imm_src := 3.U
-      io.o_reg_write := false.B
-      alu_op := "0b01".U
+      io.control.mem_write := false.B
+      io.control.alu_src := false.B
+      io.control.imm_src := 3.U
+      io.control.reg_write := false.B
+      alu_op := "b01".U
     }
   }
 
@@ -72,36 +97,36 @@ class ControlUnit extends Module {
   funct3 := io.i_inst(14, 12)
   funct7 := io.i_inst(31, 25)
 
-  val r_alu_op = Wire(UInt(3.W))
+  val r_alu_op = WireInit(UInt(3.W), 0.U)
   val weird_imm = Wire(
     UInt(2.W)
   ) // todo: pg.18 of chp. 7, dont understand this part
   weird_imm := Cat(op(5), funct7(5))
 
-  when(funct3 === "0b0".U && weird_imm < 3.U) {
+  when(funct3 === "b0".U && weird_imm < 3.U) {
     r_alu_op := 0.U // add
-  }.elsewhen(funct3 === "0b0".U && weird_imm === 3.U) {
+  }.elsewhen(funct3 === "b0".U && weird_imm === 3.U) {
     r_alu_op := 1.U // sub
-  }.elsewhen(funct3 === "0b10".U) {
+  }.elsewhen(funct3 === "b10".U) {
     r_alu_op := 5.U // slt
-  }.elsewhen(funct3 === "0b110".U) {
+  }.elsewhen(funct3 === "b110".U) {
     r_alu_op := 3.U // or
-  }.elsewhen(funct3 === "0b111".U) {
+  }.elsewhen(funct3 === "b111".U) {
     r_alu_op := 2.U // and
   }
 
   switch(alu_op) {
-    is("0b00".U) {
+    is("b00".U) {
       // add for finding addresses of loads and stores
-      io.o_alu_control := "0b000".U
+      io.control.alu_op := "b000".U
     }
-    is("0b01".U) {
+    is("b01".U) {
       // subtract to compare numbers for branches
-      io.o_alu_control := "0b001".U
+      io.control.alu_op := "b001".U
     }
-    is("0b10".U) {
+    is("b10".U) {
       // R-type alu instruction
-      io.o_alu_control := r_alu_op
+      io.control.alu_op := r_alu_op
     }
   }
 }

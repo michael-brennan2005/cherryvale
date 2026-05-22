@@ -1,11 +1,10 @@
 import chisel3._
 import _root_.circt.stage.ChiselStage
-import counter.Top
-import counter.DoubleDabble
+import cpu.Cpu
 
 object Main extends App {
   ChiselStage.emitSystemVerilogFile(
-    new Module,
+    new Cpu,
     args = Array(
       "--target-dir",
       "./build/sv/"

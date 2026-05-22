@@ -16,23 +16,15 @@ class Alu extends Module {
 
   val result = Wire(UInt(32.W))
 
-  switch(io.i_control) {
-    is("0b000".U) {
-      result := io.i_src_a + io.i_src_b
-    }
-    is("0b001".U) {
-      result := io.i_src_a - io.i_src_b
-    }
-    is("0b010".U) {
-      result := io.i_src_a & io.i_src_b
-    }
-    is("0b011".U) {
-      result := io.i_src_a | io.i_src_b
-    }
-    is("0b101".U) {
-      result := io.i_src_a < io.i_src_b
-    }
-  }
+  result := MuxLookup(io.i_control, 0.U)(
+    Seq(
+      "b000".U -> (io.i_src_a + io.i_src_b),
+      "b001".U -> (io.i_src_a - io.i_src_b),
+      "b010".U -> (io.i_src_a & io.i_src_b),
+      "b011".U -> (io.i_src_a | io.i_src_b),
+      "b101".U -> (io.i_src_a < io.i_src_b)
+    )
+  )
 
   io.o_result := result
   io.o_zero := result === 0.U
