@@ -23,14 +23,14 @@ class Cpu extends Module {
   // Memory is not reset-sensitive (it's a Mem), so during preload via
   // io.mem_debug we'd otherwise see spurious writes from whatever the
   // ControlUnit decodes out of address 0.
-  memory.io.rw(0).addr   := data_path.io.data.addr
+  memory.io.rw(0).addr := data_path.io.data.addr
   memory.io.rw(0).w_data := data_path.io.data.w_data
-  memory.io.rw(0).w_en   := data_path.io.data.w_en && !reset.asBool
+  memory.io.rw(0).w_en := data_path.io.data.w_en && !reset.asBool
   data_path.io.data.data := memory.io.rw(0).data
 
   io.mem_debug <> memory.io.rw(1)
   data_path.io.reg_file_ra := io.reg_debug_addr
-  data_path.io.reg_file_rd := io.reg_debug_data
+  io.reg_debug_data := data_path.io.reg_file_rd
 
   control.io.i_inst := data_path.io.o_inst
   control.io.i_zero := data_path.io.o_zero
