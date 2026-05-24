@@ -12,3 +12,6 @@ synth/
 Makefile              # Task runner
 build.sbt             # Building Chisel code & tests
 ```
+
+# Commands
+For testing with waveforms: `(in sbt) testOnly <SPEC> -- -DemitVcd=1`

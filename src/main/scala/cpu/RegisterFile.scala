@@ -21,7 +21,7 @@ class RegisterFile extends Module {
     val i_w_en = Input(Bool())
   })
 
-  val regs = Reg(Vec(32, UInt(32.W)))
+  val regs = Mem(32, UInt(32.W))
 
   io.o_rd_1 := Mux(
     io.i_ra_1 === 0.U,
@@ -41,7 +41,7 @@ class RegisterFile extends Module {
     regs(io.i_ra_3)
   )
 
-  when(io.i_w_en === true.B) {
+  when(io.i_w_en === true.B && !reset.asBool) {
     regs(io.i_wa) := io.i_wd
   }
 }

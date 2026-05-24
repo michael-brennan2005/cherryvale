@@ -9,6 +9,8 @@ import com.carlosedp.riscvassembler.RISCVAssembler
 class CpuSpec extends AnyFlatSpec with Matchers with ChiselSim {
   behavior of "Cpu"
 
+  val cpuMemSizeBytes = 256
+
   // ---- Test fixture helpers --------------------------------------------------
   private def writeMem(dut: Cpu, addr: Int, value: BigInt): Unit = {
     dut.io.mem_debug.addr.poke(addr.U)
@@ -21,11 +23,13 @@ class CpuSpec extends AnyFlatSpec with Matchers with ChiselSim {
   private def readMem(dut: Cpu, addr: Int): BigInt = {
     dut.io.mem_debug.w_en.poke(false.B)
     dut.io.mem_debug.addr.poke(addr.U)
+    dut.clock.step(1)
     dut.io.mem_debug.data.peek().litValue
   }
 
   private def readReg(dut: Cpu, rIdx: Int): BigInt = {
     dut.io.reg_debug_addr.poke(rIdx.U)
+    dut.clock.step(1)
     dut.io.reg_debug_data.peek().litValue
   }
 
@@ -40,6 +44,8 @@ class CpuSpec extends AnyFlatSpec with Matchers with ChiselSim {
       cycles: Int
   ): Unit = {
     dut.reset.poke(true.B)
+    for (i <- 0 until (cpuMemSizeBytes / 4)) writeMem(dut, i * 4, 0x0)
+
     val insts = RISCVAssembler
       .fromString(program)
       .split('\n')
@@ -54,10 +60,8 @@ class CpuSpec extends AnyFlatSpec with Matchers with ChiselSim {
     dut.reset.poke(true.B)
   }
 
-  // ---- LW ---------------------------------------------------------------------
-
-  it should "load a word into a register (lw)" in {
-    simulate(new Cpu) { dut =>
+  it should "execute lw" in {
+    simulate(new Cpu(cpuMemSizeBytes)) { dut =>
       runProgram(
         dut,
         program = "lw x1, 0x80(x0)",
@@ -68,13 +72,11 @@ class CpuSpec extends AnyFlatSpec with Matchers with ChiselSim {
     }
   }
 
-  // ---- SW ---------------------------------------------------------------------
-
-  it should "store a register value to memory (sw)" in {
-    simulate(new Cpu) { dut =>
+  it should "execute sw" in {
+    simulate(new Cpu(cpuMemSizeBytes)) { dut =>
       runProgram(
         dut,
-        program = "sw r0, 0x80(x0)",
+        program = "sw x0, 0x80(x0)",
         data = Seq(
           0x80 -> BigInt("FFFFFFFF", 16)
         ), // sentinel: proves write happened
@@ -84,10 +86,8 @@ class CpuSpec extends AnyFlatSpec with Matchers with ChiselSim {
     }
   }
 
-  // ---- OR ---------------------------------------------------------------------
-
-  it should "compute bitwise OR of two registers (or)" in {
-    simulate(new Cpu) { dut =>
+  it should "execute or" in {
+    simulate(new Cpu(cpuMemSizeBytes)) { dut =>
       runProgram(
         dut,
         program = """lw x1, 0x80(x0)
@@ -104,10 +104,8 @@ class CpuSpec extends AnyFlatSpec with Matchers with ChiselSim {
     }
   }
 
-  // ---- BEQ (taken) ------------------------------------------------------------
-
-  it should "branch when operands are equal (beq taken)" in {
-    simulate(new Cpu) { dut =>
+  it should "execute beq (taken)" in {
+    simulate(new Cpu(cpuMemSizeBytes)) { dut =>
       runProgram(
         dut,
         program = """lw x1, 0x80(x0)
@@ -125,10 +123,8 @@ class CpuSpec extends AnyFlatSpec with Matchers with ChiselSim {
     }
   }
 
-  // ---- BEQ (not taken) --------------------------------------------------------
-
-  it should "fall through when operands differ (beq not taken)" in {
-    simulate(new Cpu) { dut =>
+  it should "execute beq (not taken)" in {
+    simulate(new Cpu(cpuMemSizeBytes)) { dut =>
       runProgram(
         dut,
         program = """lw x1, 0x80(x0)

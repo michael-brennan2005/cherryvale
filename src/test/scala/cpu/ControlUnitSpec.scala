@@ -33,6 +33,9 @@ class ControlUnitSpec extends AnyFlatSpec with Matchers with ChiselSim {
       dut.io.i_zero.poke(false.B)
       dut.clock.step()
 
+      for (i <- 0 until 5) {
+        println(s"Hello ${i * 2}")
+      }
       dut.io.control.mem_write.expect(true.B)
       dut.io.control.alu_src.expect(true.B)
       dut.io.control.imm_src.expect(1.U)

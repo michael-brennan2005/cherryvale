@@ -21,7 +21,11 @@ class DataPath extends Module {
   })
 
   val pc = Module(new ProgramCounter)
+  pc.reset := reset
+
   val register_file = Module(new RegisterFile)
+  register_file.reset := reset
+
   val alu = Module(new Alu)
 
   val imm_ext = WireInit(UInt(32.W), 0.U)
@@ -33,7 +37,8 @@ class DataPath extends Module {
     pc_next := pc.io.o_pc + 4.U
   }
   pc.io.i_pc_next := pc_next
-  io.o_inst := pc.io.o_pc
+
+  io.o_inst := io.code.data
 
   // Mem port 1 is used for code, mem port 2 is used for data
   io.code.addr := pc.io.o_pc
@@ -62,6 +67,7 @@ class DataPath extends Module {
   alu.io.i_src_a := register_file.io.o_rd_1
 
   // Selecting between immediate operand
+  // TODO: move this into control unit, that in turn becomes a general "Decode" Unit
   switch(io.control.imm_src) {
     is("b00".U) { // I-type instruction
       imm_ext := io.code.data(31, 20).asSInt.asUInt
@@ -77,7 +83,8 @@ class DataPath extends Module {
         io.code.data(31),
         io.code.data(7),
         io.code.data(30, 25),
-        io.code.data(11, 8)
+        io.code.data(11, 8),
+        0.U
       ).asSInt.asUInt
     }
   }
@@ -85,9 +92,9 @@ class DataPath extends Module {
   // Selecting between immediate or register as 2nd alu operand
   val alu_src = Wire(UInt(32.W))
   when(io.control.alu_src === true.B) {
-    alu_src := register_file.io.o_rd_2
+    alu_src := imm_ext // register_file.io.o_rd_2
   }.otherwise {
-    alu_src := imm_ext
+    alu_src := register_file.io.o_rd_2
   }
 
   alu.io.i_src_b := alu_src

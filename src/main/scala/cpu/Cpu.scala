@@ -3,7 +3,7 @@ package cpu
 import chisel3._
 import _root_.circt.stage.ChiselStage
 
-class Cpu extends Module {
+class Cpu(memSizeBytes: Int) extends Module {
   val io = IO(new Bundle {
     val mem_debug = new ReadWritePort
 
@@ -13,8 +13,11 @@ class Cpu extends Module {
 
   val control = Module(new ControlUnit)
   val data_path = Module(new DataPath)
+  data_path.reset := reset
+
   // 256B memory, 1 read port (for code), 2 read/write ports (for data, for debug)
-  val memory = Module(new Memory(256, 1, 2))
+  val memory = Module(new Memory(memSizeBytes, 1, 2))
+  memory.reset := reset
 
   data_path.io.control <> control.io.control
   data_path.io.code <> memory.io.r(0)

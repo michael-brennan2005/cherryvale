@@ -18,6 +18,7 @@ class ControlSignals extends Bundle {
   val alu_src = Output(Bool())
 
   // How do we decode the immediate from the instruction? Varies depending on instruction type
+  // TODO: should this be put under an enum? Or more sensible literals rn, why are we using 0, 3, 2
   val imm_src = Output(UInt(2.W))
 
   // Should we write to register on this instruction?
@@ -36,7 +37,6 @@ class ControlUnit extends Module {
   })
 
   // Defaults to make chisel happy
-  io.control.pc_src := false.B
   io.control.result_src := false.B
   io.control.mem_write := false.B
   io.control.alu_src := false.B
@@ -75,7 +75,7 @@ class ControlUnit extends Module {
       branch := false.B
       io.control.mem_write := true.B
       io.control.alu_src := true.B
-      io.control.imm_src := 1.U
+      io.control.imm_src := "b11".U
       io.control.reg_write := false.B
       alu_op := "b00".U
     }
@@ -84,11 +84,13 @@ class ControlUnit extends Module {
       branch := true.B
       io.control.mem_write := false.B
       io.control.alu_src := false.B
-      io.control.imm_src := 3.U
+      io.control.imm_src := "b10".U
       io.control.reg_write := false.B
       alu_op := "b01".U
     }
   }
+
+  io.control.pc_src := branch & io.i_zero
 
   // ALU decoding
   val funct3 = Wire(UInt(3.W))

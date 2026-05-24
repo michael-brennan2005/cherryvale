@@ -9,6 +9,12 @@ class ProgramCounter extends Module {
     val o_pc = Output(UInt(32.W))
   })
 
-  val pc = RegNext(io.i_pc_next)
+  val pc = RegInit(UInt(32.W), 0.U)
+  when(reset === true.B) {
+    pc := 0.U
+  }.otherwise {
+    pc := io.i_pc_next
+  }
+
   io.o_pc := pc
 }
