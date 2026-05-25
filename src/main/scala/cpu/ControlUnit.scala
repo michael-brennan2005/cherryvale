@@ -36,6 +36,10 @@ class ControlUnit extends Module {
     val control = new ControlSignals
   })
 
+  // For debugging
+  val current_inst = io.i_inst
+  dontTouch(current_inst)
+
   // Defaults to make chisel happy
   io.control.result_src := false.B
   io.control.mem_write := false.B

@@ -3,6 +3,7 @@ package cpu
 import chisel3._
 import chisel3.util._
 import _root_.circt.stage.ChiselStage
+import chisel3.util.experimental.loadMemoryFromFileInline
 
 class ReadPort extends Bundle {
   val addr = Input(UInt(32.W))
@@ -17,56 +18,44 @@ class ReadWritePort extends Bundle {
 }
 
 // TODO: holy shit this is not the way to do MMIO
-class Memory(byteSize: Int, readPorts: Int, readWritePorts: Int)
+class Memory(wordSize: Int, readOnlyPorts: Int, memFile: String = "")
     extends Module {
   val io = IO(new Bundle {
-    val r = Vec(readPorts, new ReadPort)
-    val rw = Vec(readWritePorts, new ReadWritePort)
+    val ro = Vec(readOnlyPorts, new ReadPort)
+    val rw = new ReadWritePort
 
     val led = Output(UInt(16.W))
     val sw = Input(UInt(16.W))
   })
 
-  // Oh man !
-  val mem = Mem(byteSize, UInt(8.W))
+  val mem = Mem(wordSize, UInt(32.W))
+  if (memFile.nonEmpty) {
+    loadMemoryFromFileInline(mem, memFile)
+  }
 
   val led_state = RegInit(UInt(16.W), 0.U)
   io.led := led_state
 
-  for (i <- 0 until readPorts) {
-    when(io.r(i).addr === "h400".U) {
-      io.r(i).data := io.sw
+  for (i <- 0 until readOnlyPorts) {
+    when(io.ro(i).addr === "h400".U) {
+      io.ro(i).data := io.sw
     }.otherwise {
-      io.r(i).data := Cat(
-        mem(io.r(i).addr + 3.U),
-        mem(io.r(i).addr + 2.U),
-        mem(io.r(i).addr + 1.U),
-        mem(io.r(i).addr)
-      )
+      io.ro(i).data := mem.read(io.ro(i).addr >> 2)
     }
   }
 
-  for (i <- 0 until readWritePorts) {
-    when(io.rw(i).addr === "h400".U) {
-      io.rw(i).data := io.sw
-    }.otherwise {
-      io.rw(i).data := Cat(
-        mem(io.rw(i).addr + 3.U),
-        mem(io.rw(i).addr + 2.U),
-        mem(io.rw(i).addr + 1.U),
-        mem(io.rw(i).addr)
-      )
-    }
+  when(io.rw.addr === "h400".U) {
+    io.rw.data := io.sw
+  }.otherwise {
+    io.rw.data := mem.read(io.rw.addr >> 2)
+  }
 
-    when(io.rw(i).w_en === true.B) {
-      when(io.rw(i).addr === "h401".U) {
-        led_state := io.rw(i).w_data(15, 0)
-      }.otherwise {
-        mem(io.rw(i).addr + 3.U) := io.rw(i).w_data(31, 24)
-        mem(io.rw(i).addr + 2.U) := io.rw(i).w_data(23, 16)
-        mem(io.rw(i).addr + 1.U) := io.rw(i).w_data(15, 8)
-        mem(io.rw(i).addr) := io.rw(i).w_data(7, 0)
-      }
+  when(io.rw.w_en === true.B) {
+    when(io.rw.addr === "h404".U) {
+      led_state := io.rw.w_data(15, 0)
+    }.otherwise {
+      mem.write(io.rw.addr >> 2, io.rw.w_data)
     }
   }
+
 }

@@ -11,8 +11,9 @@ object Main extends App {
     ),
     firtoolOpts = Array(
       "-disable-all-randomization",
-      "-strip-debug-info",
-      "-default-layer-specialization=enable"
+      "-default-layer-specialization=enable",
+      "-preserve-values=named",
+      "-preserve-aggregate=all"
     )
   )
 }

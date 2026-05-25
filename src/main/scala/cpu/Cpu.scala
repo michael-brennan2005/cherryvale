@@ -3,8 +3,10 @@ package cpu
 import chisel3._
 import _root_.circt.stage.ChiselStage
 
-class Cpu(memSizeBytes: Int) extends Module {
+class Cpu(memSizeBytes: Int, memFile: String = "") extends Module {
   val io = IO(new Bundle {
+    // TODO: debug should let you also set pc manually, i think this would omit needing reset for now
+    val debug = Input(Bool())
     val mem_debug = new ReadWritePort
 
     val reg_debug_addr = Input(UInt(5.W))
@@ -18,25 +20,27 @@ class Cpu(memSizeBytes: Int) extends Module {
   val data_path = Module(new DataPath)
   data_path.reset := reset
 
-  // 256B memory, 1 read port (for code), 2 read/write ports (for data, for debug)
-  val memory = Module(new Memory(memSizeBytes, 1, 2))
+  // 256B memory, 1 read port (for code), 1 r/w port (for data)
+  val memory = Module(new Memory(memSizeBytes, 1, memFile))
   memory.reset := reset
   io.led := memory.io.led
   memory.io.sw := io.sw
 
   data_path.io.control <> control.io.control
-  data_path.io.code <> memory.io.r(0)
+  data_path.io.code <> memory.io.ro(0)
 
-  // Hand-wire the data port so the write-enable can be gated by reset.
-  // Memory is not reset-sensitive (it's a Mem), so during preload via
-  // io.mem_debug we'd otherwise see spurious writes from whatever the
-  // ControlUnit decodes out of address 0.
-  memory.io.rw(0).addr := data_path.io.data.addr
-  memory.io.rw(0).w_data := data_path.io.data.w_data
-  memory.io.rw(0).w_en := data_path.io.data.w_en && !reset.asBool
-  data_path.io.data.data := memory.io.rw(0).data
+  when(io.debug) {
+    memory.io.rw.addr := io.mem_debug.addr
+    memory.io.rw.w_data := io.mem_debug.w_data
+    memory.io.rw.w_en := io.mem_debug.w_en
+  }.otherwise {
+    memory.io.rw.addr := data_path.io.data.addr
+    memory.io.rw.w_data := data_path.io.data.w_data
+    memory.io.rw.w_en := data_path.io.data.w_en
+  }
+  io.mem_debug.data := memory.io.rw.data
+  data_path.io.data.data := memory.io.rw.data
 
-  io.mem_debug <> memory.io.rw(1)
   data_path.io.reg_file_ra := io.reg_debug_addr
   io.reg_debug_data := data_path.io.reg_file_rd
 

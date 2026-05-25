@@ -44,6 +44,7 @@ class CpuSpec extends AnyFlatSpec with Matchers with ChiselSim {
       cycles: Int
   ): Unit = {
     dut.reset.poke(true.B)
+    dut.io.debug.poke(true.B)
     for (i <- 0 until (cpuMemSizeBytes / 4)) writeMem(dut, i * 4, 0x0)
 
     val insts = RISCVAssembler
@@ -56,8 +57,10 @@ class CpuSpec extends AnyFlatSpec with Matchers with ChiselSim {
     for ((addr, value) <- data) writeMem(dut, addr, value)
     dut.io.mem_debug.w_en.poke(false.B)
     dut.reset.poke(false.B)
+    dut.io.debug.poke(false.B)
     dut.clock.step(cycles)
     dut.reset.poke(true.B)
+    dut.io.debug.poke(true.B)
   }
 
   it should "execute lw" in {

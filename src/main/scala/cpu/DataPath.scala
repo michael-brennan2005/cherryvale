@@ -70,13 +70,13 @@ class DataPath extends Module {
   // TODO: move this into control unit, that in turn becomes a general "Decode" Unit
   switch(io.control.imm_src) {
     is("b00".U) { // I-type instruction
-      imm_ext := io.code.data(31, 20).asSInt.asUInt
+      imm_ext := io.code.data(31, 20).asSInt.pad(32).asUInt
     }
     is("b11".U) { // S-type instruction
       imm_ext := Cat(
         io.code.data(31, 25),
         io.code.data(11, 7)
-      ).asSInt.asUInt
+      ).asSInt.pad(32).asUInt
     }
     is("b10".U) { // B-type instruction
       imm_ext := Cat(
@@ -85,7 +85,7 @@ class DataPath extends Module {
         io.code.data(30, 25),
         io.code.data(11, 8),
         0.U
-      ).asSInt.asUInt
+      ).asSInt.pad(32).asUInt
     }
   }
 

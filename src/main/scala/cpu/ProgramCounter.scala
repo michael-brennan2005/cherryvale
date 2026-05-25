@@ -9,7 +9,7 @@ class ProgramCounter extends Module {
     val o_pc = Output(UInt(32.W))
   })
 
-  val pc = RegInit(UInt(32.W), 0.U)
+  val pc = dontTouch(RegInit(UInt(32.W), 0.U))
   when(reset === true.B) {
     pc := 0.U
   }.otherwise {
