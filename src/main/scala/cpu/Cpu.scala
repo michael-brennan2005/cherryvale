@@ -9,6 +9,9 @@ class Cpu(memSizeBytes: Int) extends Module {
 
     val reg_debug_addr = Input(UInt(5.W))
     val reg_debug_data = Output(UInt(32.W))
+
+    val led = Output(UInt(16.W))
+    val sw = Input(UInt(16.W))
   })
 
   val control = Module(new ControlUnit)
@@ -18,6 +21,8 @@ class Cpu(memSizeBytes: Int) extends Module {
   // 256B memory, 1 read port (for code), 2 read/write ports (for data, for debug)
   val memory = Module(new Memory(memSizeBytes, 1, 2))
   memory.reset := reset
+  io.led := memory.io.led
+  memory.io.sw := io.sw
 
   data_path.io.control <> control.io.control
   data_path.io.code <> memory.io.r(0)

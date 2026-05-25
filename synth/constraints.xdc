@@ -46,20 +46,20 @@ set_property -dict { PACKAGE_PIN L1    IOSTANDARD LVCMOS33 } [get_ports {io_led[
 
 
 ##7 Segment Display
-set_property -dict { PACKAGE_PIN W7   IOSTANDARD LVCMOS33 } [get_ports {io_seg[0]}]
-set_property -dict { PACKAGE_PIN W6   IOSTANDARD LVCMOS33 } [get_ports {io_seg[1]}]
-set_property -dict { PACKAGE_PIN U8   IOSTANDARD LVCMOS33 } [get_ports {io_seg[2]}]
-set_property -dict { PACKAGE_PIN V8   IOSTANDARD LVCMOS33 } [get_ports {io_seg[3]}]
-set_property -dict { PACKAGE_PIN U5   IOSTANDARD LVCMOS33 } [get_ports {io_seg[4]}]
-set_property -dict { PACKAGE_PIN V5   IOSTANDARD LVCMOS33 } [get_ports {io_seg[5]}]
-set_property -dict { PACKAGE_PIN U7   IOSTANDARD LVCMOS33 } [get_ports {io_seg[6]}]
+#set_property -dict { PACKAGE_PIN W7   IOSTANDARD LVCMOS33 } [get_ports {io_seg[0]}]
+#set_property -dict { PACKAGE_PIN W6   IOSTANDARD LVCMOS33 } [get_ports {io_seg[1]}]
+#set_property -dict { PACKAGE_PIN U8   IOSTANDARD LVCMOS33 } [get_ports {io_seg[2]}]
+#set_property -dict { PACKAGE_PIN V8   IOSTANDARD LVCMOS33 } [get_ports {io_seg[3]}]
+#set_property -dict { PACKAGE_PIN U5   IOSTANDARD LVCMOS33 } [get_ports {io_seg[4]}]
+#set_property -dict { PACKAGE_PIN V5   IOSTANDARD LVCMOS33 } [get_ports {io_seg[5]}]
+#set_property -dict { PACKAGE_PIN U7   IOSTANDARD LVCMOS33 } [get_ports {io_seg[6]}]
 
-set_property -dict { PACKAGE_PIN V7   IOSTANDARD LVCMOS33 } [get_ports io_dp]
+#set_property -dict { PACKAGE_PIN V7   IOSTANDARD LVCMOS33 } [get_ports io_dp]
 
-set_property -dict { PACKAGE_PIN U2   IOSTANDARD LVCMOS33 } [get_ports {io_an[0]}]
-set_property -dict { PACKAGE_PIN U4   IOSTANDARD LVCMOS33 } [get_ports {io_an[1]}]
-set_property -dict { PACKAGE_PIN V4   IOSTANDARD LVCMOS33 } [get_ports {io_an[2]}]
-set_property -dict { PACKAGE_PIN W4   IOSTANDARD LVCMOS33 } [get_ports {io_an[3]}]
+#set_property -dict { PACKAGE_PIN U2   IOSTANDARD LVCMOS33 } [get_ports {io_an[0]}]
+#set_property -dict { PACKAGE_PIN U4   IOSTANDARD LVCMOS33 } [get_ports {io_an[1]}]
+#set_property -dict { PACKAGE_PIN V4   IOSTANDARD LVCMOS33 } [get_ports {io_an[2]}]
+#set_property -dict { PACKAGE_PIN W4   IOSTANDARD LVCMOS33 } [get_ports {io_an[3]}]
 
 
 ##Buttons

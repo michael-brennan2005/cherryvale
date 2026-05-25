@@ -41,11 +41,21 @@ class AluSpec extends AnyFlatSpec with Matchers with ChiselSim {
     }
   }
 
-  it should "bitwise-AND two values (ctrl=010)" in {
+  it should "bitwise-XOR two values (ctrl=010)" in {
+    simulate(new Alu) { dut =>
+      dut.io.i_src_a.poke(0xff0.U)
+      dut.io.i_src_b.poke(0x0f0.U)
+      dut.io.i_control.poke("b010".U)
+      dut.clock.step()
+      dut.io.o_result.expect(0xf00.U)
+    }
+  }
+
+  it should "bitwise-AND two values (ctrl=100)" in {
     simulate(new Alu) { dut =>
       dut.io.i_src_a.poke(0xff.U)
       dut.io.i_src_b.poke(0x0f.U)
-      dut.io.i_control.poke("b010".U)
+      dut.io.i_control.poke("b100".U)
       dut.clock.step()
       dut.io.o_result.expect(0x0f.U)
     }

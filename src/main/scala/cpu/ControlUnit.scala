@@ -114,7 +114,9 @@ class ControlUnit extends Module {
   }.elsewhen(funct3 === "b110".U) {
     r_alu_op := 3.U // or
   }.elsewhen(funct3 === "b111".U) {
-    r_alu_op := 2.U // and
+    r_alu_op := 4.U // and
+  }.elsewhen(funct3 === "b100".U) {
+    r_alu_op := 2.U // xor
   }
 
   switch(alu_op) {

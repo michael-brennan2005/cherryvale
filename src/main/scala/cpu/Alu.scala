@@ -20,8 +20,9 @@ class Alu extends Module {
     Seq(
       "b000".U -> (io.i_src_a + io.i_src_b),
       "b001".U -> (io.i_src_a - io.i_src_b),
-      "b010".U -> (io.i_src_a & io.i_src_b),
+      "b010".U -> (io.i_src_a ^ io.i_src_b),
       "b011".U -> (io.i_src_a | io.i_src_b),
+      "b100".U -> (io.i_src_a & io.i_src_b),
       "b101".U -> (io.i_src_a < io.i_src_b)
     )
   )

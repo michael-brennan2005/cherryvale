@@ -4,7 +4,7 @@ import cpu.Cpu
 
 object Main extends App {
   ChiselStage.emitSystemVerilogFile(
-    new Cpu(256),
+    new Top,
     args = Array(
       "--target-dir",
       "./build/sv/"

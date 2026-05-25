@@ -131,6 +131,113 @@ class MemorySpec extends AnyFlatSpec with Matchers with ChiselSim {
     }
   }
 
+  // ---- MMIO ------------------------------------------------------------------
+
+  it should "expose switches at addr 0x400 on the read port" in {
+    simulate(dut()) { dut =>
+      dut.io.sw.poke("hABCD".U)
+      dut.io.r(0).addr.poke(0x400.U)
+      dut.clock.step()
+      dut.io.r(0).data.expect("h0000ABCD".U) // zero-extended from 16 bits
+    }
+  }
+
+  it should "expose switches at addr 0x400 on the rw port" in {
+    simulate(dut()) { dut =>
+      dut.io.sw.poke("h1234".U)
+      dut.io.rw(0).w_en.poke(false.B)
+      dut.io.rw(0).addr.poke(0x400.U)
+      dut.clock.step()
+      dut.io.rw(0).data.expect("h00001234".U)
+    }
+  }
+
+  it should "track live changes to the switches at addr 0x400" in {
+    simulate(dut()) { dut =>
+      dut.io.rw(0).addr.poke(0x400.U)
+      dut.io.rw(0).w_en.poke(false.B)
+
+      dut.io.sw.poke("hAAAA".U)
+      dut.clock.step()
+      dut.io.rw(0).data.expect("h0000AAAA".U)
+
+      dut.io.sw.poke("h5555".U)
+      dut.clock.step()
+      dut.io.rw(0).data.expect("h00005555".U)
+    }
+  }
+
+  it should "latch LED state when writing to addr 0x401" in {
+    simulate(dut()) { dut =>
+      dut.io.rw(0).addr.poke(0x401.U)
+      dut.io.rw(0).w_data.poke("hDEADBEEF".U) // only low 16 bits should latch
+      dut.io.rw(0).w_en.poke(true.B)
+      dut.clock.step()
+
+      dut.io.rw(0).w_en.poke(false.B)
+      dut.io.led.expect("hBEEF".U)
+    }
+  }
+
+  it should "hold the LED state across cycles when no write occurs" in {
+    simulate(dut()) { dut =>
+      // Latch a known value.
+      dut.io.rw(0).addr.poke(0x401.U)
+      dut.io.rw(0).w_data.poke("h0000A5A5".U)
+      dut.io.rw(0).w_en.poke(true.B)
+      dut.clock.step()
+
+      // Stop writing; LED should not change.
+      dut.io.rw(0).w_en.poke(false.B)
+      dut.io.rw(0).addr.poke(0.U) // poke elsewhere to make sure addr isn't sticky
+      dut.io.rw(0).w_data.poke("hFFFFFFFF".U)
+      dut.clock.step(5)
+      dut.io.led.expect("hA5A5".U)
+    }
+  }
+
+  it should "overwrite the LED state on subsequent writes to 0x401" in {
+    simulate(dut()) { dut =>
+      dut.io.rw(0).addr.poke(0x401.U)
+      dut.io.rw(0).w_en.poke(true.B)
+
+      dut.io.rw(0).w_data.poke("h00001111".U)
+      dut.clock.step()
+      dut.io.rw(0).w_en.poke(false.B)
+      dut.io.led.expect("h1111".U)
+
+      dut.io.rw(0).w_en.poke(true.B)
+      dut.io.rw(0).w_data.poke("h00002222".U)
+      dut.clock.step()
+      dut.io.rw(0).w_en.poke(false.B)
+      dut.io.led.expect("h2222".U)
+    }
+  }
+
+  it should "not touch the LED state when writing to non-MMIO addresses" in {
+    simulate(dut()) { dut =>
+      // Seed the LED.
+      dut.io.rw(0).addr.poke(0x401.U)
+      dut.io.rw(0).w_data.poke("h0000CAFE".U)
+      dut.io.rw(0).w_en.poke(true.B)
+      dut.clock.step()
+
+      // Write to plain memory; LED should be unchanged.
+      dut.io.rw(0).addr.poke(0.U)
+      dut.io.rw(0).w_data.poke("hFFFFFFFF".U)
+      dut.io.rw(0).w_en.poke(true.B)
+      dut.clock.step()
+
+      dut.io.rw(0).w_en.poke(false.B)
+      dut.io.led.expect("hCAFE".U)
+
+      // And the byte at addr 0 should reflect the plain-memory write.
+      dut.io.rw(0).addr.poke(0.U)
+      dut.clock.step()
+      dut.io.rw(0).data.expect("hFFFFFFFF".U)
+    }
+  }
+
   it should "store bytes in little-endian order" in {
     simulate(dut()) { dut =>
       // Write 0xDEADBEEF at addr 0: expect mem[0]=EF, mem[1]=BE, mem[2]=AD, mem[3]=DE
