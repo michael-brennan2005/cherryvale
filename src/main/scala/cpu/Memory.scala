@@ -18,7 +18,7 @@ class ReadWritePort extends Bundle {
 }
 
 // TODO: holy shit this is not the way to do MMIO
-class Memory(readOnlyPorts: Int, zeroed: Boolean = true) extends Module {
+class Memory(readOnlyPorts: Int, memoryInit: Option[Seq[UInt]]) extends Module {
   val io = IO(new Bundle {
     val ro = Vec(readOnlyPorts, new ReadPort)
     val rw = new ReadWritePort
@@ -27,47 +27,17 @@ class Memory(readOnlyPorts: Int, zeroed: Boolean = true) extends Module {
     val sw = Input(UInt(16.W))
   })
 
-  val mem = if (zeroed) {
-    RegInit(VecInit(Seq.fill(32)(0.U(32.W))))
-  } else {
-    RegInit(
-      VecInit(
-        Seq(
-          0.U(32.W),
-          0.U(32.W),
-          0.U(32.W),
-          0.U(32.W),
-          0.U(32.W),
-          0.U(32.W),
-          0.U(32.W),
-          0.U(32.W),
-          0.U(32.W),
-          0.U(32.W),
-          0.U(32.W),
-          0.U(32.W),
-          0.U(32.W),
-          0.U(32.W),
-          0.U(32.W),
-          0.U(32.W),
-          0.U(32.W),
-          0.U(32.W),
-          0.U(32.W),
-          0.U(32.W),
-          0.U(32.W),
-          0.U(32.W),
-          0.U(32.W),
-          0.U(32.W),
-          0.U(32.W),
-          0.U(32.W),
-          0.U(32.W),
-          0.U(32.W),
-          0.U(32.W),
-          0.U(32.W),
-          0.U(32.W),
-          0.U(32.W)
+  val mem = memoryInit match {
+    case Some(value) => {
+      if (value.length != 32) {
+        throw new IllegalArgumentException(
+          "memoryInit must be 32, 32-bit words"
         )
-      )
-    )
+      } else {
+        RegInit(VecInit(value))
+      }
+    }
+    case None => RegInit(VecInit(Seq.fill(32)(0.U(32.W))))
   }
 
   val led_state = RegInit(UInt(16.W), 0.U)

@@ -21,7 +21,7 @@ class RegisterFile extends Module {
     val i_w_en = Input(Bool())
   })
 
-  val regs = Reg(Vec(32, UInt(32.W)))
+  val regs = RegInit(VecInit(Seq.fill(32)(0.U(32.W))))
 
   io.o_rd_1 := Mux(
     io.i_ra_1 === 0.U,

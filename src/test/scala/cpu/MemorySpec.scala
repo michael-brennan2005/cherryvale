@@ -9,7 +9,7 @@ class MemorySpec extends AnyFlatSpec with Matchers with ChiselSim {
   behavior of "Memory"
 
   // One read-only port + one read/write port, matching the original two-port layout.
-  def dut() = new Memory(readOnlyPorts = 1)
+  def dut() = new Memory(readOnlyPorts = 1, None)
 
   it should "read back a word written at addr 0 via the rw port" in {
     simulate(dut()) { dut =>
