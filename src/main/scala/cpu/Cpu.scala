@@ -3,7 +3,7 @@ package cpu
 import chisel3._
 import _root_.circt.stage.ChiselStage
 
-class Cpu(memSizeBytes: Int, memFile: String = "") extends Module {
+class Cpu extends Module {
   val io = IO(new Bundle {
     // TODO: debug should let you also set pc manually, i think this would omit needing reset for now
     val debug = Input(Bool())
@@ -21,7 +21,7 @@ class Cpu(memSizeBytes: Int, memFile: String = "") extends Module {
   data_path.reset := reset
 
   // 256B memory, 1 read port (for code), 1 r/w port (for data)
-  val memory = Module(new Memory(memSizeBytes, 1, memFile))
+  val memory = Module(new Memory(1))
   memory.reset := reset
   io.led := memory.io.led
   memory.io.sw := io.sw

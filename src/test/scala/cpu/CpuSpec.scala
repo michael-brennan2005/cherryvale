@@ -9,7 +9,7 @@ import com.carlosedp.riscvassembler.RISCVAssembler
 class CpuSpec extends AnyFlatSpec with Matchers with ChiselSim {
   behavior of "Cpu"
 
-  val cpuMemSizeBytes = 256
+  val cpuMemSizeBytes = 128
 
   // ---- Test fixture helpers --------------------------------------------------
   private def writeMem(dut: Cpu, addr: Int, value: BigInt): Unit = {
@@ -64,11 +64,11 @@ class CpuSpec extends AnyFlatSpec with Matchers with ChiselSim {
   }
 
   it should "execute lw" in {
-    simulate(new Cpu(cpuMemSizeBytes)) { dut =>
+    simulate(new Cpu) { dut =>
       runProgram(
         dut,
-        program = "lw x1, 0x80(x0)",
-        data = Seq(0x80 -> BigInt("DEADBEEF", 16)),
+        program = "lw x1, 0x40(x0)",
+        data = Seq(0x40 -> BigInt("DEADBEEF", 16)),
         cycles = 1
       )
       readReg(dut, 1) shouldBe BigInt("DEADBEEF", 16)
@@ -76,30 +76,30 @@ class CpuSpec extends AnyFlatSpec with Matchers with ChiselSim {
   }
 
   it should "execute sw" in {
-    simulate(new Cpu(cpuMemSizeBytes)) { dut =>
+    simulate(new Cpu) { dut =>
       runProgram(
         dut,
-        program = "sw x0, 0x80(x0)",
+        program = "sw x0, 0x40(x0)",
         data = Seq(
-          0x80 -> BigInt("FFFFFFFF", 16)
+          0x40 -> BigInt("FFFFFFFF", 16)
         ), // sentinel: proves write happened
         cycles = 1
       )
-      readMem(dut, 0x80) shouldBe BigInt(0)
+      readMem(dut, 0x40) shouldBe BigInt(0)
     }
   }
 
   it should "execute xor" in {
-    simulate(new Cpu(cpuMemSizeBytes)) { dut =>
+    simulate(new Cpu) { dut =>
       runProgram(
         dut,
-        program = """lw x1, 0x80(x0)
-          lw x2, 0x84(x0)
+        program = """lw x1, 0x40(x0)
+          lw x2, 0x44(x0)
           xor x3, x1, x2
         """,
         data = Seq(
-          0x80 -> BigInt("F0F0F0F0", 16),
-          0x84 -> BigInt("FFFF0000", 16)
+          0x40 -> BigInt("F0F0F0F0", 16),
+          0x44 -> BigInt("FFFF0000", 16)
         ),
         cycles = 3
       )
@@ -108,16 +108,16 @@ class CpuSpec extends AnyFlatSpec with Matchers with ChiselSim {
   }
 
   it should "execute or" in {
-    simulate(new Cpu(cpuMemSizeBytes)) { dut =>
+    simulate(new Cpu) { dut =>
       runProgram(
         dut,
-        program = """lw x1, 0x80(x0)
-             lw x2, 0x84(x0)
+        program = """lw x1, 0x40(x0)
+             lw x2, 0x44(x0)
              or x3, x1, x2
           """.stripMargin,
         data = Seq(
-          0x80 -> BigInt("F0F0F0F0", 16),
-          0x84 -> BigInt("0F0F0F0F", 16)
+          0x40 -> BigInt("F0F0F0F0", 16),
+          0x44 -> BigInt("0F0F0F0F", 16)
         ),
         cycles = 3
       )
@@ -126,17 +126,17 @@ class CpuSpec extends AnyFlatSpec with Matchers with ChiselSim {
   }
 
   it should "execute beq (taken)" in {
-    simulate(new Cpu(cpuMemSizeBytes)) { dut =>
+    simulate(new Cpu) { dut =>
       runProgram(
         dut,
-        program = """lw x1, 0x80(x0)
+        program = """lw x1, 0x40(x0)
         beq x0, x0, 8,
-        lw x1, 0x84(x0)
-        sw x2, 0x8c(x0)
+        lw x1, 0x44(x0)
+        sw x2, 0x4c(x0)
         """.stripMargin,
         data = Seq(
-          0x80 -> BigInt("CAFE", 16),
-          0x84 -> BigInt("BEEF", 16)
+          0x40 -> BigInt("CAFE", 16),
+          0x44 -> BigInt("BEEF", 16)
         ),
         cycles = 3
       )
@@ -145,17 +145,17 @@ class CpuSpec extends AnyFlatSpec with Matchers with ChiselSim {
   }
 
   it should "execute beq (taken, negative offset)" in {
-    simulate(new Cpu(cpuMemSizeBytes)) { dut =>
+    simulate(new Cpu) { dut =>
       runProgram(
         dut,
-        program = """lw x1, 0x80(x0)
+        program = """lw x1, 0x40(x0)
           beq x0, x0, 8
-          lw x1, 0x84(x0)
+          lw x1, 0x44(x0)
           beq x0, x0, -4
         """.stripMargin,
         data = Seq(
-          0x80 -> BigInt("CAFE", 16),
-          0x84 -> BigInt("BEEF", 16)
+          0x40 -> BigInt("CAFE", 16),
+          0x44 -> BigInt("BEEF", 16)
         ),
         cycles = 4
       )
@@ -164,18 +164,18 @@ class CpuSpec extends AnyFlatSpec with Matchers with ChiselSim {
   }
 
   it should "execute beq (not taken)" in {
-    simulate(new Cpu(cpuMemSizeBytes)) { dut =>
+    simulate(new Cpu) { dut =>
       runProgram(
         dut,
-        program = """lw x1, 0x80(x0)
-          lw x2, 0x84(x0)
+        program = """lw x1, 0x40(x0)
+          lw x2, 0x44(x0)
           beq x1, x2, 8
-          lw x1, 0x88(x0)
+          lw x1, 0x48(x0)
         """.stripMargin,
         data = Seq(
-          0x80 -> BigInt("CAFE", 16),
-          0x84 -> BigInt("BEEF", 16),
-          0x88 -> BigInt("1234", 16)
+          0x40 -> BigInt("CAFE", 16),
+          0x44 -> BigInt("BEEF", 16),
+          0x48 -> BigInt("1234", 16)
         ),
         cycles = 4
       )

@@ -3,13 +3,16 @@ import _root_.circt.stage.ChiselStage
 import cpu.{Cpu, ReadWritePort}
 import com.carlosedp.riscvassembler.RISCVAssembler
 
-/** @param memFile path to a hex file loaded into instruction memory at boot.
-  *                Used on FPGA via $readmemh.
-  * @param exposeDebug when true, surfaces the CPU's debug + mem_debug ports out
-  *                    of Top so tests (or external tools) can preload memory.
-  *                    Set false in production / FPGA bitstream generation.
+/** @param memFile
+  *   path to a hex file loaded into instruction memory at boot. Used on FPGA
+  *   via $readmemh.
+  * @param exposeDebug
+  *   when true, surfaces the CPU's debug + mem_debug ports out of Top so tests
+  *   (or external tools) can preload memory. Set false in production / FPGA
+  *   bitstream generation.
   */
-class Top(memFile: String = "dbg.mem", exposeDebug: Boolean = false) extends Module {
+class Top(memFile: String = "dbg.mem", exposeDebug: Boolean = false)
+    extends Module {
   val io = IO(new Bundle {
     val led = Output(UInt(16.W))
     val sw = Input(UInt(16.W))
@@ -17,7 +20,7 @@ class Top(memFile: String = "dbg.mem", exposeDebug: Boolean = false) extends Mod
     val mem_debug = if (exposeDebug) Some(new ReadWritePort) else None
   })
 
-  val cpu = Module(new Cpu(256, memFile))
+  val cpu = Module(new Cpu)
 
   io.led := cpu.io.led
   cpu.io.sw := io.sw

@@ -18,8 +18,7 @@ class ReadWritePort extends Bundle {
 }
 
 // TODO: holy shit this is not the way to do MMIO
-class Memory(wordSize: Int, readOnlyPorts: Int, memFile: String = "")
-    extends Module {
+class Memory(readOnlyPorts: Int, zeroed: Boolean = true) extends Module {
   val io = IO(new Bundle {
     val ro = Vec(readOnlyPorts, new ReadPort)
     val rw = new ReadWritePort
@@ -28,9 +27,47 @@ class Memory(wordSize: Int, readOnlyPorts: Int, memFile: String = "")
     val sw = Input(UInt(16.W))
   })
 
-  val mem = Mem(wordSize, UInt(32.W))
-  if (memFile.nonEmpty) {
-    loadMemoryFromFileInline(mem, memFile)
+  val mem = if (zeroed) {
+    RegInit(VecInit(Seq.fill(32)(0.U(32.W))))
+  } else {
+    RegInit(
+      VecInit(
+        Seq(
+          0.U(32.W),
+          0.U(32.W),
+          0.U(32.W),
+          0.U(32.W),
+          0.U(32.W),
+          0.U(32.W),
+          0.U(32.W),
+          0.U(32.W),
+          0.U(32.W),
+          0.U(32.W),
+          0.U(32.W),
+          0.U(32.W),
+          0.U(32.W),
+          0.U(32.W),
+          0.U(32.W),
+          0.U(32.W),
+          0.U(32.W),
+          0.U(32.W),
+          0.U(32.W),
+          0.U(32.W),
+          0.U(32.W),
+          0.U(32.W),
+          0.U(32.W),
+          0.U(32.W),
+          0.U(32.W),
+          0.U(32.W),
+          0.U(32.W),
+          0.U(32.W),
+          0.U(32.W),
+          0.U(32.W),
+          0.U(32.W),
+          0.U(32.W)
+        )
+      )
+    )
   }
 
   val led_state = RegInit(UInt(16.W), 0.U)
@@ -40,21 +77,21 @@ class Memory(wordSize: Int, readOnlyPorts: Int, memFile: String = "")
     when(io.ro(i).addr === "h400".U) {
       io.ro(i).data := io.sw
     }.otherwise {
-      io.ro(i).data := mem.read(io.ro(i).addr >> 2)
+      io.ro(i).data := mem(io.ro(i).addr >> 2)
     }
   }
 
   when(io.rw.addr === "h400".U) {
     io.rw.data := io.sw
   }.otherwise {
-    io.rw.data := mem.read(io.rw.addr >> 2)
+    io.rw.data := mem(io.rw.addr >> 2)
   }
 
   when(io.rw.w_en === true.B) {
     when(io.rw.addr === "h404".U) {
       led_state := io.rw.w_data(15, 0)
     }.otherwise {
-      mem.write(io.rw.addr >> 2, io.rw.w_data)
+      mem(io.rw.addr >> 2) := io.rw.w_data
     }
   }
 

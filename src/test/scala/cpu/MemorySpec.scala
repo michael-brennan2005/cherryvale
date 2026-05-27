@@ -9,7 +9,7 @@ class MemorySpec extends AnyFlatSpec with Matchers with ChiselSim {
   behavior of "Memory"
 
   // One read-only port + one read/write port, matching the original two-port layout.
-  def dut() = new Memory(wordSize = 256, readOnlyPorts = 1)
+  def dut() = new Memory(readOnlyPorts = 1)
 
   it should "read back a word written at addr 0 via the rw port" in {
     simulate(dut()) { dut =>
@@ -169,7 +169,7 @@ class MemorySpec extends AnyFlatSpec with Matchers with ChiselSim {
 
   it should "latch LED state when writing to addr 0x401" in {
     simulate(dut()) { dut =>
-      dut.io.rw.addr.poke(0x401.U)
+      dut.io.rw.addr.poke(0x404.U)
       dut.io.rw.w_data.poke("hDEADBEEF".U) // only low 16 bits should latch
       dut.io.rw.w_en.poke(true.B)
       dut.clock.step()
@@ -182,7 +182,7 @@ class MemorySpec extends AnyFlatSpec with Matchers with ChiselSim {
   it should "hold the LED state across cycles when no write occurs" in {
     simulate(dut()) { dut =>
       // Latch a known value.
-      dut.io.rw.addr.poke(0x401.U)
+      dut.io.rw.addr.poke(0x404.U)
       dut.io.rw.w_data.poke("h0000A5A5".U)
       dut.io.rw.w_en.poke(true.B)
       dut.clock.step()
@@ -197,9 +197,9 @@ class MemorySpec extends AnyFlatSpec with Matchers with ChiselSim {
     }
   }
 
-  it should "overwrite the LED state on subsequent writes to 0x401" in {
+  it should "overwrite the LED state on subsequent writes to 0x404" in {
     simulate(dut()) { dut =>
-      dut.io.rw.addr.poke(0x401.U)
+      dut.io.rw.addr.poke(0x404.U)
       dut.io.rw.w_en.poke(true.B)
 
       dut.io.rw.w_data.poke("h00001111".U)
@@ -218,7 +218,7 @@ class MemorySpec extends AnyFlatSpec with Matchers with ChiselSim {
   it should "not touch the LED state when writing to non-MMIO addresses" in {
     simulate(dut()) { dut =>
       // Seed the LED.
-      dut.io.rw.addr.poke(0x401.U)
+      dut.io.rw.addr.poke(0x404.U)
       dut.io.rw.w_data.poke("h0000CAFE".U)
       dut.io.rw.w_en.poke(true.B)
       dut.clock.step()
