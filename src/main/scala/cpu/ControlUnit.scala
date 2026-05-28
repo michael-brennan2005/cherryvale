@@ -8,8 +8,8 @@ class ControlSignals extends Bundle {
   // Where does the next PC come from? True => branching instruction, may be pc + literal, False => pc + 4
   val pc_src = Output(Bool())
 
-  // What is written to register file? True => value from data memory, False => ALU result
-  val result_src = Output(Bool())
+  // What is written to register file? 0 => value from data memory, 1 => ALU result, 2 => PC + 4, 3 => imm
+  val result_src = Output(UInt(2.W))
 
   // Should we write to data memory on this instruction?
   val mem_write = Output(Bool())
@@ -19,7 +19,7 @@ class ControlSignals extends Bundle {
 
   // How do we decode the immediate from the instruction? Varies depending on instruction type
   // TODO: should this be put under an enum? Or more sensible literals rn, why are we using 0, 3, 2
-  val imm_src = Output(UInt(2.W))
+  val imm_src = Output(UInt(3.W))
 
   // Should we write to register on this instruction?
   val reg_write = Output(Bool())
@@ -58,7 +58,7 @@ class ControlUnit extends Module {
     is("b0110011".U) {
       // R-type instruction (add, sub, etc.)
       branch := false.B
-      io.control.result_src := false.B
+      io.control.result_src := "b01".U
       io.control.mem_write := false.B
       io.control.alu_src := false.B
       io.control.reg_write := true.B
@@ -67,10 +67,10 @@ class ControlUnit extends Module {
     is("b0000011".U) {
       // I-type instruction (lw, lb, etc.)
       branch := false.B
-      io.control.result_src := true.B
+      io.control.result_src := "b00".U
       io.control.mem_write := false.B
       io.control.alu_src := true.B
-      io.control.imm_src := 0.U
+      io.control.imm_src := "b00".U
       io.control.reg_write := true.B
       alu_op := "b00".U
     }
@@ -79,7 +79,7 @@ class ControlUnit extends Module {
       branch := false.B
       io.control.mem_write := true.B
       io.control.alu_src := true.B
-      io.control.imm_src := "b11".U
+      io.control.imm_src := "b01".U
       io.control.reg_write := false.B
       alu_op := "b00".U
     }
@@ -92,9 +92,45 @@ class ControlUnit extends Module {
       io.control.reg_write := false.B
       alu_op := "b01".U
     }
+    is("b0010011".U) {
+      // I-type instruction (addi, xori, ori, etc.)
+      branch := false.B
+      io.control.result_src := "b01".U
+      io.control.mem_write := false.B
+      io.control.alu_src := true.B
+      io.control.imm_src := 0.U
+      io.control.reg_write := true.B
+      alu_op := "b10".U
+    }
+    is("b1101111".U) {
+      // jal instruction
+      branch := false.B
+      io.control.pc_src := true.B
+      io.control.mem_write := false.B
+      io.control.alu_src := false.B
+      io.control.imm_src := "b100".U
+      io.control.reg_write := true.B
+      io.control.result_src := "b10".U
+      alu_op := "b00".U
+    }
+    is("b0110111".U) {
+      // lui instruction
+      branch := false.B
+      io.control.pc_src := false.B
+      io.control.mem_write := false.B
+      io.control.alu_src := false.B
+      io.control.imm_src := "b101".U
+      io.control.reg_write := true.B
+      io.control.result_src := "b11".U
+      alu_op := "b00".U
+    }
   }
 
-  io.control.pc_src := branch & io.i_zero
+  when(op === "b1101111".U) {
+    io.control.pc_src := true.B
+  }.otherwise {
+    io.control.pc_src := branch & io.i_zero
+  }
 
   // ALU decoding
   val funct3 = Wire(UInt(3.W))

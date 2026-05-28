@@ -29,6 +29,7 @@ class DataPath extends Module {
   val alu = Module(new Alu)
 
   val imm_ext = WireInit(UInt(32.W), 0.U)
+  dontTouch(imm_ext)
   val pc_next = Wire(UInt(32.W))
 
   when(io.control.pc_src === true.B) {
@@ -55,12 +56,21 @@ class DataPath extends Module {
   register_file.io.i_ra_3 := io.reg_file_ra
   io.reg_file_rd := register_file.io.o_rd_3
 
-  val result_src = Wire(UInt(32.W))
-  result_src := Mux(
-    io.control.result_src,
-    io.data.data,
-    alu.io.o_result
-  )
+  val result_src = WireInit(0.U(32.W))
+  switch(io.control.result_src) {
+    is("b00".U) {
+      result_src := io.data.data
+    }
+    is("b01".U) {
+      result_src := alu.io.o_result
+    }
+    is("b10".U) {
+      result_src := pc.io.o_pc + 4.U
+    }
+    is("b11".U) {
+      result_src := imm_ext
+    }
+  }
 
   register_file.io.i_wd := result_src
 
@@ -72,7 +82,7 @@ class DataPath extends Module {
     is("b00".U) { // I-type instruction
       imm_ext := io.code.data(31, 20).asSInt.pad(32).asUInt
     }
-    is("b11".U) { // S-type instruction
+    is("b01".U) { // S-type instruction
       imm_ext := Cat(
         io.code.data(31, 25),
         io.code.data(11, 7)
@@ -86,6 +96,20 @@ class DataPath extends Module {
         io.code.data(11, 8),
         0.U
       ).asSInt.pad(32).asUInt
+    }
+    is("b100".U) { // J-type instruction
+      imm_ext := Cat(
+        io.code.data(31),
+        io.code.data(20),
+        io.code.data(30, 21),
+        0.U
+      ).asSInt.pad(32).asUInt
+    }
+    is("b101".U) { // U-type instruction
+      imm_ext := Cat(
+        io.code.data(31, 12),
+        Fill(12, "b0".U(1.W))
+      )
     }
   }
 

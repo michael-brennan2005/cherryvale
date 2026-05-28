@@ -21,9 +21,10 @@ class Top(memoryInit: Option[Seq[UInt]], debug_port: Boolean = true)
     else { None }
   })
 
-  val clk_divide = RegInit(0.U(4.W))
+  val typed = UInt(16.W)
+  val clk_divide = RegInit(0.U(16.W))
   clk_divide := clk_divide + 1.U
-  withClock(clk_divide(3).asClock) {
+  withClock(clk_divide(15).asClock) {
     val cpu = Module(new Cpu(memoryInit))
     io.led := cpu.io.led
     cpu.io.sw := io.sw

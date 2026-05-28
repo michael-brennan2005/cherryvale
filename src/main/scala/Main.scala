@@ -5,11 +5,12 @@ import cpu.Utils
 
 object Main extends App {
   val mem = Utils.buildMemInit(
-    program = """lw x1, 0x400(x0)
+    program = """lui x1, 0
+    addi x1, x1, 1
     sw x1, 0x404(x0)
-    beq x0, x0, -8
+    jal x2, -8
     """,
-    data = Seq()
+    data = Seq(0x24 -> 0xffff)
   )
   ChiselStage.emitSystemVerilogFile(
     new Top(Some(mem), false),

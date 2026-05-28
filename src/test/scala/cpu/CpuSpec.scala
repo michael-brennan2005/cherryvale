@@ -131,4 +131,76 @@ class CpuSpec extends AnyFlatSpec with Matchers with ChiselSim {
       readReg(dut, 1) shouldBe BigInt("1234", 16)
     }
   }
+
+  it should "execute addi" in {
+    val memInit = Utils.buildMemInit(
+      program = """lw x1, 0x40(x0)
+        addi x2, x1, 100
+      """.stripMargin,
+      data = Seq(0x40 -> BigInt(42))
+    )
+    simulate(new Cpu(Some(memInit))) { dut =>
+      dut.clock.step(2)
+      readReg(dut, 2) shouldBe BigInt(142)
+    }
+  }
+
+  it should "execute addi (negative immediate)" in {
+    val memInit = Utils.buildMemInit(
+      program = """lw x1, 0x40(x0)
+        addi x2, x1, -10
+      """.stripMargin,
+      data = Seq(0x40 -> BigInt(100))
+    )
+    simulate(new Cpu(Some(memInit))) { dut =>
+      dut.clock.step(2)
+      readReg(dut, 2) shouldBe BigInt(90)
+    }
+  }
+
+  it should "execute jal" in {
+    val memInit = Utils.buildMemInit(
+      program = """jal x1, 8
+        lw x2, 0x40(x0)
+        lw x2, 0x44(x0)
+      """.stripMargin,
+      data = Seq(
+        0x40 -> BigInt("CAFE", 16),
+        0x44 -> BigInt("BEEF", 16)
+      )
+    )
+    simulate(new Cpu(Some(memInit))) { dut =>
+      dut.clock.step(2)
+      readReg(dut, 1) shouldBe BigInt(4)
+      readReg(dut, 2) shouldBe BigInt("BEEF", 16)
+    }
+  }
+
+  it should "execute jal (negative offset)" in {
+    val memInit = Utils.buildMemInit(
+      program = """jal x0, 8
+        lw x1, 0x40(x0)
+        jal x2, -4
+      """.stripMargin,
+      data = Seq(
+        0x40 -> BigInt("BEEF", 16)
+      )
+    )
+    simulate(new Cpu(Some(memInit))) { dut =>
+      dut.clock.step(3)
+      readReg(dut, 1) shouldBe BigInt("BEEF", 16)
+      readReg(dut, 2) shouldBe BigInt(12)
+    }
+  }
+
+  it should "execute lui" in {
+    val memInit = Utils.buildMemInit(
+      program = "lui x1, 0xABCDE",
+      data = Seq.empty[(Int, BigInt)]
+    )
+    simulate(new Cpu(Some(memInit))) { dut =>
+      dut.clock.step(1)
+      readReg(dut, 1) shouldBe BigInt("ABCDE000", 16)
+    }
+  }
 }
