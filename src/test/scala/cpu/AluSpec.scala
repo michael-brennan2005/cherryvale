@@ -12,7 +12,7 @@ class AluSpec extends AnyFlatSpec with Matchers with ChiselSim {
     simulate(new Alu) { dut =>
       dut.io.i_src_a.poke(5.U)
       dut.io.i_src_b.poke(7.U)
-      dut.io.i_control.poke("b000".U)
+      dut.io.i_control.poke(AluOp.add)
       dut.clock.step()
       dut.io.o_result.expect(12.U)
       dut.io.o_zero.expect(false.B)
@@ -23,7 +23,7 @@ class AluSpec extends AnyFlatSpec with Matchers with ChiselSim {
     simulate(new Alu) { dut =>
       dut.io.i_src_a.poke(10.U)
       dut.io.i_src_b.poke(3.U)
-      dut.io.i_control.poke("b001".U)
+      dut.io.i_control.poke(AluOp.sub)
       dut.clock.step()
       dut.io.o_result.expect(7.U)
       dut.io.o_zero.expect(false.B)
@@ -34,7 +34,7 @@ class AluSpec extends AnyFlatSpec with Matchers with ChiselSim {
     simulate(new Alu) { dut =>
       dut.io.i_src_a.poke(5.U)
       dut.io.i_src_b.poke(5.U)
-      dut.io.i_control.poke("b001".U)
+      dut.io.i_control.poke(AluOp.sub)
       dut.clock.step()
       dut.io.o_result.expect(0.U)
       dut.io.o_zero.expect(true.B)
@@ -45,7 +45,7 @@ class AluSpec extends AnyFlatSpec with Matchers with ChiselSim {
     simulate(new Alu) { dut =>
       dut.io.i_src_a.poke(0xff0.U)
       dut.io.i_src_b.poke(0x0f0.U)
-      dut.io.i_control.poke("b010".U)
+      dut.io.i_control.poke(AluOp.xor)
       dut.clock.step()
       dut.io.o_result.expect(0xf00.U)
     }
@@ -55,7 +55,7 @@ class AluSpec extends AnyFlatSpec with Matchers with ChiselSim {
     simulate(new Alu) { dut =>
       dut.io.i_src_a.poke(0xff.U)
       dut.io.i_src_b.poke(0x0f.U)
-      dut.io.i_control.poke("b100".U)
+      dut.io.i_control.poke(AluOp.and)
       dut.clock.step()
       dut.io.o_result.expect(0x0f.U)
     }
@@ -65,7 +65,7 @@ class AluSpec extends AnyFlatSpec with Matchers with ChiselSim {
     simulate(new Alu) { dut =>
       dut.io.i_src_a.poke(0xf0.U)
       dut.io.i_src_b.poke(0x0f.U)
-      dut.io.i_control.poke("b011".U)
+      dut.io.i_control.poke(AluOp.or)
       dut.clock.step()
       dut.io.o_result.expect(0xff.U)
     }
@@ -75,7 +75,7 @@ class AluSpec extends AnyFlatSpec with Matchers with ChiselSim {
     simulate(new Alu) { dut =>
       dut.io.i_src_a.poke(3.U)
       dut.io.i_src_b.poke(5.U)
-      dut.io.i_control.poke("b101".U)
+      dut.io.i_control.poke(AluOp.slt)
       dut.clock.step()
       dut.io.o_result.expect(1.U)
       dut.io.o_zero.expect(false.B)
@@ -86,7 +86,7 @@ class AluSpec extends AnyFlatSpec with Matchers with ChiselSim {
     simulate(new Alu) { dut =>
       dut.io.i_src_a.poke(5.U)
       dut.io.i_src_b.poke(3.U)
-      dut.io.i_control.poke("b101".U)
+      dut.io.i_control.poke(AluOp.slt)
       dut.clock.step()
       dut.io.o_result.expect(0.U)
       dut.io.o_zero.expect(true.B)

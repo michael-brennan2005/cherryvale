@@ -4,28 +4,72 @@ import chisel3._
 import chisel3.util._
 import _root_.circt.stage.ChiselStage
 
+object Instructions {
+  // Arithmetic instructions
+  def xor = BitPat("b0000000??????????100?????0110011")
+  def or = BitPat("b0000000??????????110?????0110011")
+
+  // Arithmetic immediate instructions
+  def addi = BitPat("b?????????????????000?????0010011")
+
+  // Load instructions
+  def lw = BitPat("b?????????????????010?????0000011")
+
+  // Store instructions
+  def sw = BitPat("b?????????????????010?????0100011")
+
+  // Branch instructions
+  def beq = BitPat("b?????????????????000?????1100011")
+
+  // Jump and link instructions
+  def jal = BitPat("b?????????????????????????1101111")
+
+  // Upper immediate instructions
+  def lui = BitPat("b?????????????????????????0110111")
+}
+
+// What the pc should be set to after an instruction
+object PcSrc extends ChiselEnum {
+  val branchImmediate = Value(0.U) // pc = pc + imm
+  val plusFour = Value(1.U) // pc = pc + 4
+}
+
+// What should be written to the register file after an instruction
+object RegFileWriteSrc extends ChiselEnum {
+  val data = Value(0.U) // value from memory
+  val aluResult = Value(1.U) // result from ALU
+  val pcPlusFour = Value(2.U) // pc + 4
+  val immediate = Value(3.U) // imm
+
+  val dontCare = data
+}
+
+// What is the 2nd operand for the ALU? (First operand is always value RD1 from register file)
+object Alu2ndOperand extends ChiselEnum {
+  val registerValue = Value(0.U) // value from register file (RD2)
+  val immediate = Value(1.U) // imm
+}
+
+// How we do we decode the immediate from an instruction?
+object ImmediateEncoding extends ChiselEnum {
+  val iType = Value(0.U) // i-type
+  val sType = Value(1.U) // s-type
+  val bType = Value(2.U) // b-type
+  val uType = Value(3.U) // u-type
+  val jType = Value(4.U) // j-type
+
+  val dontCare = iType
+}
+
 class ControlSignals extends Bundle {
-  // Where does the next PC come from? True => branching instruction, may be pc + literal, False => pc + 4
-  val pc_src = Output(Bool())
+  val pcSrc = Output(PcSrc())
+  val regFileWriteSrc = Output(RegFileWriteSrc())
+  val alu2ndOperand = Output(Alu2ndOperand())
+  val immEncoding = Output(ImmediateEncoding())
+  val alu_op = Output(AluOp())
 
-  // What is written to register file? 0 => value from data memory, 1 => ALU result, 2 => PC + 4, 3 => imm
-  val result_src = Output(UInt(2.W))
-
-  // Should we write to data memory on this instruction?
-  val mem_write = Output(Bool())
-
-  // What is 2nd operand of ALU? True => immediate from instruction, False => register value
-  val alu_src = Output(Bool())
-
-  // How do we decode the immediate from the instruction? Varies depending on instruction type
-  // TODO: should this be put under an enum? Or more sensible literals rn, why are we using 0, 3, 2
-  val imm_src = Output(UInt(3.W))
-
-  // Should we write to register on this instruction?
-  val reg_write = Output(Bool())
-
-  // What operation should the ALU perform?
-  val alu_op = Output(UInt(3.W))
+  val writeToMem = Output(Bool())
+  val writeToReg = Output(Bool())
 }
 
 class ControlUnit extends Module {
@@ -35,142 +79,40 @@ class ControlUnit extends Module {
 
     val control = new ControlSignals
   })
+  // format: off
+  val default =
+  //
+  //                           regFileWriteSrc,             alu2ndOperand,                immEncoding,                  aluOp,            branch,   wToMem,   wToReg
+  //
+                          List(RegFileWriteSrc.data,        Alu2ndOperand.immediate,      ImmediateEncoding.sType,      AluOp.add,        false.B,  false.B,  false.B)
 
-  // For debugging
-  val current_inst = io.i_inst
-  dontTouch(current_inst)
+  val map = Array(
+    Instructions.xor ->   List(RegFileWriteSrc.aluResult,   Alu2ndOperand.registerValue,  ImmediateEncoding.dontCare,   AluOp.xor,        false.B,  false.B,  true.B),
+    Instructions.or ->    List(RegFileWriteSrc.aluResult,   Alu2ndOperand.registerValue,  ImmediateEncoding.dontCare,   AluOp.or,         false.B,  false.B,  true.B),
+    Instructions.addi ->  List(RegFileWriteSrc.aluResult,   Alu2ndOperand.immediate,      ImmediateEncoding.iType,      AluOp.add,        false.B,  false.B,  true.B),
+    Instructions.lw ->    List(RegFileWriteSrc.data,        Alu2ndOperand.immediate,      ImmediateEncoding.iType,      AluOp.add,        false.B,  false.B,  true.B),
+    Instructions.sw ->    List(RegFileWriteSrc.dontCare,    Alu2ndOperand.immediate,      ImmediateEncoding.sType,      AluOp.add,        false.B,  true.B,   false.B),
+    Instructions.beq ->   List(RegFileWriteSrc.dontCare,    Alu2ndOperand.registerValue,  ImmediateEncoding.bType,      AluOp.sub,        true.B,   false.B,  false.B),
+    Instructions.jal ->   List(RegFileWriteSrc.pcPlusFour,  Alu2ndOperand.immediate,      ImmediateEncoding.jType,      AluOp.dontCare,   false.B,  false.B,  true.B),
+    Instructions.lui ->   List(RegFileWriteSrc.immediate,   Alu2ndOperand.immediate,      ImmediateEncoding.uType,      AluOp.dontCare,   false.B,  false.B,  true.B)
+  )
+  // format: on
 
-  // Defaults to make chisel happy
-  io.control.result_src := false.B
-  io.control.mem_write := false.B
-  io.control.alu_src := false.B
-  io.control.imm_src := 0.U
-  io.control.reg_write := false.B
-  io.control.alu_op := 0.U
+  val signals = ListLookup(io.i_inst, default, map)
 
-  // or,lw,sw,beq
-  val op = Wire(UInt(7.W))
-  op := io.i_inst(6, 0)
+  io.control.regFileWriteSrc := signals(0)
+  io.control.alu2ndOperand := signals(1)
+  io.control.immEncoding := signals(2)
+  io.control.alu_op := signals(3)
+  io.control.writeToMem := signals(5)
+  io.control.writeToReg := signals(6)
 
-  val branch = WireInit(Bool(), false.B)
-  val alu_op = WireInit(UInt(2.W), 0.U)
-  switch(op) {
-    is("b0110011".U) {
-      // R-type instruction (add, sub, etc.)
-      branch := false.B
-      io.control.result_src := "b01".U
-      io.control.mem_write := false.B
-      io.control.alu_src := false.B
-      io.control.reg_write := true.B
-      alu_op := "b10".U
-    }
-    is("b0000011".U) {
-      // I-type instruction (lw, lb, etc.)
-      branch := false.B
-      io.control.result_src := "b00".U
-      io.control.mem_write := false.B
-      io.control.alu_src := true.B
-      io.control.imm_src := "b00".U
-      io.control.reg_write := true.B
-      alu_op := "b00".U
-    }
-    is("b0100011".U) {
-      // S-type instruction (sw, sb, etc.)
-      branch := false.B
-      io.control.mem_write := true.B
-      io.control.alu_src := true.B
-      io.control.imm_src := "b01".U
-      io.control.reg_write := false.B
-      alu_op := "b00".U
-    }
-    is("b1100011".U) {
-      // B-type instruction (beq, bge, etc.)
-      branch := true.B
-      io.control.mem_write := false.B
-      io.control.alu_src := false.B
-      io.control.imm_src := "b10".U
-      io.control.reg_write := false.B
-      alu_op := "b01".U
-    }
-    is("b0010011".U) {
-      // I-type instruction (addi, xori, ori, etc.)
-      branch := false.B
-      io.control.result_src := "b01".U
-      io.control.mem_write := false.B
-      io.control.alu_src := true.B
-      io.control.imm_src := 0.U
-      io.control.reg_write := true.B
-      alu_op := "b10".U
-    }
-    is("b1101111".U) {
-      // jal instruction
-      branch := false.B
-      io.control.pc_src := true.B
-      io.control.mem_write := false.B
-      io.control.alu_src := false.B
-      io.control.imm_src := "b100".U
-      io.control.reg_write := true.B
-      io.control.result_src := "b10".U
-      alu_op := "b00".U
-    }
-    is("b0110111".U) {
-      // lui instruction
-      branch := false.B
-      io.control.pc_src := false.B
-      io.control.mem_write := false.B
-      io.control.alu_src := false.B
-      io.control.imm_src := "b101".U
-      io.control.reg_write := true.B
-      io.control.result_src := "b11".U
-      alu_op := "b00".U
-    }
-  }
-
-  when(op === "b1101111".U) {
-    io.control.pc_src := true.B
+  // TODO: ugh
+  when(io.i_inst(6, 0) === "b1101111".U) {
+    io.control.pcSrc := PcSrc.branchImmediate
+  }.elsewhen(signals(4).asUInt.asBool & io.i_zero) {
+    io.control.pcSrc := PcSrc.branchImmediate
   }.otherwise {
-    io.control.pc_src := branch & io.i_zero
-  }
-
-  // ALU decoding
-  val funct3 = Wire(UInt(3.W))
-  val funct7 = Wire(UInt(7.W))
-
-  funct3 := io.i_inst(14, 12)
-  funct7 := io.i_inst(31, 25)
-
-  val r_alu_op = WireInit(UInt(3.W), 0.U)
-  val weird_imm = Wire(
-    UInt(2.W)
-  ) // todo: pg.18 of chp. 7, dont understand this part
-  weird_imm := Cat(op(5), funct7(5))
-
-  when(funct3 === "b0".U && weird_imm < 3.U) {
-    r_alu_op := 0.U // add
-  }.elsewhen(funct3 === "b0".U && weird_imm === 3.U) {
-    r_alu_op := 1.U // sub
-  }.elsewhen(funct3 === "b10".U) {
-    r_alu_op := 5.U // slt
-  }.elsewhen(funct3 === "b110".U) {
-    r_alu_op := 3.U // or
-  }.elsewhen(funct3 === "b111".U) {
-    r_alu_op := 4.U // and
-  }.elsewhen(funct3 === "b100".U) {
-    r_alu_op := 2.U // xor
-  }
-
-  switch(alu_op) {
-    is("b00".U) {
-      // add for finding addresses of loads and stores
-      io.control.alu_op := "b000".U
-    }
-    is("b01".U) {
-      // subtract to compare numbers for branches
-      io.control.alu_op := "b001".U
-    }
-    is("b10".U) {
-      // R-type alu instruction
-      io.control.alu_op := r_alu_op
-    }
+    io.control.pcSrc := PcSrc.plusFour
   }
 }
