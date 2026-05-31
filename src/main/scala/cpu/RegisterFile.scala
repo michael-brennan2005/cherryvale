@@ -23,23 +23,16 @@ class RegisterFile extends Module {
 
   val regs = RegInit(VecInit(Seq.fill(32)(0.U(32.W))))
 
-  io.o_rd_1 := Mux(
-    io.i_ra_1 === 0.U,
-    0.U,
-    regs(io.i_ra_1)
-  )
+  private def read(addr: UInt): UInt =
+    Mux(
+      addr === 0.U,
+      0.U,
+      Mux(io.i_w_en && (io.i_wa === addr), io.i_wd, regs(addr))
+    )
 
-  io.o_rd_2 := Mux(
-    io.i_ra_2 === 0.U,
-    0.U,
-    regs(io.i_ra_2)
-  )
-
-  io.o_rd_3 := Mux(
-    io.i_ra_3 === 0.U,
-    0.U,
-    regs(io.i_ra_3)
-  )
+  io.o_rd_1 := read(io.i_ra_1)
+  io.o_rd_2 := read(io.i_ra_2)
+  io.o_rd_3 := read(io.i_ra_3)
 
   when(io.i_w_en === true.B && !reset.asBool) {
     regs(io.i_wa) := io.i_wd

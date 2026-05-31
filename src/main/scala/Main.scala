@@ -20,9 +20,9 @@ object Main extends App {
     ),
     firtoolOpts = Array(
       "-disable-all-randomization",
-      "-default-layer-specialization=enable",
-      "-preserve-values=named",
-      "-preserve-aggregate=all"
+      "-default-layer-specialization=enable"
+      // "-preserve-values=named",
+      // "-preserve-aggregate=all"
     )
   )
 }

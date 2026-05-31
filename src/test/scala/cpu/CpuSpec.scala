@@ -26,7 +26,7 @@ class CpuSpec extends AnyFlatSpec with Matchers with ChiselSim {
       data = Seq(0x40 -> BigInt("DEADBEEF", 16))
     )
     simulate(new Cpu(Some(memInit))) { dut =>
-      dut.clock.step(1)
+      dut.clock.step(5)
       readReg(dut, 1) shouldBe BigInt("DEADBEEF", 16)
     }
   }
@@ -38,7 +38,7 @@ class CpuSpec extends AnyFlatSpec with Matchers with ChiselSim {
         Seq(0x40 -> BigInt("FFFFFFFF", 16)) // sentinel: proves write happened
     )
     simulate(new Cpu(Some(memInit))) { dut =>
-      dut.clock.step(1)
+      dut.clock.step(5)
       readMem(dut, 0x40) shouldBe BigInt(0)
     }
   }
@@ -55,7 +55,7 @@ class CpuSpec extends AnyFlatSpec with Matchers with ChiselSim {
       )
     )
     simulate(new Cpu(Some(memInit))) { dut =>
-      dut.clock.step(3)
+      dut.clock.step(7)
       readReg(dut, 3) shouldBe BigInt("0F0FF0F0", 16)
     }
   }
@@ -72,7 +72,7 @@ class CpuSpec extends AnyFlatSpec with Matchers with ChiselSim {
       )
     )
     simulate(new Cpu(Some(memInit))) { dut =>
-      dut.clock.step(3)
+      dut.clock.step(7)
       readReg(dut, 3) shouldBe BigInt("FFFFFFFF", 16)
     }
   }
@@ -90,7 +90,7 @@ class CpuSpec extends AnyFlatSpec with Matchers with ChiselSim {
       )
     )
     simulate(new Cpu(Some(memInit))) { dut =>
-      dut.clock.step(3)
+      dut.clock.step(8)
       readReg(dut, 1) shouldBe BigInt("CAFE", 16)
     }
   }
@@ -98,7 +98,9 @@ class CpuSpec extends AnyFlatSpec with Matchers with ChiselSim {
   it should "execute beq (taken, negative offset)" in {
     val memInit = Utils.buildMemInit(
       program = """lw x1, 0x40(x0)
-        beq x0, x0, 8
+        beq x0, x0, 16
+        addi x1, x0, 4
+        addi x1, x0, 4
         lw x1, 0x44(x0)
         beq x0, x0, -4
       """.stripMargin,
@@ -108,7 +110,7 @@ class CpuSpec extends AnyFlatSpec with Matchers with ChiselSim {
       )
     )
     simulate(new Cpu(Some(memInit))) { dut =>
-      dut.clock.step(4)
+      dut.clock.step(11)
       readReg(dut, 1) shouldBe BigInt("BEEF", 16)
     }
   }
@@ -127,7 +129,7 @@ class CpuSpec extends AnyFlatSpec with Matchers with ChiselSim {
       )
     )
     simulate(new Cpu(Some(memInit))) { dut =>
-      dut.clock.step(4)
+      dut.clock.step(9)
       readReg(dut, 1) shouldBe BigInt("1234", 16)
     }
   }
@@ -140,7 +142,7 @@ class CpuSpec extends AnyFlatSpec with Matchers with ChiselSim {
       data = Seq(0x40 -> BigInt(42))
     )
     simulate(new Cpu(Some(memInit))) { dut =>
-      dut.clock.step(2)
+      dut.clock.step(7)
       readReg(dut, 2) shouldBe BigInt(142)
     }
   }
@@ -153,7 +155,7 @@ class CpuSpec extends AnyFlatSpec with Matchers with ChiselSim {
       data = Seq(0x40 -> BigInt(100))
     )
     simulate(new Cpu(Some(memInit))) { dut =>
-      dut.clock.step(2)
+      dut.clock.step(7)
       readReg(dut, 2) shouldBe BigInt(90)
     }
   }
@@ -170,7 +172,7 @@ class CpuSpec extends AnyFlatSpec with Matchers with ChiselSim {
       )
     )
     simulate(new Cpu(Some(memInit))) { dut =>
-      dut.clock.step(2)
+      dut.clock.step(8)
       readReg(dut, 1) shouldBe BigInt(4)
       readReg(dut, 2) shouldBe BigInt("BEEF", 16)
     }
@@ -187,7 +189,7 @@ class CpuSpec extends AnyFlatSpec with Matchers with ChiselSim {
       )
     )
     simulate(new Cpu(Some(memInit))) { dut =>
-      dut.clock.step(3)
+      dut.clock.step(10)
       readReg(dut, 1) shouldBe BigInt("BEEF", 16)
       readReg(dut, 2) shouldBe BigInt(12)
     }
@@ -199,7 +201,7 @@ class CpuSpec extends AnyFlatSpec with Matchers with ChiselSim {
       data = Seq.empty[(Int, BigInt)]
     )
     simulate(new Cpu(Some(memInit))) { dut =>
-      dut.clock.step(1)
+      dut.clock.step(4)
       readReg(dut, 1) shouldBe BigInt("ABCDE000", 16)
     }
   }

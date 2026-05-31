@@ -14,7 +14,6 @@ class Cpu(memoryInit: Option[Seq[UInt]]) extends Module {
     val sw = Input(UInt(16.W))
   })
 
-  val control = Module(new ControlUnit)
   val data_path = Module(new DataPath)
   val memory = Module(new Memory(2, memoryInit))
   data_path.reset := reset
@@ -24,8 +23,6 @@ class Cpu(memoryInit: Option[Seq[UInt]]) extends Module {
   data_path.io.code <> memory.io.ro(0)
   io.mem_debug <> memory.io.ro(1)
 
-  data_path.io.control <> control.io.control
-
   io.led := memory.io.led
   memory.io.sw := io.sw
 
@@ -33,7 +30,4 @@ class Cpu(memoryInit: Option[Seq[UInt]]) extends Module {
 
   data_path.io.reg_file_ra := io.reg_debug_addr
   io.reg_debug_data := data_path.io.reg_file_rd
-
-  control.io.i_inst := data_path.io.o_inst
-  control.io.i_zero := data_path.io.o_zero
 }

@@ -3,15 +3,10 @@ package cpu
 import chisel3._
 import _root_.circt.stage.ChiselStage
 import chisel3.util._
+import chisel3.experimental.BundleLiterals._
 
 class DataPath extends Module {
   val io = IO(new Bundle {
-    // For control unit - TODO: may be better to put refactor these into control signals
-    val o_inst = Output(UInt(32.W))
-    val o_zero = Output(Bool())
-
-    val control = Flipped(new ControlSignals)
-
     val code = Flipped(new ReadPort)
     val data = Flipped(new ReadWritePort)
 
@@ -20,69 +15,99 @@ class DataPath extends Module {
     val reg_file_rd = Output(UInt(32.W))
   })
 
-  val pc = Module(new ProgramCounter)
-  val register_file = Module(new RegisterFile)
-  val alu = Module(new Alu)
-  pc.reset := reset
-  register_file.reset := reset
+  val hazard = Module(new HazardUnit)
+  val fetch = Module(new FetchStage)
+  val decode = Module(new DecodeStage)
+  val execute = Module(new ExecuteStage)
+  val memory = Module(new MemoryStage)
 
-  val inst = io.code.data
+  val pc = RegInit(0.U(32.W)) // writeback -> fetch (sort of)
+  val ifId = RegInit(0.U.asTypeOf(new FetchStageOutput)) // fetch -> decode
+  val idEx = RegInit(0.U.asTypeOf(new DecodeStageOutput)) // decode -> execute
+  val exMem = RegInit(0.U.asTypeOf(new ExecuteStageOutput)) // execute -> memory
+  val memWb = RegInit(
+    0.U.asTypeOf(new MemoryStageOutput)
+  ) // memory -> writeback
 
-  // format: off
-  val inst_immediate = MuxLookup(io.control.immEncoding, 0.U(32.W))(
-    Seq(
-      ImmediateEncoding.iType -> inst(31, 20).asSInt.pad(32).asUInt,
-      ImmediateEncoding.sType -> Cat(inst(31, 25), inst(11, 7)).asSInt.pad(32).asUInt,
-      ImmediateEncoding.bType -> Cat(inst(31), inst(7), inst(30, 25), inst(11, 8), 0.U(1.W)).asSInt.pad(32).asUInt,
-      ImmediateEncoding.jType -> Cat(inst(31), inst(20), inst(30, 21), 0.U(1.W)).asSInt.pad(32).asUInt,
-      ImmediateEncoding.uType -> Cat(inst(31, 12), Fill(12, "b0".U(1.W)))
-    )
-  )
-  // format: on
+  val pcOverride = Wire(Bool())
+  val resultWriteback = Wire(UInt(32.W))
 
-  pc.io.i_pc_next := MuxLookup(io.control.pcSrc, pc.io.o_pc + 4.U)(
-    Seq(
-      PcSrc.branchImmediate -> (pc.io.o_pc + inst_immediate),
-      PcSrc.plusFour -> (pc.io.o_pc + 4.U)
-    )
-  )
+  // Fetch stage
+  when(!hazard.io.stallPc && pcOverride) {
+    pc := execute.io.pcTarget
+  }.elsewhen(!hazard.io.stallPc) {
+    pc := pc + 4.U
+  }
 
-  // For control unit to decode
-  io.o_inst := inst
+  fetch.io.pc := pc
+  fetch.io.code <> io.code
 
-  io.code.addr := pc.io.o_pc
+  when(hazard.io.flushFetchOutput) {
+    ifId := 0.U.asTypeOf(new FetchStageOutput)
+  }.elsewhen(!hazard.io.stallFetchOutput) {
+    ifId := fetch.io.out
+  }
 
-  io.data.addr := alu.io.o_result
-  io.data.w_data := register_file.io.o_rd_2
-  io.data.w_en := io.control.writeToMem
+  // Decode stage
+  decode.io.fetchInput := ifId
 
-  register_file.io.i_ra_1 := inst(19, 15)
-  register_file.io.i_ra_2 := inst(24, 20)
-  register_file.io.i_wa := inst(11, 7)
-  register_file.io.i_w_en := io.control.writeToReg
+  decode.io.regWriteIdx := memWb.regDestIdx
+  decode.io.regWriteEnable := memWb.control.writeToReg
+  decode.io.regWriteData := resultWriteback
 
-  register_file.io.i_ra_3 := io.reg_file_ra
-  io.reg_file_rd := register_file.io.o_rd_3
+  decode.io.regDebugIdx := io.reg_file_ra
+  io.reg_file_rd := decode.io.regDebugData
 
-  register_file.io.i_wd := MuxLookup(io.control.regFileWriteSrc, 0.U(32.W))(
-    Seq(
-      RegFileWriteSrc.data -> io.data.data,
-      RegFileWriteSrc.aluResult -> alu.io.o_result,
-      RegFileWriteSrc.pcPlusFour -> (pc.io.o_pc + 4.U),
-      RegFileWriteSrc.immediate -> inst_immediate
-    )
-  )
+  when(hazard.io.flushDecodeOutput) {
+    idEx := 0.U.asTypeOf(new DecodeStageOutput)
+  }.otherwise {
+    idEx := decode.io.out
+  }
 
-  alu.io.i_src_a := register_file.io.o_rd_1
-  alu.io.i_src_b := MuxLookup(
-    io.control.alu2ndOperand,
-    register_file.io.o_rd_2
+  // Execute stage
+  execute.io.decodeInput := idEx
+
+  pcOverride := idEx.control.jump | (idEx.control.branch & execute.io.aluZero)
+
+  execute.io.aluSrcASelect := hazard.io.executeAInputSel
+  execute.io.aluSrcBSelect := hazard.io.executeBInputSel
+
+  execute.io.resultWriteback := resultWriteback
+  execute.io.resultMemory := exMem.aluResult
+  exMem := execute.io.out
+
+  // Memory stage
+  memory.io.executeInput := exMem
+  memory.io.data <> io.data
+
+  memWb := memory.io.out
+
+  // Writeback stage
+  resultWriteback := MuxLookup(
+    memWb.control.regFileWriteSrc,
+    0.U(32.W)
   )(
     Seq(
-      Alu2ndOperand.immediate -> inst_immediate,
-      Alu2ndOperand.registerValue -> register_file.io.o_rd_2
+      RegFileWriteSrc.data -> memWb.memReadData,
+      RegFileWriteSrc.aluResult -> memWb.aluResult,
+      RegFileWriteSrc.pcPlusFour -> memWb.pcPlusFour,
+      RegFileWriteSrc.immediate -> memWb.immediate
     )
   )
-  alu.io.i_control := io.control.alu_op
-  io.o_zero := alu.io.o_zero
+
+  // Hazard inputs
+  hazard.io.pcOverride := pcOverride
+  hazard.io.decodeReg1Idx := decode.io.out.reg1Idx
+  hazard.io.decodeReg2Idx := decode.io.out.reg2Idx
+
+  hazard.io.executeReg1Idx := idEx.reg1Idx
+  hazard.io.executeReg2Idx := idEx.reg2Idx
+  hazard.io.executeRegDestIdx := idEx.regDestIdx
+  hazard.io.executeRegFileWriteSrc := idEx.control.regFileWriteSrc
+
+  hazard.io.memoryRegDestIdx := exMem.regDestIdx
+  hazard.io.memoryWriteToReg := exMem.control.writeToReg
+
+  hazard.io.writebackRegDestIdx := memWb.regDestIdx
+  hazard.io.writebackWriteToReg := memWb.control.writeToReg
 }
