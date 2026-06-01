@@ -1,6 +1,16 @@
+# About
+Cherryvale is a RISC-V core/SoC implemented in Chisel HDL, and primarily tested on a Digilent Basys3 dev-board.
+
+# Features
+* 5-stage pipelined RISC-V core - fetch, decode, execute, memory, register writeback
+* (in progress) support for full RISCV32I base instruciton set
+* (planned) formal verification
+* (planned) interesting things
+
 # Project structure
 ```
 build/
+    chiselsim/        # Outputs generated from ChiselSim
     sv/               # SystemVerilog outputs generated from Chisel
     vivado/           # Files generated from Vivado
 src/
@@ -15,6 +25,3 @@ build.sbt             # Building Chisel code & tests
 
 # Commands
 For testing with waveforms: `(in sbt) testOnly <SPEC> -- -DemitVcd=1`
-
-- JumpSpec
-- HazardSpec
