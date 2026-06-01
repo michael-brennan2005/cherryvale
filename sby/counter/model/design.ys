@@ -1,0 +1,9 @@
+# running in sby/counter/src/
+plugin -i slang
+read_slang --top Counter Counter.sv
+prep -top Counter
+
+hierarchy -smtcheck
+rename -witness
+write_jny -no-connections ../model/design.json
+write_rtlil ../model/design.il

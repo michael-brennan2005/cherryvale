@@ -1,0 +1,13 @@
+initial
+assume (= [$auto$async2sync.cc:107:execute$11] false)
+assume (= [$auto$async2sync.cc:116:execute$15] true)
+assume (= [counter] #b0000000001000000)
+assume (= [hasBeenResetReg] true)
+
+state 0
+assume (= [clock] false)
+assume (= [reset] false)
+
+state 1
+assume (= [clock] false)
+assume (= [reset] false)
