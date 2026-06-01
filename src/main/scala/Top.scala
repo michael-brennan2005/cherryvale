@@ -9,8 +9,8 @@ class MMCME2_BASE
       Map(
         "CLKIN1_PERIOD" -> DoubleParam(10.0), // 100 MHz input
         "DIVCLK_DIVIDE" -> IntParam(1), // D
-        "CLKFBOUT_MULT_F" -> DoubleParam(8.0), // M  -> VCO = 800 MHz
-        "CLKOUT0_DIVIDE_F" -> DoubleParam(10.0) // O  -> 80 MHz
+        "CLKFBOUT_MULT_F" -> DoubleParam(7.5), // M  -> VCO = 750 MHz
+        "CLKOUT0_DIVIDE_F" -> DoubleParam(10.0) // O  -> 75 MHz
       )
     ) {
   val io = IO(new Bundle {

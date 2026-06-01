@@ -6,7 +6,7 @@ import cpu.Utils
 object Main extends App {
   val mem = Utils.buildMemInit(
     program = """lui x1, 0
-    addi x1, x1, 1
+    lw x1, 0x400(x0)
     sw x1, 0x404(x0)
     jal x2, -8
     """,
