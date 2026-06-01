@@ -2,44 +2,58 @@ package cpu.isa
 
 import org.scalatest.flatspec.AnyFlatSpec
 
-/** R-type register-register ALU: add, sub, sll, slt, sltu, xor, srl, sra, or, and */
+/** R-type register-register ALU: add, sub, sll, slt, sltu, xor, srl, sra, or,
+  * and
+  */
 class RegArithSpec extends AnyFlatSpec with CpuTestBase {
   behavior of "R-type ALU"
 
   // ----- add / sub ------------------------------------------------------------
 
   it should "add two registers" in {
-    run("""lw x1, 0x50(x0)
+    run(
+      """lw x1, 0x50(x0)
            lw x2, 0x54(x0)
            add x3, x1, x2
-        """, data = Seq(0x50 -> BigInt(40), 0x54 -> BigInt(2))) { dut =>
+        """,
+      data = Seq(0x50 -> BigInt(40), 0x54 -> BigInt(2))
+    ) { dut =>
       readReg(dut, 3) shouldBe BigInt(42)
     }
   }
 
   it should "add wraps around modulo 2^32" in {
-    run("""lw x1, 0x50(x0)
+    run(
+      """lw x1, 0x50(x0)
            lw x2, 0x54(x0)
            add x3, x1, x2
-        """, data = Seq(0x50 -> BigInt("FFFFFFFF", 16), 0x54 -> BigInt(1))) { dut =>
+        """,
+      data = Seq(0x50 -> BigInt("FFFFFFFF", 16), 0x54 -> BigInt(1))
+    ) { dut =>
       readReg(dut, 3) shouldBe BigInt(0)
     }
   }
 
   it should "sub two registers" in {
-    run("""lw x1, 0x50(x0)
+    run(
+      """lw x1, 0x50(x0)
            lw x2, 0x54(x0)
            sub x3, x1, x2
-        """, data = Seq(0x50 -> BigInt(100), 0x54 -> BigInt(58))) { dut =>
+        """,
+      data = Seq(0x50 -> BigInt(100), 0x54 -> BigInt(58))
+    ) { dut =>
       readReg(dut, 3) shouldBe BigInt(42)
     }
   }
 
   it should "sub producing a negative result" in {
-    run("""lw x1, 0x50(x0)
+    run(
+      """lw x1, 0x50(x0)
            lw x2, 0x54(x0)
            sub x3, x1, x2
-        """, data = Seq(0x50 -> BigInt(5), 0x54 -> BigInt(10))) { dut =>
+        """,
+      data = Seq(0x50 -> BigInt(5), 0x54 -> BigInt(10))
+    ) { dut =>
       readReg(dut, 3) shouldBe u32(-5)
     }
   }
@@ -65,28 +79,37 @@ class RegArithSpec extends AnyFlatSpec with CpuTestBase {
   }
 
   it should "srl shifts right (zero fill) by rs2[4:0]" in {
-    run("""lw x1, 0x50(x0)
+    run(
+      """lw x1, 0x50(x0)
            addi x2, x0, 4
            srl x3, x1, x2
-        """, data = Seq(0x50 -> BigInt("80000000", 16))) { dut =>
+        """,
+      data = Seq(0x50 -> BigInt("80000000", 16))
+    ) { dut =>
       readReg(dut, 3) shouldBe BigInt("08000000", 16)
     }
   }
 
   it should "sra shifts right (sign fill) by rs2[4:0]" in {
-    run("""lw x1, 0x50(x0)
+    run(
+      """lw x1, 0x50(x0)
            addi x2, x0, 4
            sra x3, x1, x2
-        """, data = Seq(0x50 -> BigInt("80000000", 16))) { dut =>
+        """,
+      data = Seq(0x50 -> BigInt("80000000", 16))
+    ) { dut =>
       readReg(dut, 3) shouldBe BigInt("F8000000", 16)
     }
   }
 
   it should "sra by rs2 == 33 shifts by 1 (low 5 bits)" in {
-    run("""lw x1, 0x50(x0)
+    run(
+      """lw x1, 0x50(x0)
            addi x2, x0, 33
            sra x3, x1, x2
-        """, data = Seq(0x50 -> BigInt("80000000", 16))) { dut =>
+        """,
+      data = Seq(0x50 -> BigInt("80000000", 16))
+    ) { dut =>
       readReg(dut, 3) shouldBe BigInt("C0000000", 16)
     }
   }
@@ -123,29 +146,38 @@ class RegArithSpec extends AnyFlatSpec with CpuTestBase {
   // ----- xor / or / and -------------------------------------------------------
 
   it should "xor two registers" in {
-    run("""lw x1, 0x50(x0)
+    run(
+      """lw x1, 0x50(x0)
            lw x2, 0x54(x0)
            xor x3, x1, x2
-        """, data = Seq(0x50 -> BigInt("F0F0F0F0", 16), 0x54 -> BigInt("FFFF0000", 16))) {
-      dut => readReg(dut, 3) shouldBe BigInt("0F0FF0F0", 16)
+        """,
+      data = Seq(0x50 -> BigInt("F0F0F0F0", 16), 0x54 -> BigInt("FFFF0000", 16))
+    ) { dut =>
+      readReg(dut, 3) shouldBe BigInt("0F0FF0F0", 16)
     }
   }
 
   it should "or two registers" in {
-    run("""lw x1, 0x50(x0)
+    run(
+      """lw x1, 0x50(x0)
            lw x2, 0x54(x0)
            or x3, x1, x2
-        """, data = Seq(0x50 -> BigInt("F0F0F0F0", 16), 0x54 -> BigInt("0F0F0F0F", 16))) {
-      dut => readReg(dut, 3) shouldBe BigInt("FFFFFFFF", 16)
+        """,
+      data = Seq(0x50 -> BigInt("F0F0F0F0", 16), 0x54 -> BigInt("0F0F0F0F", 16))
+    ) { dut =>
+      readReg(dut, 3) shouldBe BigInt("FFFFFFFF", 16)
     }
   }
 
   it should "and two registers" in {
-    run("""lw x1, 0x50(x0)
+    run(
+      """lw x1, 0x50(x0)
            lw x2, 0x54(x0)
            and x3, x1, x2
-        """, data = Seq(0x50 -> BigInt("FF00FF00", 16), 0x54 -> BigInt("0FF00FF0", 16))) {
-      dut => readReg(dut, 3) shouldBe BigInt("0F000F00", 16)
+        """,
+      data = Seq(0x50 -> BigInt("FF00FF00", 16), 0x54 -> BigInt("0FF00FF0", 16))
+    ) { dut =>
+      readReg(dut, 3) shouldBe BigInt("0F000F00", 16)
     }
   }
 }

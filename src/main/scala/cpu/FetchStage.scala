@@ -11,9 +11,6 @@ class FetchStageOutput extends Bundle {
   val pcPlusFour = Output(UInt(32.W))
 }
 
-// Purely combinational: the PC register lives in the DataPath (it's the 0th
-// pipeline register). This stage just addresses instruction memory with the
-// current PC and forwards pc / pc+4 alongside the fetched instruction.
 class FetchStage extends Module {
   val io = IO(new Bundle {
     val pc = Input(UInt(32.W))

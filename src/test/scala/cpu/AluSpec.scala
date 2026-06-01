@@ -15,7 +15,7 @@ class AluSpec extends AnyFlatSpec with Matchers with ChiselSim {
       dut.io.i_control.poke(AluOp.add)
       dut.clock.step()
       dut.io.o_result.expect(12.U)
-      dut.io.o_zero.expect(false.B)
+      dut.io.zero.expect(false.B)
     }
   }
 
@@ -26,7 +26,7 @@ class AluSpec extends AnyFlatSpec with Matchers with ChiselSim {
       dut.io.i_control.poke(AluOp.sub)
       dut.clock.step()
       dut.io.o_result.expect(7.U)
-      dut.io.o_zero.expect(false.B)
+      dut.io.zero.expect(false.B)
     }
   }
 
@@ -37,7 +37,7 @@ class AluSpec extends AnyFlatSpec with Matchers with ChiselSim {
       dut.io.i_control.poke(AluOp.sub)
       dut.clock.step()
       dut.io.o_result.expect(0.U)
-      dut.io.o_zero.expect(true.B)
+      dut.io.zero.expect(true.B)
     }
   }
 
@@ -78,7 +78,7 @@ class AluSpec extends AnyFlatSpec with Matchers with ChiselSim {
       dut.io.i_control.poke(AluOp.slt)
       dut.clock.step()
       dut.io.o_result.expect(1.U)
-      dut.io.o_zero.expect(false.B)
+      dut.io.zero.expect(false.B)
     }
   }
 
@@ -89,7 +89,18 @@ class AluSpec extends AnyFlatSpec with Matchers with ChiselSim {
       dut.io.i_control.poke(AluOp.slt)
       dut.clock.step()
       dut.io.o_result.expect(0.U)
-      dut.io.o_zero.expect(true.B)
+      dut.io.zero.expect(true.B)
+    }
+  }
+
+  it should "shift-right-logical two values" in {
+    simulate(new Alu) { dut =>
+      dut.io.i_src_a.poke("h80000000".U)
+      dut.io.i_src_b.poke(4.U)
+      dut.io.i_control.poke(AluOp.srl)
+      dut.clock.step()
+      dut.io.o_result.expect("h08000000".U)
+      dut.io.zero.expect(false.B)
     }
   }
 }

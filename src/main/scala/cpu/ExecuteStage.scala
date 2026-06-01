@@ -22,7 +22,7 @@ class ExecuteStage extends Module {
     val out = new ExecuteStageOutput
 
     // Outputs that aren't used by memory stage
-    val aluZero = Output(Bool())
+    val takeBranch = Output(Bool())
     val pcTarget = Output(UInt(32.W))
 
     // These will come from hazard unit
@@ -39,12 +39,27 @@ class ExecuteStage extends Module {
 
   val alu = Module(new Alu)
   alu.io.i_control := io.decodeInput.control.alu_op
-  io.aluZero := alu.io.o_zero
-  alu.io.i_src_a := MuxLookup(io.aluSrcASelect, io.decodeInput.reg1Data)(
+
+  // TODO: branching logic
+  io.takeBranch := MuxLookup(io.decodeInput.control.branchIf, false.B)(
+    Seq(
+      BranchIf.zero -> (alu.io.zero === true.B),
+      BranchIf.notZero -> (alu.io.zero === false.B),
+      BranchIf.neg -> (alu.io.neg === true.B)
+    )
+  )
+
+  val srcA = MuxLookup(io.aluSrcASelect, io.decodeInput.reg1Data)(
     Seq(
       "b00".U -> io.decodeInput.reg1Data,
       "b01".U -> io.resultWriteback,
       "b10".U -> io.resultMemory
+    )
+  )
+  alu.io.i_src_a := MuxLookup(io.decodeInput.control.alu1stOperand, srcA)(
+    Seq(
+      Alu1stOperand.registerValue -> srcA,
+      Alu1stOperand.pc -> io.decodeInput.pc
     )
   )
 
@@ -66,7 +81,12 @@ class ExecuteStage extends Module {
   io.out.aluResult := alu.io.o_result
   io.out.memWriteData := srcB
 
-  io.pcTarget := io.decodeInput.pc + io.decodeInput.immediate
+  when(io.decodeInput.control.jalr) {
+    io.pcTarget := io.decodeInput.reg1Data + io.decodeInput.immediate
+  }.otherwise {
+    io.pcTarget := io.decodeInput.pc + io.decodeInput.immediate
+  }
+
   io.out.immediate := io.decodeInput.immediate
   io.out.pcPlusFour := io.decodeInput.pcPlusFour
 

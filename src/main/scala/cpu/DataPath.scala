@@ -67,7 +67,7 @@ class DataPath extends Module {
   // Execute stage
   execute.io.decodeInput := idEx
 
-  pcOverride := idEx.control.jump | (idEx.control.branch & execute.io.aluZero)
+  pcOverride := idEx.control.jump | (idEx.control.branch & execute.io.takeBranch)
 
   execute.io.aluSrcASelect := hazard.io.executeAInputSel
   execute.io.aluSrcBSelect := hazard.io.executeBInputSel
