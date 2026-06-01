@@ -4,14 +4,33 @@ import cpu.{Cpu, ReadWritePort}
 import com.carlosedp.riscvassembler.RISCVAssembler
 import cpu.ReadPort
 
-/** @param memFile
-  *   path to a hex file loaded into instruction memory at boot. Used on FPGA
-  *   via $readmemh.
-  * @param exposeDebug
-  *   when true, surfaces the CPU's debug + mem_debug ports out of Top so tests
-  *   (or external tools) can preload memory. Set false in production / FPGA
-  *   bitstream generation.
-  */
+class MMCME2_BASE
+    extends BlackBox(
+      Map(
+        "CLKIN1_PERIOD" -> DoubleParam(10.0), // 100 MHz input
+        "DIVCLK_DIVIDE" -> IntParam(1), // D
+        "CLKFBOUT_MULT_F" -> DoubleParam(1.0), // M  -> VCO = 100 MHz
+        "CLKOUT0_DIVIDE_F" -> DoubleParam(10.0) // O  -> 10 MHz
+      )
+    ) {
+  val io = IO(new Bundle {
+    val CLKIN1 = Input(Clock())
+    val RST = Input(Bool())
+    val PWRDWN = Input(Bool())
+    val CLKFBIN = Input(Clock())
+    val CLKFBOUT = Output(Clock())
+    val CLKOUT0 = Output(Clock())
+    val LOCKED = Output(Bool())
+  })
+}
+
+class BUFG extends BlackBox {
+  val io = IO(new Bundle {
+    val I = Input(Clock())
+    val O = Output(Clock())
+  })
+}
+
 class Top(memoryInit: Option[Seq[UInt]], debug_port: Boolean = true)
     extends Module {
   val io = IO(new Bundle {
@@ -21,10 +40,20 @@ class Top(memoryInit: Option[Seq[UInt]], debug_port: Boolean = true)
     else { None }
   })
 
-  val typed = UInt(16.W)
-  val clk_divide = RegInit(0.U(16.W))
-  clk_divide := clk_divide + 1.U
-  withClock(clk_divide(15).asClock) {
+  val mmcm = Module(new MMCME2_BASE)
+  mmcm.io.CLKIN1 := clock
+  mmcm.io.RST := reset.asBool
+  mmcm.io.PWRDWN := false.B
+  mmcm.io.CLKFBIN := mmcm.io.CLKFBOUT // internal feedback
+
+  val clkbuf = Module(new BUFG)
+  clkbuf.io.I := mmcm.io.CLKOUT0
+  val cpuClock = clkbuf.io.O
+
+  // hold CPU in reset until the MMCM locks
+  val cpuReset = reset.asBool || !mmcm.io.LOCKED
+
+  withClockAndReset(cpuClock, cpuReset) {
     val cpu = Module(new Cpu(memoryInit))
     io.led := cpu.io.led
     cpu.io.sw := io.sw
