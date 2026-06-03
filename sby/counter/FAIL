@@ -1,8 +1,0 @@
-Elapsed clock time [H:MM:SS (secs)]: 0:00:00 (0)
-Elapsed process time [H:MM:SS (secs)]: 0:00:00 (0)
-engine_0 (smtbmc) returned FAIL for basecase
-counterexample trace [basecase]: engine_0/trace.vcd
-counterexample trace [basecase]: engine_0/trace.yw
-  failed assertion Counter._witness_.check_5 at Counter.sv:12.3-12.73 step 1
-counterexample trace [induction]: engine_0/trace_induct.vcd
-  failed assertion Counter._witness_.check_5 at Counter.sv:12.3-12.73

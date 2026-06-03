@@ -5,6 +5,8 @@ build
 .metals/*
 .bloop/*
 
+sby/basysio/*
+
 ### XilinxISE template
 # intermediate build files
 *.bgn

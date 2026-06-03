@@ -1,0 +1,15 @@
+[options]
+mode prove
+
+[engines]
+smtbmc
+
+[script]
+plugin -i slang
+read_slang --top BasysIoFormal BasysIoFormal.sv BasysIo.sv reset_assume.sv
+prep -top BasysIoFormal
+
+[files]
+build/sv/BasysIoFormal.sv
+build/sv/BasysIo.sv
+sby/reset_assume.sv

@@ -9,7 +9,7 @@ SBT       := sbt
 VERILATOR := verilator
 VIVADO    := vivado -mode batch -notrace -tempDir ../build/vivado
 
-.PHONY: all chisel test verilate sim synth clean
+.PHONY: all chisel test verilate sim synth formal clean
 
 # --- Chisel -> SystemVerilog ---
 chisel:
