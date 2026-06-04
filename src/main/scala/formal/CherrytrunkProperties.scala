@@ -13,6 +13,7 @@ import cherrytrunk.Response
   * slave properties and assume all master properties, and checkMaster will assert all master
   * properties and assume all slave properties.
   */
+// TODO: This is all super broken and does not work right now
 object CherrytrunkProperties {
 
   /** The legal cherrytrunk byte-enable mask values (single byte / half / word). */

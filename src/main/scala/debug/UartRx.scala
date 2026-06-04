@@ -97,23 +97,4 @@ class UartRx(sysClockHz: Int, baudRate: Int) extends Module {
 
   io.out.bits := byte
   io.out.valid := valid
-
-  formal.DecoupledProperties.emitTx(io.out)
-}
-
-// emit just basysio for formal verification
-object UartRxFormal extends App {
-  ChiselStage.emitSystemVerilogFile(
-    new UartRx(16, 2),
-    args = Array(
-      "--target-dir",
-      "./build/sv/"
-    ),
-    firtoolOpts = Array(
-      "-disable-all-randomization",
-      "-default-layer-specialization=enable"
-      // "-preserve-values=named",
-      // "-preserve-aggregate=all"
-    )
-  )
 }

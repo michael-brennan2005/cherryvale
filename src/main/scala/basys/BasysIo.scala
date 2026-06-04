@@ -60,23 +60,4 @@ class BasysIo extends Module {
     resp.err := false.B
     resp.data := 0.U
   }
-
-  formal.CherrytrunkProperties.checkSlave(io.req, io.resp)
-}
-
-// emit just basysio for formal verification
-object BasysIoFormal extends App {
-  ChiselStage.emitSystemVerilogFile(
-    new BasysIo,
-    args = Array(
-      "--target-dir",
-      "./build/sv/"
-    ),
-    firtoolOpts = Array(
-      "-disable-all-randomization",
-      "-default-layer-specialization=enable"
-      // "-preserve-values=named",
-      // "-preserve-aggregate=all"
-    )
-  )
 }

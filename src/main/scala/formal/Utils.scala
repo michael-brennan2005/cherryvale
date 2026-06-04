@@ -23,6 +23,9 @@ import chisel3.ltl.AssertProperty
 // to registers instead of unsupported operators), but actual definition of properties should be
 // done with LTL constructs. Implicaion assertions should probably just return the boolean values
 // that we then stick in the LTL constructs.
+//
+// TODO: formal workflow is fucked and this does not work at all right now
+
 object Utils {
 
   // --- Past-value / edge building blocks (return a value, no side effects) -------------------

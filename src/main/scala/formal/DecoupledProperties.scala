@@ -12,7 +12,7 @@ import formal.Utils._
   * than concurrent SVA, so the open-source Yosys / SymbiYosys flow can check them without the
   * commercial Verific frontend.
   */
-// TODO: this is broken and using the bad assume operators
+// TODO: This is all super broken and does not work right now
 object DecoupledProperties {
   def emitTx[T <: Data](decoupled: DecoupledIO[T]): Unit = {
     layer.block(Verification) {

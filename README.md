@@ -25,4 +25,3 @@ build.sbt             # Building Chisel code & tests
 
 # Commands
 For testing with waveforms: `(in sbt) testOnly <SPEC> -- -DemitVcd=1`
-Doing formal runs: `sby -f sby/basysio.sby`
