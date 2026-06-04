@@ -1,17 +1,19 @@
-package cherrytrunk
+package formal
 
 import chisel3._
 import chisel3.util._
 import chisel3.ltl.{AssertProperty, AssumeProperty}
 import chisel3.layer
 import chisel3.layers.Verification
+import cherrytrunk.Request
+import cherrytrunk.Response
 
 /** Formal properties for the Cherrytrunk bus. This module encodes both slave and master properties,
   * and exposes 2 methods for emitting the correct assertions/assumes. checkSlave will assert all
   * slave properties and assume all master properties, and checkMaster will assert all master
   * properties and assume all slave properties.
   */
-object FormalProperties {
+object CherrytrunkProperties {
 
   /** The legal cherrytrunk byte-enable mask values (single byte / half / word). */
   val LegalMasks: Seq[Int] = Seq(0x0, 0x1, 0x2, 0x4, 0x8, 0x3, 0xc, 0xf)

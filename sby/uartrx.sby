@@ -1,0 +1,27 @@
+# Formal verification for UartRx's Decoupled (ready/valid) output contract.
+#
+# Properties come from formal.DecoupledProperties, now lowered to RegNext-based
+# immediate assertions/covers, so the OSS slang + smtbmc flow handles them with no
+# Verific/SVA frontend needed.
+#
+# Emit the SV first:  sbt "runMain debug.UartRxFormal"   ->  build/sv/UartRx.sv
+
+[tasks]
+prove
+cover
+
+[options]
+prove: mode prove
+cover: mode cover
+depth 90
+
+[engines]
+smtbmc
+
+[script]
+plugin -i slang
+read_slang --top UartRx UartRx.sv
+prep -top UartRx
+
+[files]
+build/sv/UartRx.sv
