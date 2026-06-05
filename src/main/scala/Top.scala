@@ -31,8 +31,7 @@ class BUFG extends BlackBox {
   })
 }
 
-class Top(memoryInit: Option[Seq[UInt]], debug_port: Boolean = true)
-    extends Module {
+class Top(memoryInit: Option[Seq[UInt]], debug_port: Boolean = true) extends Module {
   val io = IO(new Bundle {
     val led = Output(UInt(16.W))
     val sw = Input(UInt(16.W))
@@ -66,5 +65,4 @@ class Top(memoryInit: Option[Seq[UInt]], debug_port: Boolean = true)
       cpu.io.mem_debug.addr := 0.U
     }
   }
-
 }

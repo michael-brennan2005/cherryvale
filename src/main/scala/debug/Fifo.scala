@@ -5,6 +5,7 @@ import chisel3.util._
 import _root_.circt.stage.ChiselStage
 import chisel3.layers.Verification
 import chisel3.ltl.AssertProperty
+import chisel3.ltl.Sequence._
 import chisel3.ltl.CoverProperty
 import formal.Utils.past
 
@@ -51,4 +52,5 @@ class Fifo[T <: Data](gen: T, bufferSize: Int, emitFormal: Boolean = false) exte
   // TODO: use only all the bits in the address - MSB
   io.out.bits := buf.read(readAddr)
 
+  assert(!(write && full), "wrote while full")
 }

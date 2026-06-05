@@ -25,3 +25,9 @@ build.sbt             # Building Chisel code & tests
 
 # Commands
 For testing with waveforms: `(in sbt) testOnly <SPEC> -- -DemitVcd=1`
+For formal verification:
+```
+sbt "runMain CounterFormal"            # all configured checks
+sbt "runMain CounterFormal bmc"        # one mode
+sbt "runMain CounterFormal bmc:50"     # override that check's depth
+```
