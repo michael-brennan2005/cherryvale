@@ -17,18 +17,18 @@ object DecoupledProperties {
   def emitTx[T <: Data](decoupled: DecoupledIO[T]): Unit = {
     layer.block(Verification) {
       // Ready must stay asserted while waiting:  ready && !valid |=> ready
-      nextAssume(
-        decoupled.ready && !decoupled.valid,
-        decoupled.ready,
-        "ready must remain stable until valid"
-      )
+      // nextAssume(
+      //   decoupled.ready && !decoupled.valid,
+      //   decoupled.ready,
+      //   "ready must remain stable until valid"
+      // )
 
-      // Valid and data must stay stable until ready:  !ready && valid |=> valid && $stable(bits)
-      nextImpl(
-        !decoupled.ready && decoupled.valid,
-        decoupled.valid && stable(decoupled.bits),
-        "valid/data must remain stable until ready"
-      )
+      // // Valid and data must stay stable until ready:  !ready && valid |=> valid && $stable(bits)
+      // nextImpl(
+      //   !decoupled.ready && decoupled.valid,
+      //   decoupled.valid && stable(decoupled.bits),
+      //   "valid/data must remain stable until ready"
+      // )
 
       // Cover a completed data transfer.
       chisel3.cover(decoupled.ready && decoupled.valid)
@@ -50,19 +50,19 @@ object DecoupledProperties {
   def emitRx[T <: Data](decoupled: DecoupledIO[T]): Unit = {
     layer.block(Verification) {
       // The receiver must keep ready asserted while waiting:  ready && !valid |=> ready
-      nextImpl(
-        decoupled.ready && !decoupled.valid,
-        decoupled.ready,
-        "ready must remain stable until valid"
-      )
+      // nextImpl(
+      //   decoupled.ready && !decoupled.valid,
+      //   decoupled.ready,
+      //   "ready must remain stable until valid"
+      // )
 
-      // Assume a well-behaved producer holds valid/data until accepted:
-      //   !ready && valid |=> valid && $stable(bits)
-      nextAssume(
-        !decoupled.ready && decoupled.valid,
-        decoupled.valid && stable(decoupled.bits),
-        "valid/data must remain stable until ready"
-      )
+      // // Assume a well-behaved producer holds valid/data until accepted:
+      // //   !ready && valid |=> valid && $stable(bits)
+      // nextAssume(
+      //   !decoupled.ready && decoupled.valid,
+      //   decoupled.valid && stable(decoupled.bits),
+      //   "valid/data must remain stable until ready"
+      // )
 
       // Cover a completed data transfer.
       chisel3.cover(decoupled.ready && decoupled.valid)

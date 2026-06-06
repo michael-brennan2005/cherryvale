@@ -37,7 +37,6 @@ trait Elaboratable {
   def emitDebug(): Unit =
     emit(
       commonFirtoolOpts ++ Array(
-        "-disable-opt", // no optimizations, keep structure
         "-preserve-values=named", // keep named wires/regs
         "-preserve-aggregate=all", // keep bundles/vecs as structs/arrays
         "--lowering-options=disallowClockedAssertions,disallowLocalVariables,disallowPackedArrays" // for FV

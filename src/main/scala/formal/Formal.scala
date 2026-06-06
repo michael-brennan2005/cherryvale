@@ -193,11 +193,27 @@ trait Formal extends Elaboratable {
        |""".stripMargin
   }
 
-  /** Render a `.sby` script for one check. `dutFiles` are the emitted DUT `.sv` files. */
+  /** Render a `.sby` script for one check. `dutFiles` are the emitted DUT `.sv` files.
+    *
+    * Formal helper modules (`AnyConst_w*`) carry yosys-native `(* anyconst *)` attributes that
+    * `read_slang` would drop, so they are read with the native `read_verilog -sv -formal` frontend
+    * *before* slang; slang then links to them as blackboxes via its always-on `--extern-modules`.
+    *
+    * The `flatten` + `setattr -set keep 1 t:$anyconst` before `prep` is load-bearing: two same-width
+    * `$anyconst` cells (e.g. two `UInt(8.W)` free constants) are structurally identical, so `opt_merge`
+    * inside `prep` would otherwise collapse them into a single constant -- silently forcing the two
+    * "arbitrary" values equal and making the proof unsound. Flattening first gives each instance its
+    * own cell; `keep` then stops the merge so they stay independent.
+    */
   private def renderSby(top: String, check: Check, harness: File, dutFiles: Seq[File]): String = {
     val allFiles = harness +: dutFiles
-    val readArgs = allFiles.map(_.getName).mkString(" ")
     val filesSection = allFiles.map(_.getAbsolutePath).mkString("\n")
+
+    val (formalHelpers, slangFiles) = dutFiles.partition(_.getName.startsWith("AnyConst"))
+    val slangRead = (harness +: slangFiles).map(_.getName).mkString(" ")
+    val helperLine =
+      if (formalHelpers.isEmpty) ""
+      else s"read_verilog -sv -formal ${formalHelpers.map(_.getName).mkString(" ")}\n"
     s"""[options]
        |mode ${check.mode}
        |depth ${check.depth}
@@ -207,7 +223,11 @@ trait Formal extends Elaboratable {
        |
        |[script]
        |plugin -i slang
-       |read_slang --top ${top}Formal $readArgs
+       |${helperLine}read_slang --top ${top}Formal $slangRead
+       |hierarchy -top ${top}Formal
+       |flatten
+       |setattr -set keep 1 t:$$anyconst
+       |setattr -set keep 1 w:*
        |prep -top ${top}Formal
        |
        |[files]

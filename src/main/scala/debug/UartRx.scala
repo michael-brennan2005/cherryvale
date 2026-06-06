@@ -70,25 +70,28 @@ class UartRx(sysClockHz: Int, baudRateHz: Int) extends Module {
     }
     is(State.Data) {
       when(baudTick && bitCounter === 7.U) {
-// TODO: do the nesting
-        state := State.Stop
-        tickCounter := 0.U
-        byte := Cat(io.rx, byte(7, 1)) // UART sends LSB first
-      }.elsewhen(baudTick) {
-        tickCounter := 0.U
-        byte := Cat(io.rx, byte(7, 1))
-        bitCounter := bitCounter + 1.U
+        when(bitCounter === 7.U) {
+          state := State.Stop
+          tickCounter := 0.U
+          byte := Cat(io.rx, byte(7, 1)) // UART sends LSB first
+        }.otherwise {
+          bitCounter := bitCounter + 1.U
+          tickCounter := 0.U
+          byte := Cat(io.rx, byte(7, 1))
+        }
       }.otherwise {
         tickCounter := tickCounter + 1.U
       }
     }
     is(State.Stop) {
-      // TODO: do the nesting
-      when(tickCounter === ticksPerBaud.U && io.rx) {
-        valid := true.B
-        state := State.Idle
-      }.elsewhen(tickCounter === ticksPerBaud.U && !io.rx) {
-        state := State.Idle
+      when(baudTick) {
+        when(io.rx) {
+          // STOP is HI -> valid reception
+          valid := true.B
+          state := State.Idle
+        }.otherwise {
+          state := State.Idle
+        }
       }.otherwise {
         tickCounter := tickCounter + 1.U
       }
