@@ -10,8 +10,12 @@ import chisel3.ltl.CoverProperty
 import formal.Formal
 import formal.Utils.implies
 import formal.Utils.anyconst
+import formal.Check
+import formal.Cover
+import formal.Bmc
+import formal.Prove
 
-class Fifo[T <: Data](gen: T, bufferSize: Int) extends Module {
+class Fifo[T <: Data](gen: T, bufferSize: Int, emitFormal: Boolean = true) extends Module {
   val io = IO(new Bundle {
     // Enqueue channel - ready goes lo when queue is full
     val enq = Flipped(DecoupledIO(gen))
@@ -54,88 +58,104 @@ class Fifo[T <: Data](gen: T, bufferSize: Int) extends Module {
   }
   io.deq.bits := buf.read(readAddr(addrSize - 2, 0))
 
-  // Count can never exceed the bufferSize
-  assert(bufCount <= bufferSize.U)
+  if (emitFormal) {
+    // Count can never exceed the bufferSize
+    assert(bufCount <= bufferSize.U)
 
-  // In case a rewrite changes anything, have these assertions to ensure buffer counting still works.
-  assert(empty === (bufCount === 0.U))
-  assert(full === (bufCount === bufferSize.U))
-  assert(bufCount === (writeAddr - readAddr))
+    // In case a rewrite changes anything, have these assertions to ensure buffer counting still works.
+    assert(empty === (bufCount === 0.U))
+    assert(full === (bufCount === bufferSize.U))
+    assert(bufCount === (writeAddr - readAddr))
 
-  // Prove that we can write two arbitrary values in succession, then read those same values back later.
+    // Prove that we can write two arbitrary values in succession, then read those same values back later.
 
-  // Data defintions
-  val firstAddr = anyconst(UInt(addrSize.W))
-  val firstData = anyconst(gen)
-  val distanceToFirst = (firstAddr - readAddr)
-  val firstAddrInFifo = (!empty && distanceToFirst < bufCount)
+    // Data defintions
+    val firstAddr = anyconst(UInt(addrSize.W))
+    val firstData = anyconst(gen)
+    val distanceToFirst = (firstAddr - readAddr)
+    val firstAddrInFifo = (!empty && distanceToFirst < bufCount)
 
-  val secondAddr = firstAddr + 1.U
-  val secondData = anyconst(gen)
-  val distanceToSecond = (secondAddr - readAddr)
-  val secondAddrInFifo = (!empty && distanceToSecond < bufCount)
+    val secondAddr = firstAddr + 1.U
+    val secondData = anyconst(gen)
+    val distanceToSecond = (secondAddr - readAddr)
+    val secondAddrInFifo = (!empty && distanceToSecond < bufCount)
 
-  // FSM for tracking writes and reads
-  val waitForFirstWrite :: waitForSecondWrite :: waitForFirstRead :: waitForSecondRead :: nil =
-    Enum(4)
-  val state = RegInit(waitForFirstWrite)
-  switch(state) {
-    is(waitForFirstWrite) {
-      when(write && (writeAddr === firstAddr) && (io.enq.bits === firstData)) {
-        state := waitForSecondWrite
+    // FSM for tracking writes and reads
+    val waitForFirstWrite :: waitForSecondWrite :: waitForFirstRead :: waitForSecondRead :: nil =
+      Enum(4)
+    val state = RegInit(waitForFirstWrite)
+    switch(state) {
+      is(waitForFirstWrite) {
+        when(write && (writeAddr === firstAddr) && (io.enq.bits === firstData)) {
+          state := waitForSecondWrite
+        }
+      }
+      is(waitForSecondWrite) {
+        when(read && (readAddr === firstAddr)) {
+          // abort if we read the first value out before writing the second
+          state := waitForFirstWrite
+        }.elsewhen(write) {
+          // abort if wrong value is written (should secondData since secondAddr = firstAddr + 1),
+          // otherwise move to next state
+          state := Mux(io.enq.bits === secondData, waitForFirstRead, waitForFirstWrite)
+        }
+      }
+      is(waitForFirstRead) {
+        when(read && readAddr === firstAddr) {
+          state := waitForSecondRead
+        }
+      }
+      is(waitForSecondRead) {
+        when(read) {
+          state := waitForFirstWrite
+        }
       }
     }
-    is(waitForSecondWrite) {
-      when(read && (readAddr === firstAddr)) {
-        // abort if we read the first value out before writing the second
-        state := waitForFirstWrite
-      }.elsewhen(write) {
-        // abort if wrong value is written (should secondData since secondAddr = firstAddr + 1),
-        // otherwise move to next state
-        state := Mux(io.enq.bits === secondData, waitForFirstRead, waitForFirstWrite)
-      }
+
+    // Assertions
+    // By waitForSecondWrite:
+    // - first value must be in FIFO
+    // - we must be waiting at secondAddress to write the 2nd piece of data
+    assert(implies(state === waitForSecondWrite, firstAddrInFifo))
+    assert(implies(state === waitForSecondWrite, buf(firstAddr) === firstData))
+    assert(implies(state === waitForSecondWrite, writeAddr === secondAddr))
+
+    // By waitForFirstRead:
+    // - first value must be in FIFO
+    // - second value must be in FIFO
+    assert(implies(state === waitForFirstRead, firstAddrInFifo))
+    assert(implies(state === waitForFirstRead, buf(firstAddr) === firstData))
+    assert(implies(state === waitForFirstRead, secondAddrInFifo))
+    assert(implies(state === waitForFirstRead, buf(secondAddr) === secondData))
+
+    when(readAddr === firstAddr) {
+      assert(implies(state === waitForFirstRead, io.deq.bits === firstData))
     }
-    is(waitForFirstRead) {
-      when(read && readAddr === firstAddr) {
-        state := waitForSecondRead
-      }
+
+    // By waitForSecondRead:
+    // - only the second value needs to be in the FIFO
+    // - the output data should match our second value until the next read
+    assert(implies(state === waitForSecondRead, secondAddrInFifo))
+    assert(implies(state === waitForSecondRead, buf(secondAddr) === secondData))
+
+    assert(implies(state === waitForSecondRead, io.deq.bits === secondData))
+
+    // Cover statements
+    val wasFull = RegInit(false.B)
+    val wasFull1 = RegNext(wasFull)
+    val wasFull2 = RegNext(wasFull1)
+
+    when(full) {
+      wasFull := true.B
     }
-    is(waitForSecondRead) {
-      when(read) {
-        state := waitForFirstWrite
-      }
-    }
+
+    cover(wasFull && empty)
+    cover(wasFull2 && wasFull1 && wasFull)
   }
-
-  // Assertions
-  // By waitForSecondWrite:
-  // - first value must be in FIFO
-  // - we must be waiting at secondAddress to write the 2nd piece of data
-  assert(implies(state === waitForSecondWrite, firstAddrInFifo))
-  assert(implies(state === waitForSecondWrite, buf(firstAddr) === firstData))
-  assert(implies(state === waitForSecondWrite, writeAddr === secondAddr))
-
-  // By waitForFirstRead:
-  // - first value must be in FIFO
-  // - second value must be in FIFO
-  assert(implies(state === waitForFirstRead, firstAddrInFifo))
-  assert(implies(state === waitForFirstRead, buf(firstAddr) === firstData))
-  assert(implies(state === waitForFirstRead, secondAddrInFifo))
-  assert(implies(state === waitForFirstRead, buf(secondAddr) === secondData))
-
-  when(readAddr === firstAddr) {
-    assert(implies(state === waitForFirstRead, io.deq.bits === firstData))
-  }
-
-  // By waitForSecondRead:
-  // - only the second value needs to be in the FIFO
-  // - the output data should match our second value until the next read
-  assert(implies(state === waitForSecondRead, secondAddrInFifo))
-  assert(implies(state === waitForSecondRead, buf(secondAddr) === secondData))
-
-  assert(implies(state === waitForSecondRead, io.deq.bits === secondData))
 }
 
 object FifoFormal extends Formal {
   def build = new Fifo(UInt(8.W), 16)
+
+  override def checks: Seq[Check] = Seq(Bmc(20), Cover(40), Prove(20))
 }

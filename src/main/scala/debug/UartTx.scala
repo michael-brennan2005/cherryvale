@@ -35,11 +35,14 @@ class UartTx(sysClockHz: Int, baudRateHz: Int) extends Module {
   val bitCounter = dontTouch(RegInit(0.U(4.W)))
 
   // Only ready when idling
-  io.in.ready := state =/= State.Idle
+  io.in.ready := state === State.Idle
+
+  // tx line idles at high
+  io.tx := true.B
 
   switch(state) {
     is(State.Idle) {
-      when(io.in.ready && io.in.valid) {
+      when(io.in.fire) {
         state := State.Start
         tickCounter := 0.U
         byte := io.in.bits

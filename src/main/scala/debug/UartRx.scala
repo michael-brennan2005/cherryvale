@@ -43,7 +43,6 @@ class UartRx(sysClockHz: Int, baudRateHz: Int) extends Module {
   // falling edge detector for start
   val fallingEdge = ~io.rx && RegNext(io.rx)
 
-  assert(fallingEdge && (bitCounter <= 3.U))
   switch(state) {
     is(State.Idle) {
       when(fallingEdge) {
