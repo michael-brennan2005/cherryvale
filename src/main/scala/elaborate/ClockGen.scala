@@ -7,6 +7,7 @@ import _root_.circt.stage.ChiselStage
 
 // Simple clock generator - Vivado artix fpga has 100MHz clock and we use this module to divide
 // it down. New clock rate is (100MHz * mult) / divide Hz.
+// TODO: probably broken
 class ClockGen(mult: Double, divide: Double) extends Module {
   val io = IO(new Bundle {
     val clockOut = Output(Clock())

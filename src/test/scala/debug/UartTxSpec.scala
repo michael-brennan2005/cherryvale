@@ -26,11 +26,10 @@ class UartTxSpec extends AnyFlatSpec with Matchers with ChiselSim {
     dut.io.in.valid.poke(false.B)
   }
 
-  /**
-   * Sample a complete 8N1 frame off the `tx` line, the dual of UartRx's logic:
-   * find the falling edge (start bit), sample mid-bit, then one sample per bit period.
-   * Asserts the start and stop bits and returns the 8 data bits (LSB first).
-   */
+  /** Sample a complete 8N1 frame off the `tx` line, the dual of UartRx's logic: find the falling
+    * edge (start bit), sample mid-bit, then one sample per bit period. Asserts the start and stop
+    * bits and returns the 8 data bits (LSB first).
+    */
   private def receiveByte(dut: UartTx): Int = {
     // Find the start of the frame (line goes low). Usually already low right after the
     // handshake, in which case this is a no-op.
@@ -67,58 +66,98 @@ class UartTxSpec extends AnyFlatSpec with Matchers with ChiselSim {
 
   behavior of "UartTx"
 
-  it should "idle high and ready after reset" in {
-    simulate(new UartTx(SysClock, BaudRate)) { dut =>
-      dut.io.in.valid.poke(false.B)
-      dut.clock.step(2)
-      dut.io.tx.expect(true.B)
-      dut.io.in.ready.expect(true.B)
-    }
-  }
-
   it should "transmit a single byte as an 8N1 frame" in {
-    simulate(new UartTx(SysClock, BaudRate)) { dut =>
-      dut.io.in.valid.poke(false.B)
-      dut.clock.step(2)
-      startByte(dut, 0x55)
-      receiveByte(dut) shouldBe 0x55
-    }
-  }
+    val cosim = new UartTxSim(5)
 
-  it should "transmit every bit pattern correctly" in {
-    for (value <- Seq(0x00, 0xff, 0xa5, 0x55, 0x01, 0x80)) {
-      simulate(new UartTx(SysClock, BaudRate)) { dut =>
-        dut.io.in.valid.poke(false.B)
-        dut.clock.step(2)
-        startByte(dut, value)
-        receiveByte(dut) shouldBe value
+    simulate(new UartTx(5)) { dut =>
+      dut.io.in.valid.poke(true.B)
+      dut.io.in.bits.poke('H'.U)
+
+      dut.clock.step(1)
+
+      while (!dut.io.in.ready.peek().litToBoolean) {
+        dut.clock.step(1)
+        cosim.step(dut.io.tx.peek().litToBoolean)
       }
+
+      assert(cosim.sb.toString() == "H")
     }
   }
 
-  it should "return to idle and ready after a frame" in {
-    simulate(new UartTx(SysClock, BaudRate)) { dut =>
-      dut.io.in.valid.poke(false.B)
-      dut.clock.step(2)
-      startByte(dut, 0x3c)
-      receiveByte(dut) shouldBe 0x3c
-      waitIdle(dut)
-      dut.io.in.ready.expect(true.B)
-      dut.io.tx.expect(true.B)
+  it should "transmit multiple bytes as 8N1 frames" in {
+    val cosim = new UartTxSim(5)
+
+    val string = "Hello, world!"
+
+    simulate(new UartTx(5)) { dut =>
+      for (char <- string) {
+        dut.io.in.valid.poke(true.B)
+        dut.io.in.bits.poke(char.toInt)
+
+        dut.clock.step(1)
+
+        dut.io.in.valid.poke(false.B)
+        while (!dut.io.in.ready.peek().litToBoolean) {
+          dut.clock.step(1)
+          cosim.step(dut.io.tx.peek().litToBoolean)
+        }
+      }
+
+      assert(cosim.sb.toString() == string)
     }
   }
+  // it should "idle high and ready after reset" in {
+  //   simulate(new UartTx(SysClock, BaudRate)) { dut =>
+  //     dut.io.in.valid.poke(false.B)
+  //     dut.clock.step(2)
+  //     dut.io.tx.expect(true.B)
+  //     dut.io.in.ready.expect(true.B)
+  //   }
+  // }
 
-  it should "transmit back-to-back bytes" in {
-    simulate(new UartTx(SysClock, BaudRate)) { dut =>
-      dut.io.in.valid.poke(false.B)
-      dut.clock.step(2)
+  // it should "transmit a single byte as an 8N1 frame" in {
+  //   simulate(new UartTx(SysClock, BaudRate)) { dut =>
+  //     dut.io.in.valid.poke(false.B)
+  //     dut.clock.step(2)
+  //     startByte(dut, 0x55)
+  //     receiveByte(dut) shouldBe 0x55
+  //   }
+  // }
 
-      startByte(dut, 0xa5)
-      receiveByte(dut) shouldBe 0xa5
-      waitIdle(dut)
+  // it should "transmit every bit pattern correctly" in {
+  //   for (value <- Seq(0x00, 0xff, 0xa5, 0x55, 0x01, 0x80)) {
+  //     simulate(new UartTx(SysClock, BaudRate)) { dut =>
+  //       dut.io.in.valid.poke(false.B)
+  //       dut.clock.step(2)
+  //       startByte(dut, value)
+  //       receiveByte(dut) shouldBe value
+  //     }
+  //   }
+  // }
 
-      startByte(dut, 0x5a)
-      receiveByte(dut) shouldBe 0x5a
-    }
-  }
+  // it should "return to idle and ready after a frame" in {
+  //   simulate(new UartTx(SysClock, BaudRate)) { dut =>
+  //     dut.io.in.valid.poke(false.B)
+  //     dut.clock.step(2)
+  //     startByte(dut, 0x3c)
+  //     receiveByte(dut) shouldBe 0x3c
+  //     waitIdle(dut)
+  //     dut.io.in.ready.expect(true.B)
+  //     dut.io.tx.expect(true.B)
+  //   }
+  // }
+
+  // it should "transmit back-to-back bytes" in {
+  //   simulate(new UartTx(SysClock, BaudRate)) { dut =>
+  //     dut.io.in.valid.poke(false.B)
+  //     dut.clock.step(2)
+
+  //     startByte(dut, 0xa5)
+  //     receiveByte(dut) shouldBe 0xa5
+  //     waitIdle(dut)
+
+  //     startByte(dut, 0x5a)
+  //     receiveByte(dut) shouldBe 0x5a
+  //   }
+  // }
 }

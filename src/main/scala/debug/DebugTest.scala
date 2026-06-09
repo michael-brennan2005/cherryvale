@@ -8,36 +8,21 @@ import chisel3.util.Fill
 
 class DebugTest extends Module {
   val io = IO(new Bundle {
-    val rx = Input(Bool())
     val tx = Output(Bool())
-    val led = Output(UInt(16.W))
   })
 
-  val reg = RegNext(io.rx)
-  io.tx := reg
-  io.led := Fill(16, reg)
-  // 25 MHz clock
-  // val clockGen = Module(new ClockGen(10.0, 40.0))
+  // 100MHz -> 25Mhz
+  val newClock = RegInit(0.U(2.W))
+  newClock := newClock + 1.U
 
-  // withClock(clockGen.io.clockOut) {
-  //   val sysClockHz = 25_000_000
-  //   val baudRateHz = 118_000
+  withClock(newClock(1).asClock) {
+    val tx = Module(new UartTx(2604, emitFormal = false))
 
-  //   val rx = Module(new UartRx(sysClockHz, baudRateHz))
-  //   val tx = Module(new UartTx(sysClockHz, baudRateHz))
-  //   val fifo = Module(new Fifo(UInt(8.W), 32, emitFormal = false))
+    tx.io.in.valid := true.B
+    tx.io.in.bits := 'H'.U
 
-  //   rx.io.rx := io.rx
-  //   io.tx := tx.io.tx
-
-  //   fifo.io.enq.bits := rx.io.out.bits
-  //   fifo.io.enq.valid := rx.io.out.valid
-  //   rx.io.out.ready := fifo.io.enq.ready
-
-  //   tx.io.in.bits := fifo.io.deq.bits
-  //   tx.io.in.valid := fifo.io.deq.valid
-  //   fifo.io.deq.ready := tx.io.in.ready
-  // }
+    io.tx := tx.io.tx
+  }
 }
 
 object EmitDebugTest extends Elaboratable {
