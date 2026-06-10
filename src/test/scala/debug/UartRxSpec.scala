@@ -6,10 +6,7 @@ import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
 
 class UartRxSpec extends AnyFlatSpec with Matchers with ChiselSim {
-  // 16 system clocks per UART bit (sampleRate is unused in the DUT).
-  private val SysClock = 1_000_000
-  private val BaudRate = 100_000
-  private val TicksPerBaud = SysClock / BaudRate
+  private val ClocksPerBaud = 6
 
   /** Hold rx at `level` for `n` clock cycles. */
   private def hold(dut: UartRx, level: Boolean, n: Int): Unit = {
@@ -19,15 +16,15 @@ class UartRxSpec extends AnyFlatSpec with Matchers with ChiselSim {
 
   /** Drive one UART frame LSB-first: start(0), 8 data bits, stop(1). */
   private def sendByte(dut: UartRx, b: Int): Unit = {
-    hold(dut, false, TicksPerBaud) // start bit
-    for (i <- 0 until 8) hold(dut, ((b >> i) & 1) == 1, TicksPerBaud)
-    hold(dut, true, (TicksPerBaud / 2) + 1) // stop bit
+    hold(dut, false, ClocksPerBaud) // start bit
+    for (i <- 0 until 8) hold(dut, ((b >> i) & 1) == 1, ClocksPerBaud)
+    hold(dut, true, (ClocksPerBaud)) // stop bit
   }
 
   behavior of "UartRx"
 
   it should "receive a single byte and pulse valid once" in {
-    simulate(new UartRx(SysClock, BaudRate)) { dut =>
+    simulate(new UartRx(ClocksPerBaud)) { dut =>
       hold(dut, true, 4) // idle line high before start
       sendByte(dut, 0x55)
       // step until valid asserts, capture byte, confirm it deasserts next cycle

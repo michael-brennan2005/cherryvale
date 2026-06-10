@@ -2,7 +2,7 @@ package debug
 
 import chisel3.simulator.ChiselSim
 
-// Co-sim for UartTx - meant to simulate a receiver. (TODO: could this be better named)
+// Co-sim for UartTx - meant to simulate a receiver.
 class UartTxSim(clocksPerBaud: Int) {
   var state = 0 // 0 -> rxIdle, 1 -> rxData
   var baudCounter = 0

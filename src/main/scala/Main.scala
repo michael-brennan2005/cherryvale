@@ -26,7 +26,7 @@ object EmitTop extends Elaboratable {
 }
 
 object EmitUartRx extends Elaboratable {
-  def build = new UartRx(1000, 10)
+  def build = new UartRx(1000)
 }
 
 object EmitCounter extends Elaboratable {
