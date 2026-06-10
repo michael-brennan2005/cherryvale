@@ -129,7 +129,7 @@ set_property -dict {PACKAGE_PIN U17 IOSTANDARD LVCMOS33} [get_ports reset]
 
 
 ##USB-RS232 Interface
-#set_property -dict {PACKAGE_PIN B18 IOSTANDARD LVCMOS33} [get_ports io_tx]
+set_property -dict {PACKAGE_PIN B18 IOSTANDARD LVCMOS33} [get_ports io_rx]
 set_property -dict {PACKAGE_PIN A18 IOSTANDARD LVCMOS33} [get_ports io_tx]
 
 

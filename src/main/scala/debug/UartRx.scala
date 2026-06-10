@@ -6,6 +6,8 @@ import _root_.circt.stage.ChiselStage
 import chisel3.ltl.AssertProperty
 
 // 8N1 uart receiver
+// TODO: this doesnt really obey decoupled properties - what happens if there's a valid byte received
+// but the consumer isn't ready yet?
 class UartRx(clocksPerBaud: Int, emitFormal: Boolean = true) extends Module {
   val io = IO(new Bundle {
     val rx = Input(Bool())
@@ -15,72 +17,56 @@ class UartRx(clocksPerBaud: Int, emitFormal: Boolean = true) extends Module {
 
   private object State extends ChiselEnum {
     val Idle = Value(0.U)
-    val Start = Value(1.U)
-    val Data = Value(2.U)
-    val Stop = Value(3.U)
+    val BitZero = Value(1.U)
+    val BitOne = Value(2.U)
+    val BitTwo = Value(3.U)
+    val BitThree = Value(4.U)
+    val BitFour = Value(5.U)
+    val BitFive = Value(6.U)
+    val BitSix = Value(7.U)
+    val BitSeven = Value(8.U)
+    val Stop = Value(9.U)
   }
 
   import State._
 
+  // 2FF synchronizer
+  val qUart = RegInit(true.B)
+  val ckUart = RegInit(true.B)
+  qUart := io.rx
+  ckUart := qUart
+
   private val state = RegInit(State.Idle)
-
-  val byte = RegInit(0.U(8.W))
-  val valid = RegInit(false.B)
-  valid := false.B
-
   val counter = RegInit(0.U((log2Ceil(clocksPerBaud) + 1).W))
+  val baudStrobe = (counter === 0.U)
+
   when(state === State.Idle) {
+    state := State.Idle
     counter := 0.U
+
+    when(!ckUart) {
+      state := State.BitZero
+      counter := (clocksPerBaud + clocksPerBaud / 2 - 1).U
+    }
+  }.elsewhen(baudStrobe) {
+    state := state.next
+    counter := (clocksPerBaud - 1).U
+
+    when(state === State.Stop) {
+      state := State.Idle
+      counter := 0.U
+    }
   }.otherwise {
     counter := counter - 1.U
   }
-  val baudStrobe = dontTouch((counter === 0.U))
 
-  val bitCounter = RegInit(0.U(3.W))
-
-  // 2FF synchronizer (???)
-  val qUart = RegNext(io.rx)
-  val uart = RegNext(qUart)
-
-  switch(state) {
-    is(State.Idle) {
-      when(!uart) {
-        state := State.Start
-        counter := (clocksPerBaud - 1 + clocksPerBaud / 2).U
-      }
-    }
-    is(State.Start) {
-      when(baudStrobe) {
-        state := State.Data
-        counter := (clocksPerBaud.U - 1.U)
-        bitCounter := 7.U
-        byte := Cat(uart, byte(7, 1))
-      }
-    }
-    is(State.Data) {
-      when(baudStrobe) {
-        when(bitCounter === 0.U) {
-          state := State.Stop
-        }
-
-        byte := Cat(uart, byte(7, 1))
-        counter := (clocksPerBaud.U - 1.U)
-        bitCounter := bitCounter - 1.U
-      }
-    }
-    is(State.Stop) {
-      when(baudStrobe) {
-        when(io.rx) {
-          // STOP is HI -> valid reception
-          valid := true.B
-          state := State.Idle
-        }.otherwise {
-          state := State.Idle
-        }
-      }
-    }
+  val outReg = RegInit(0.U(8.W))
+  when(baudStrobe && state =/= State.Stop) {
+    outReg := Cat(ckUart, outReg(7, 1))
   }
 
-  io.out.bits := byte
-  io.out.valid := valid
+  io.out.bits := outReg
+
+  val validReg = RegNext(baudStrobe && state === State.Stop)
+  io.out.valid := validReg
 }
