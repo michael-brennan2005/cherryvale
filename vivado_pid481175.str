@@ -1,0 +1,1691 @@
+/*
+
+AMD Vivado v2025.2 (64-bit) [Major: 2025, Minor: 2]
+SW Build: 6299465 on Fri Nov 14 12:34:56 MST 2025
+IP Build: 6300035 on Fri Nov 14 10:48:45 MST 2025
+IP Build: 6300035 on Fri Nov 14 10:48:45 MST 2025
+
+Process ID (PID): 481175
+License: Customer
+Mode: GUI Mode
+
+Current time: 	Tue Jun 09 19:29:46 EDT 2026
+Time zone: 	Eastern Standard Time (America/New_York)
+
+OS: Ubuntu
+OS Version: 6.17.0-35-generic
+OS Architecture: amd64
+Available processors (cores): 12
+LSB Release Description: DISTRIB_ID=Ubuntu
+
+Display: 0
+Screen size: 1920x1200
+Local screen bounds: x = 1920, y = 0, width = 1920, height = 1200
+Screen resolution (DPI): 100
+Available screens: 2
+Default font: family=Open Sans,name=Open Sans,style=plain,size=13
+Scale size: 13
+OS font scaling: 100%
+Anti-Alias Enabled: false
+
+Java version: 	21.0.5 64-bit
+
+Java home: 	/home/mbrennan/AMDDesignTools/2025.2/tps/lnx64/jre21.0.5_11
+Java executable: 	/home/mbrennan/AMDDesignTools/2025.2/tps/lnx64/jre21.0.5_11/bin/java
+Java arguments: 	[-Dsun.java2d.pmoffscreen=false, -Dhttps.protocols=TLSv1,TLSv1.1,TLSv1.2, -Dsun.java2d.xrender=false, -Dsun.java2d.uiScale.enabled=false, -Dswing.aatext=true, -XX:-UsePerfData, -Djdk.map.althashing.threshold=512, -XX:StringTableSize=4072, -XX:+UseStringDeduplication, -XX:MaxGCPauseMillis=200, -XX:ParallelGCThreads=4, -XX:+ParallelRefProcEnabled, --add-opens=java.desktop/javax.swing.plaf.synth=ALL-UNNAMED, --add-opens=java.base/java.nio=ALL-UNNAMED, --add-opens=java.desktop/sun.swing=ALL-UNNAMED, --add-opens=java.desktop/javax.swing=ALL-UNNAMED, --add-opens=java.desktop/javax.swing.tree=ALL-UNNAMED, --add-opens=java.desktop/javax.swing.plaf.basic=ALL-UNNAMED, --add-opens=java.desktop/javax.swing.plaf.synth=ALL-UNNAMED, --add-opens=java.desktop/javax.swing.plaf.basic=ALL-UNNAMED, --add-opens=java.desktop/javax.swing=ALL-UNNAMED, --add-opens=java.desktop/javax.swing.tree=ALL-UNNAMED, --add-opens=java.desktop/java.awt.event=ALL-UNNAMED, --add-opens=java.desktop/sun.awt.X11=ALL-UNNAMED, --add-exports=java.desktop/javax.swing.plaf.synth=ALL-UNNAMED, --add-exports=java.base/java.nio=ALL-UNNAMED, --add-exports=java.desktop/sun.swing=ALL-UNNAMED, --add-exports=java.desktop/javax.swing=ALL-UNNAMED, --add-exports=java.desktop/javax.swing.tree=ALL-UNNAMED, --add-exports=java.desktop/javax.swing.plaf.basic=ALL-UNNAMED, --add-exports=java.desktop/sun.swing=ALL-UNNAMED, --add-exports=java.desktop/sun.swing.table=ALL-UNNAMED, --add-exports=java.desktop/sun.swing.plaf.synth=ALL-UNNAMED, --add-exports=java.desktop/sun.awt.shell=ALL-UNNAMED, --add-exports=java.base/sun.security.action=ALL-UNNAMED, --add-exports=java.desktop/sun.font=ALL-UNNAMED, --add-opens=java.desktop/sun.awt.X11=ALL-UNNAMED, -XX:NewSize=80m, -XX:MaxNewSize=80m, -Xms812m, -Xmx6144m, -Xss10m, -Xrs]
+Java initial memory (-Xms): 	812 MB
+Java maximum memory (-Xmx):	 6 GB
+
+User name: 	mbrennan
+User home directory: /home/mbrennan
+User working directory: /home/mbrennan/Desktop/chiseltest
+User country: 	US
+User language: 	en
+User locale: 	en_US
+
+RDI_BASEROOT: /home/mbrennan/AMDDesignTools/2025.2
+HDI_APPROOT: /home/mbrennan/AMDDesignTools/2025.2/Vivado
+RDI_DATADIR: /home/mbrennan/Desktop/chiseltest/:/home/mbrennan/AMDDesignTools/2025.2/data
+RDI_BINDIR: /home/mbrennan/AMDDesignTools/2025.2/Vivado/bin
+
+Vivado preferences file: /home/mbrennan/.Xilinx/Vivado/2025.2/newvivado.xml
+Vivado preferences directory: /home/mbrennan/.Xilinx/Vivado/2025.2/
+Vivado layouts directory: /home/mbrennan/.Xilinx/Vivado/2025.2/data/layouts
+PlanAhead jar file: 	/home/mbrennan/AMDDesignTools/2025.2/Vivado/lib/classes/planAhead.jar
+Vivado log file: 	/home/mbrennan/Desktop/chiseltest/vivado.log
+Vivado journal file: 	/home/mbrennan/Desktop/chiseltest/vivado.jou
+Engine tmp dir: 	./.Xil/Vivado-481175-mbrennan-ThinkPad-T14s-Gen-4
+Non-Default Parameters:	[]
+
+Xilinx & AMD Environment Variables
+--------------------------------------------------------------------------------------------
+GNOME_SHELL_SESSION_MODE: ubuntu
+JAVA_HOME: /home/mbrennan/.cache/coursier/arc/https/github.com/adoptium/temurin21-binaries/releases/download/jdk-21.0.11%252B10/OpenJDK21U-jdk_x64_linux_hotspot_21.0.11_10.tar.gz/jdk-21.0.11+10
+RDI_APPROOT: /home/mbrennan/AMDDesignTools/2025.2/Vivado
+RDI_BASEROOT: /home/mbrennan/AMDDesignTools/2025.2
+RDI_BINROOT: /home/mbrennan/AMDDesignTools/2025.2/Vivado/bin
+RDI_BUILD: yes
+RDI_DATADIR: :/home/mbrennan/AMDDesignTools/2025.2/data
+RDI_INSTALLROOT: /home/mbrennan/AMDDesignTools
+RDI_INSTALLVER: Vivado
+RDI_JAVA_PLATFORM: 
+RDI_JAVA_VERSION: 21.0.5_11
+RDI_LIBDIR: /home/mbrennan/AMDDesignTools/2025.2/Vivado/lib/lnx64.o/Ubuntu/24:/home/mbrennan/AMDDesignTools/2025.2/Vivado/lib/lnx64.o/Ubuntu:/home/mbrennan/AMDDesignTools/2025.2/Vivado/lib/lnx64.o
+RDI_OPT_EXT: .o
+RDI_PATCHROOT: 
+RDI_PLATFORM: lnx64
+RDI_PREPEND_PATH: /home/mbrennan/AMDDesignTools/2025.2/Vitis/bin:/home/mbrennan/AMDDesignTools/2025.2/Vivado/ids_lite/ISE/bin/lin64
+RDI_PROG: /home/mbrennan/AMDDesignTools/2025.2/Vivado/bin/unwrapped/lnx64.o/vivado
+RDI_SESSION_INFO: /home/mbrennan/Desktop/chiseltest:mbrennan-ThinkPad-T14s-Gen-4_1781047770_481085
+RDI_SHARED_DATA: 
+RDI_TPS_ROOT: /home/mbrennan/AMDDesignTools/2025.2/Vivado/tps/lnx64
+RDI_USE_JDK21: True
+SHELL: /usr/bin/fish
+XILINX: /home/mbrennan/AMDDesignTools/2025.2/Vivado/ids_lite/ISE
+XILINX_DSP: /home/mbrennan/AMDDesignTools/2025.2/Vivado/ids_lite/ISE
+XILINX_HLS: /home/mbrennan/AMDDesignTools/2025.2/Vitis
+XILINX_PLANAHEAD: /home/mbrennan/AMDDesignTools/2025.2/Vivado
+XILINX_SDK: /home/mbrennan/AMDDesignTools/2025.2/Vitis
+XILINX_VITIS: /home/mbrennan/AMDDesignTools/2025.2/Vitis
+XILINX_VIVADO: /home/mbrennan/AMDDesignTools/2025.2/Vivado
+
+
+GUI allocated memory:	812 MB
+GUI max memory:		6,144 MB
+Engine allocated memory: 2,002 MB
+
+Copyright 1986-2022 Xilinx, Inc. All Rights Reserved.
+Copyright 2022-2025 Advanced Micro Devices, Inc. All Rights Reserved.
+
+*/
+
+// TclEventType: START_GUI
+// Tcl Message: start_gui 
+selectList(PAResourceTtoZ.UpgradedSyntheticaGettingStartedView_RECENT_PROJECTS, "/home/mbrennan/Desktop/MyFirstFPGAProject/MyFirstFPGAProject.xpr$Artix-7, xc7a35tcpg236-1", 0); // b.c (PAResourceTtoZ.UpgradedSyntheticaGettingStartedView_RECENT_PROJECTS)
+// Opening Vivado Project: /home/mbrennan/Desktop/MyFirstFPGAProject/MyFirstFPGAProject.xpr. Version: Vivado v2025.2 
+// TclEventType: DEBUG_PROBE_SET_CHANGE
+// TclEventType: FLOW_ADDED
+// TclEventType: MSGMGR_MOVEMSG
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: FILESET_TARGET_UCF_CHANGE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: FILE_SET_NEW
+// TclEventType: RUN_COMPLETED
+// TclEventType: RUN_STATUS_CHANGE
+// TclEventType: FILESET_TARGET_UCF_CHANGE
+// TclEventType: RUN_COMPLETED
+// TclEventType: RUN_STATUS_CHANGE
+// TclEventType: FILESET_TARGET_UCF_CHANGE
+// TclEventType: RUN_CURRENT
+// TclEventType: MSGMGR_REFRESH_MSG
+// TclEventType: PROJECT_DASHBOARD_NEW
+// TclEventType: PROJECT_DASHBOARD_GADGET_NEW
+// TclEventType: PROJECT_DASHBOARD_GADGET_CHANGE
+// TclEventType: PROJECT_DASHBOARD_GADGET_NEW
+// TclEventType: PROJECT_DASHBOARD_GADGET_CHANGE
+// TclEventType: PROJECT_DASHBOARD_GADGET_NEW
+// TclEventType: PROJECT_DASHBOARD_GADGET_CHANGE
+// TclEventType: PROJECT_DASHBOARD_GADGET_NEW
+// TclEventType: PROJECT_DASHBOARD_GADGET_CHANGE
+// TclEventType: PROJECT_DASHBOARD_GADGET_NEW
+// TclEventType: PROJECT_DASHBOARD_GADGET_CHANGE
+// TclEventType: PROJECT_DASHBOARD_GADGET_NEW
+// TclEventType: PROJECT_DASHBOARD_GADGET_CHANGE
+// TclEventType: PROJECT_NEW
+// [GUI Memory]: 128 MB (+131778kb) [00:00:09]
+// [Engine Memory]: 1,944 MB (+1886710kb) [00:00:09]
+// WARNING: HEventQueue.dispatchEvent() is taking  1845 ms.
+// Tcl Message: open_project /home/mbrennan/Desktop/MyFirstFPGAProject/MyFirstFPGAProject.xpr 
+// Tcl Message: INFO: [filemgmt 56-3] Default IP Output Path : Could not find the directory '/home/mbrennan/Desktop/MyFirstFPGAProject/MyFirstFPGAProject.gen/sources_1'. 
+// Tcl Message: Scanning sources... Finished scanning sources 
+// Tcl Message: INFO: [IP_Flow 19-234] Refreshing IP repositories INFO: [IP_Flow 19-1704] No user IP repositories specified INFO: [IP_Flow 19-2313] Loaded Vivado IP repository '/home/mbrennan/AMDDesignTools/2025.2/data/ip'. 
+// HMemoryUtils.trashcanNow. Engine heap size: 2,012 MB. GUI used memory: 72 MB. Current time: 6/9/26, 7:29:47 PM EDT
+// Project name: MyFirstFPGAProject; location: /home/mbrennan/Desktop/MyFirstFPGAProject; part: xc7a35tcpg236-1
+dismissDialog("Open Project"); // bk (Open Project Progress)
+// [Engine Memory]: 2,825 MB (+821745kb) [00:00:11]
+// TclEventType: DG_GRAPH_GENERATED
+// Tcl Message: update_compile_order -fileset sources_1 
+// [GUI Memory]: 140 MB (+5419kb) [00:00:14]
+selectTreeTable(PAResourceEtoH.ExpRunTreePanel_EXP_RUN_TREE_TABLE, "impl_1 ; constrs_1 ; write_bitstream Complete! ; 7.638590335845947 ; 0.0 ; 0.7656525373458862 ; 0.0 ;  ; 0.0 ; 0.07262704521417618 ; 0 ; 20 CW, 1 Warn ;  ;  ; 26 ; 22 ; 0.0 ; 0 ; 0 ; Tue Jun 09 14:02:41 EDT 2026 ; 00:00:50 ; Vivado Implementation Defaults* (Vivado Implementation 2025) ; Vivado Implementation Default Reports (Vivado Implementation 2025) ; xc7a35tcpg236-1 ; mbrennan-ThinkPad-T14s-Gen-4 ; Default settings for Implementation.", 1, "0.07262704521417618", 11, false); // ar (PAResourceEtoH.ExpRunTreePanel_EXP_RUN_TREE_TABLE)
+// PAPropertyPanels.initPanels (impl_1) elapsed time: 0.4s
+selectTree(PAResourceEtoH.FlowNavigatorTreePanel_FLOW_NAVIGATOR_TREE, "[, Program and Debug, Generate Bitstream]", 21, false); // g (PAResourceEtoH.FlowNavigatorTreePanel_FLOW_NAVIGATOR_TREE, Flow Navigator Tree)
+// Run Command: PAResourceCommand.PACommandNames_RUN_BITGEN
+selectButton("OK", "OK", "Generate Bitstream"); // JButton (OK)
+selectButton(RDIResource.BaseDialog_CANCEL, "Cancel", "Launch Runs"); // f (RDIResource.BaseDialog_CANCEL)
+dismissDialog("Launch Runs"); // cX (dialog0)
+selectTree(PAResourceEtoH.FlowNavigatorTreePanel_FLOW_NAVIGATOR_TREE, "[, Program and Debug, Open Hardware Manager]", 22, true); // g (PAResourceEtoH.FlowNavigatorTreePanel_FLOW_NAVIGATOR_TREE, Flow Navigator Tree) - Node
+// Run Command: PAResourceCommand.PACommandNames_OPEN_HARDWARE_MANAGER
+// Tcl (Dont Echo) Command: 'rdi::info_commands get_hw_probes'
+// Tcl (Dont Echo) Command: 'load_features labtools'
+// TclEventType: LOAD_FEATURE
+// TclEventType: HW_SESSION_OPEN
+closeView(PAResourceOtoP.PAViews_PROJECT_SUMMARY, "Project Summary"); // x (PAResourceOtoP.PAViews_PROJECT_SUMMARY, PlanAheadTabProject Summary)
+// Tcl Message: open_hw_manager 
+dismissDialog("Open Hardware Manager"); // bk (Open Hardware Manager Progress)
+// [GUI Memory]: 147 MB (+137kb) [00:00:20]
+selectButton(PAResourceOtoP.ProgramDebugTab_OPEN_TARGET, "Open target"); // h (PAResourceOtoP.ProgramDebugTab_OPEN_TARGET)
+selectMenuItem(PAResourceCommand.PACommandNames_AUTO_CONNECT_TARGET, "Auto Connect"); // ap (PAResourceCommand.PACommandNames_AUTO_CONNECT_TARGET, auto_connect_target_menu)
+// Run Command: PAResourceCommand.PACommandNames_AUTO_CONNECT_TARGET
+// Tcl Message: connect_hw_server -allow_non_jtag 
+// Tcl Message: INFO: [Labtools 27-2285] Connecting to hw_server url TCP:localhost:3121 INFO: [Labtools 27-2222] Launching hw_server... 
+// TclEventType: HW_SERVER_UPDATE
+// Tcl Message: INFO: [Labtools 27-2221] Launch Output:  ****** Xilinx hw_server v2025.2   **** Build date : Oct 28 2025 at 16:07:00     ** Copyright 1986-2022 Xilinx, Inc. All Rights Reserved.   INFO: [Labtools 27-3415] Connecting to cs_server url TCP:localhost:0 INFO: [Labtools 27-3417] Launching cs_server... 
+// TclEventType: HW_SERVER_UPDATE
+// Tcl Message: INFO: [Labtools 27-2221] Launch Output:   ******** Xilinx cs_server v2025.2.0   ****** Build date   : Nov 13 2025-16:16:52     **** Build number : 2025.2.1763075812       ** Copyright 2017-2022 Xilinx, Inc. All Rights Reserved.       ** Copyright 2022-2026 Advanced Micro Devices, Inc. All Rights Reserved.    
+// TclEventType: HW_TARGET_CHANGE
+// TclEventType: HW_TARGET_CLOSE
+// TclEventType: HW_DEVICE_CHANGE
+// TclEventType: HW_SYSMON_ADD
+// TclEventType: HW_TARGET_UPDATE
+// Tcl Message: open_hw_target 
+// Tcl Message: INFO: [Labtoolstcl 44-466] Opening hw_target localhost:3121/xilinx_tcf/Digilent/210183BFD3B7A 
+// TclEventType: HW_DEVICE_CHANGE
+// Tcl Message: set_property PROGRAM.FILE {/home/mbrennan/Desktop/MyFirstFPGAProject/MyFirstFPGAProject.runs/impl_1/DebugTest.bit} [get_hw_devices xc7a35t_0] 
+// Tcl Message: current_hw_device [get_hw_devices xc7a35t_0] 
+// TclEventType: HW_DEVICE_CHANGE
+// TclEventType: HW_SYSMON_CHANGE
+// TclEventType: HW_DEVICE_UPDATE
+// TclEventType: HW_DEVICE_CHANGE
+// Tcl Message: refresh_hw_device -update_hw_probes false [lindex [get_hw_devices xc7a35t_0] 0] 
+// Tcl Message: INFO: [Labtools 27-1435] Device xc7a35t (JTAG device index = 0) is not programmed (DONE status = 0). 
+dismissDialog("Auto Connect"); // bk (Auto Connect Progress)
+selectButton(PAResourceOtoP.ProgramDebugTab_PROGRAM_DEVICE, "Program device"); // h (PAResourceOtoP.ProgramDebugTab_PROGRAM_DEVICE)
+// Run Command: PAResourceCommand.PACommandNames_PROGRAM_FPGA
+selectButton(PAResourceOtoP.ProgramFpgaDialog_PROGRAM, "Program", "Program Device"); // f (PAResourceOtoP.ProgramFpgaDialog_PROGRAM, RDIResource.BaseDialog_OK)
+dismissDialog("Program Device"); // aT (dialog1)
+// TclEventType: HW_DEVICE_CHANGE
+// Tcl Message: set_property PROBES.FILE {} [get_hw_devices xc7a35t_0] 
+// Tcl Message: set_property FULL_PROBES.FILE {} [get_hw_devices xc7a35t_0] 
+// TclEventType: HW_DEVICE_CHANGE
+// Tcl Message: set_property PROGRAM.FILE {/home/mbrennan/Desktop/MyFirstFPGAProject/MyFirstFPGAProject.runs/impl_1/DebugTest.bit} [get_hw_devices xc7a35t_0] 
+// TclEventType: HW_DEVICE_CHANGE
+// Tcl Message: program_hw_devices [get_hw_devices xc7a35t_0] 
+// Tcl Message: INFO: [Labtools 27-3164] End of startup status: HIGH 
+// TclEventType: HW_DEVICE_CHANGE
+// HMemoryUtils.trashcanNow. Engine heap size: 2,945 MB. GUI used memory: 79 MB. Current time: 6/9/26, 7:30:11 PM EDT
+// TclEventType: HW_DEVICE_CHANGE
+// TclEventType: HW_SYSMON_CHANGE
+// TclEventType: HW_DEVICE_UPDATE
+// TclEventType: HW_DEVICE_CHANGE
+// TclEventType: HW_DEVICE_PROBES_CHANGE
+// TclEventType: DEBUG_PROBE_SET_CHANGE
+// TclEventType: HW_DEVICE_PROBES_CHANGE
+// Tcl Message: refresh_hw_device [lindex [get_hw_devices xc7a35t_0] 0] 
+// Tcl Message: INFO: [Labtools 27-1434] Device xc7a35t (JTAG device index = 0) is programmed with a design that has no supported soft debug core(s) in it. 
+dismissDialog("Program Device"); // bk (Program Device Progress)
+// HMemoryUtils.trashcanNow. Engine heap size: 2,108 MB. GUI used memory: 78 MB. Current time: 6/9/26, 7:30:18 PM EDT
+// HMemoryUtils.trashcanNow. Engine heap size: 2,108 MB. GUI used memory: 78 MB. Current time: 6/9/26, 7:30:58 PM EDT
+// HMemoryUtils.trashcanNow. Engine heap size: 2,108 MB. GUI used memory: 78 MB. Current time: 6/9/26, 7:31:38 PM EDT
+// HMemoryUtils.trashcanNow. Engine heap size: 2,108 MB. GUI used memory: 78 MB. Current time: 6/9/26, 7:32:18 PM EDT
+// HMemoryUtils.trashcanNow. Engine heap size: 2,108 MB. GUI used memory: 78 MB. Current time: 6/9/26, 7:32:58 PM EDT
+// HMemoryUtils.trashcanNow. Engine heap size: 2,108 MB. GUI used memory: 78 MB. Current time: 6/9/26, 7:33:38 PM EDT
+// HMemoryUtils.trashcanNow. Engine heap size: 2,108 MB. GUI used memory: 78 MB. Current time: 6/9/26, 7:34:18 PM EDT
+// HMemoryUtils.trashcanNow. Engine heap size: 2,108 MB. GUI used memory: 78 MB. Current time: 6/9/26, 7:34:58 PM EDT
+// TclEventType: DG_GRAPH_STALE
+// TclEventType: FILE_SET_CHANGE
+// Elapsed Time for: 'PAResourceItoN.MsgLongTask_MESSAGE_LONG_TASK/M.f': 05m:20s
+// Elapsed time: 295 seconds
+selectButton(PAResourceTtoZ.TaskBanner_CLOSE, (String) null); // k (PAResourceTtoZ.TaskBanner_CLOSE)
+closeTask("Program and Debug", "Hardware Manager", "DesignTask.PROGRAM_DEBUG");
+// TclEventType: HW_OBJECT_DELETE
+// TclEventType: HW_SERVER_CLOSE
+// TclEventType: HW_SYSMON_DELETE
+// TclEventType: HW_TARGET_CLOSE
+// TclEventType: HW_TARGET_UPDATE
+// TclEventType: DEBUG_PROBE_DELETE
+// TclEventType: HW_SESSION_CLOSE
+// TclEventType: DG_GRAPH_GENERATED
+// Tcl Message: close_hw_manager 
+dismissDialog("Close Hardware Manager"); // bk (Close Hardware Manager Progress)
+// Elapsed Time for: 'PAResourceItoN.MsgLongTask_MESSAGE_LONG_TASK/M.f': 05m:22s
+selectTree(PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE, "[root, Design Sources, DebugTest (DebugTest.sv)]", 1, true); // E (PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE) - Node
+selectTree(PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE, "[root, Design Sources, DebugTest (DebugTest.sv)]", 1, true, false, false, false, false, true); // E (PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE) - Double Click - Node
+selectCodeEditor("DebugTest.sv", 240, 121); // ae (DebugTest.sv)
+selectTree(PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE, "[root, Design Sources, DebugTest (DebugTest.sv), tx : UartTx (UartTx.sv)]", 3, false); // E (PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE)
+selectTree(PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE, "[root, Design Sources, DebugTest (DebugTest.sv), clockGen : xil_defaultlib.ClockGen]", 2, false); // E (PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE)
+selectTree(PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE, "[root, Design Sources, DebugTest (DebugTest.sv), clockGen : xil_defaultlib.ClockGen]", 2, false, false, false, false, false, true); // E (PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE) - Double Click
+selectTree(PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE, "[root, Design Sources, DebugTest (DebugTest.sv), tx : UartTx (UartTx.sv)]", 3, false); // E (PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE)
+selectTree(PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE, "[root, Design Sources, DebugTest (DebugTest.sv), clockGen : xil_defaultlib.ClockGen]", 2, false); // E (PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE)
+selectTree(PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE, "[root, Design Sources, DebugTest (DebugTest.sv), clockGen : xil_defaultlib.ClockGen]", 2, false, false, false, false, false, true); // E (PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE) - Double Click
+selectTree(PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE, "[root, Design Sources, DebugTest (DebugTest.sv), clockGen : xil_defaultlib.ClockGen]", 2, false); // E (PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE)
+selectTree(PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE, "[root, Design Sources, DebugTest (DebugTest.sv), tx : UartTx (UartTx.sv)]", 3, false); // E (PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE)
+selectTree(PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE, "[root, Design Sources, DebugTest (DebugTest.sv), tx : UartTx (UartTx.sv)]", 3, false, false, false, false, false, true); // E (PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE) - Double Click
+selectTree(PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE, "[root, Design Sources, DebugTest (DebugTest.sv)]", 1, true); // E (PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE) - Node
+selectTree(PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE, "[root, Design Sources, DebugTest (DebugTest.sv)]", 1, true, false, false, false, false, true); // E (PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE) - Double Click - Node
+selectCodeEditor("DebugTest.sv", 189, 193); // ae (DebugTest.sv)
+selectTree(PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE, "[root, Design Sources, DebugTest (DebugTest.sv)]", 1, true); // E (PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE) - Node
+expandTree(PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE, "[root, Design Sources, DebugTest (DebugTest.sv)]", 1); // E (PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE)
+selectTree(PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE, "[root, Design Sources, DebugTest (DebugTest.sv), clockGen : xil_defaultlib.ClockGen]", 2, false); // E (PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE)
+selectTree(PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE, "[root, Design Sources, DebugTest (DebugTest.sv), clockGen : xil_defaultlib.ClockGen]", 2, false, false, false, false, false, true); // E (PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE) - Double Click
+selectTree(PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE, "[root, Design Sources]", 0, true); // E (PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE) - Node
+selectTree(PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE, "[root, Design Sources]", 0, true, false, false, false, true, false); // E (PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE) - Popup Trigger - Node
+selectMenu(PAResourceCommand.PACommandNames_AUTO_UPDATE_HIER, "Hierarchy Update"); // am (PAResourceCommand.PACommandNames_AUTO_UPDATE_HIER, Hierarchy Update)
+selectMenu(PAResourceQtoS.SrcMenu_IP_HIERARCHY, "IP Hierarchy"); // am (PAResourceQtoS.SrcMenu_IP_HIERARCHY, IP Hierarchy)
+selectMenuItem(PAResourceCommand.PACommandNames_ADD_SOURCES, "Add Sources..."); // ap (PAResourceCommand.PACommandNames_ADD_SOURCES, add_sources_menu)
+// Run Command: PAResourceCommand.PACommandNames_ADD_SOURCES
+selectButton("NEXT", "Next", "Add Sources"); // JButton (NEXT)
+selectButton(PAResourceQtoS.SrcChooserPanel_ADD_HDL_AND_NETLIST_FILES_TO_YOUR_PROJECT, "Add Files", "Add Sources"); // h (PAResourceQtoS.SrcChooserPanel_ADD_HDL_AND_NETLIST_FILES_TO_YOUR_PROJECT)
+// HMemoryUtils.trashcanNow. Engine heap size: 2,211 MB. GUI used memory: 89 MB. Current time: 6/9/26, 7:35:39 PM EDT
+selectButton((HResource) null, "FileChooser.upFolderIcon", "Add Source Files"); // JButton (FileChooser.upFolderIcon)
+selectButton((HResource) null, "FileChooser.upFolderIcon", "Add Source Files"); // JButton (FileChooser.upFolderIcon)
+setFileChooser("/home/mbrennan/Desktop/chiseltest/build/sv/EmitDebugTest/ClockGen.sv");
+selectButton("FINISH", "Finish", "Add Sources"); // JButton (FINISH)
+// 'f' command handler elapsed time: 23 seconds
+dismissDialog("Add Sources"); // d (dialog2)
+// TclEventType: DG_GRAPH_STALE
+// TclEventType: FILE_SET_CHANGE
+// Tcl Message: add_files -norecurse /home/mbrennan/Desktop/chiseltest/build/sv/EmitDebugTest/ClockGen.sv 
+// Elapsed Time for: 'PAResourceItoN.MsgLongTask_MESSAGE_LONG_TASK/M.f': 06m:10s
+// TclEventType: DG_GRAPH_GENERATED
+// TclEventType: DG_GRAPH_GENERATED
+// TclEventType: FILE_SET_CHANGE
+// Elapsed Time for: 'PAResourceItoN.MsgLongTask_MESSAGE_LONG_TASK/M.f': 06m:12s
+// Tcl Message: update_compile_order -fileset sources_1 
+selectTree(PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE, "[root, Design Sources, DebugTest (DebugTest.sv), clockGen : ClockGen (ClockGen.sv)]", 2, false); // E (PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE)
+selectTree(PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE, "[root, Design Sources, DebugTest (DebugTest.sv), clockGen : ClockGen (ClockGen.sv)]", 2, false, false, false, false, false, true); // E (PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE) - Double Click
+// [GUI Memory]: 158 MB (+3536kb) [00:06:24]
+selectCodeEditor("ClockGen.sv", 161, 262); // ae (ClockGen.sv)
+selectTree(PAResourceEtoH.FlowNavigatorTreePanel_FLOW_NAVIGATOR_TREE, "[, Synthesis, Run Synthesis]", 15, false); // g (PAResourceEtoH.FlowNavigatorTreePanel_FLOW_NAVIGATOR_TREE, Flow Navigator Tree)
+// Run Command: PAResourceCommand.PACommandNames_RUN_SYNTHESIS
+// TclEventType: PAUSE_COMPOSITE_FILE_CHANGE_GUI
+// TclEventType: RUN_MODIFY
+// TclEventType: RUN_RESET
+// TclEventType: RUN_STATUS_CHANGE
+// TclEventType: RUN_RESET
+// TclEventType: RUN_STATUS_CHANGE
+// TclEventType: RUN_RESET
+// TclEventType: RUN_MODIFY
+// TclEventType: PAUSE_COMPOSITE_FILE_CHANGE_GUI
+// Tcl Message: reset_run synth_1 
+// Tcl Message: INFO: [Project 1-1161] Replacing file /home/mbrennan/Desktop/MyFirstFPGAProject/MyFirstFPGAProject.srcs/utils_1/imports/synth_1/Top.dcp with file /home/mbrennan/Desktop/MyFirstFPGAProject/MyFirstFPGAProject.runs/synth_1/DebugTest.dcp 
+selectButton(RDIResource.BaseDialog_OK, "OK", "Launch Runs"); // f (RDIResource.BaseDialog_OK)
+// HMemoryUtils.trashcanNow. Engine heap size: 2,267 MB. GUI used memory: 87 MB. Current time: 6/9/26, 7:36:06 PM EDT
+dismissDialog("Launch Runs"); // g (dialog3)
+// TclEventType: PAUSE_COMPOSITE_FILE_CHANGE_GUI
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: FILESET_TARGET_UCF_CHANGE
+// TclEventType: RUN_LAUNCH
+// TclEventType: RUN_MODIFY
+// TclEventType: RUN_STATUS_CHANGE
+// TclEventType: PAUSE_COMPOSITE_FILE_CHANGE_GUI
+// Tcl Message: launch_runs synth_1 -jobs 6 
+// Tcl Message: [Tue Jun  9 17:36:06 2026] Launched synth_1... Run output will be captured here: /home/mbrennan/Desktop/MyFirstFPGAProject/MyFirstFPGAProject.runs/synth_1/runme.log 
+dismissDialog("Starting Design Runs"); // bk (Starting Design Runs Progress)
+// TclEventType: RUN_STATUS_CHANGE
+// HMemoryUtils.trashcanNow. Engine heap size: 2,278 MB. GUI used memory: 84 MB. Current time: 6/9/26, 7:36:20 PM EDT
+// TclEventType: RUN_COMPLETED
+// TclEventType: RUN_STATUS_CHANGE
+// TclEventType: RUN_STEP_COMPLETED
+// Elapsed time: 36 seconds
+selectRadioButton(PAResourceCommand.PACommandNames_GOTO_NETLIST_DESIGN, "Open Synthesized Design"); // a (PAResourceCommand.PACommandNames_GOTO_NETLIST_DESIGN)
+selectRadioButton(PAResourceCommand.PACommandNames_RUN_IMPLEMENTATION, "Run Implementation"); // a (PAResourceCommand.PACommandNames_RUN_IMPLEMENTATION)
+selectButton(RDIResource.BaseDialog_OK, "OK", "Synthesis Completed"); // f (RDIResource.BaseDialog_OK)
+// Run Command: PAResourceCommand.PACommandNames_RUN_IMPLEMENTATION
+selectButton(RDIResource.BaseDialog_OK, "OK", "Launch Runs"); // f (RDIResource.BaseDialog_OK)
+// HMemoryUtils.trashcanNow. Engine heap size: 2,268 MB. GUI used memory: 87 MB. Current time: 6/9/26, 7:36:49 PM EDT
+dismissDialog("Launch Runs"); // g (dialog4)
+// TclEventType: PAUSE_COMPOSITE_FILE_CHANGE_GUI
+// TclEventType: FILESET_TARGET_UCF_CHANGE
+// TclEventType: RUN_LAUNCH
+// TclEventType: RUN_MODIFY
+// TclEventType: RUN_STATUS_CHANGE
+// TclEventType: PAUSE_COMPOSITE_FILE_CHANGE_GUI
+// Tcl Message: launch_runs impl_1 -jobs 6 
+// Tcl Message: [Tue Jun  9 17:36:50 2026] Launched impl_1... Run output will be captured here: /home/mbrennan/Desktop/MyFirstFPGAProject/MyFirstFPGAProject.runs/impl_1/runme.log 
+dismissDialog("Starting Design Runs"); // bk (Starting Design Runs Progress)
+// TclEventType: RUN_STATUS_CHANGE
+// TclEventType: RUN_STEP_COMPLETED
+// HMemoryUtils.trashcanNow. Engine heap size: 2,268 MB. GUI used memory: 85 MB. Current time: 6/9/26, 7:37:00 PM EDT
+// TclEventType: RUN_STEP_COMPLETED
+// TclEventType: RUN_COMPLETED
+// TclEventType: RUN_STATUS_CHANGE
+// TclEventType: RUN_STEP_COMPLETED
+// Elapsed time: 35 seconds
+selectRadioButton(PAResourceCommand.PACommandNames_RUN_BITGEN, "Generate Bitstream"); // a (PAResourceCommand.PACommandNames_RUN_BITGEN)
+selectButton(RDIResource.BaseDialog_OK, "OK", "Implementation Completed"); // f (RDIResource.BaseDialog_OK)
+// Run Command: PAResourceCommand.PACommandNames_RUN_BITGEN
+selectButton(RDIResource.BaseDialog_OK, "OK", "Launch Runs"); // f (RDIResource.BaseDialog_OK)
+// HMemoryUtils.trashcanNow. Engine heap size: 2,268 MB. GUI used memory: 86 MB. Current time: 6/9/26, 7:37:28 PM EDT
+dismissDialog("Launch Runs"); // cX (dialog5)
+// TclEventType: PAUSE_COMPOSITE_FILE_CHANGE_GUI
+// TclEventType: RUN_LAUNCH
+// TclEventType: RUN_MODIFY
+// TclEventType: PAUSE_COMPOSITE_FILE_CHANGE_GUI
+// Tcl Message: launch_runs impl_1 -to_step write_bitstream -jobs 6 
+// Tcl Message: [Tue Jun  9 17:37:28 2026] Launched impl_1... Run output will be captured here: /home/mbrennan/Desktop/MyFirstFPGAProject/MyFirstFPGAProject.runs/impl_1/runme.log 
+selectCodeEditor("ClockGen.sv", 263, 445); // ae (ClockGen.sv)
+selectCodeEditor("ClockGen.sv", 274, 419); // ae (ClockGen.sv)
+// TclEventType: RUN_STATUS_CHANGE
+// HMemoryUtils.trashcanNow. Engine heap size: 2,268 MB. GUI used memory: 87 MB. Current time: 6/9/26, 7:37:40 PM EDT
+// TclEventType: RUN_COMPLETED
+// TclEventType: RUN_STATUS_CHANGE
+// Elapsed time: 36 seconds
+selectRadioButton(PAResourceCommand.PACommandNames_OPEN_HARDWARE_MANAGER, "Open Hardware Manager"); // a (PAResourceCommand.PACommandNames_OPEN_HARDWARE_MANAGER)
+selectButton(RDIResource.BaseDialog_OK, "OK", "Bitstream Generation Completed"); // f (RDIResource.BaseDialog_OK)
+// Run Command: PAResourceCommand.PACommandNames_OPEN_HARDWARE_MANAGER
+// Tcl (Dont Echo) Command: 'rdi::info_commands get_hw_probes'
+// TclEventType: HW_SESSION_OPEN
+// Tcl Message: open_hw_manager 
+closeView(PAResourceOtoP.PAViews_PROJECT_SUMMARY, "Project Summary"); // x (PAResourceOtoP.PAViews_PROJECT_SUMMARY, PlanAheadTabProject Summary)
+dismissDialog("Open Hardware Manager"); // bk (Open Hardware Manager Progress)
+selectButton(PAResourceOtoP.ProgramDebugTab_OPEN_TARGET, "Open target"); // h (PAResourceOtoP.ProgramDebugTab_OPEN_TARGET)
+selectMenuItem(PAResourceCommand.PACommandNames_AUTO_CONNECT_TARGET, "Auto Connect"); // ap (PAResourceCommand.PACommandNames_AUTO_CONNECT_TARGET, auto_connect_target_menu)
+// Run Command: PAResourceCommand.PACommandNames_AUTO_CONNECT_TARGET
+// Tcl Message: connect_hw_server -allow_non_jtag 
+// Tcl Message: INFO: [Labtools 27-2285] Connecting to hw_server url TCP:localhost:3121 INFO: [Labtools 27-2222] Launching hw_server... 
+// TclEventType: HW_SERVER_UPDATE
+// Tcl Message: INFO: [Labtools 27-2221] Launch Output:  ****** Xilinx hw_server v2025.2   **** Build date : Oct 28 2025 at 16:07:00     ** Copyright 1986-2022 Xilinx, Inc. All Rights Reserved.   INFO: [Labtools 27-3415] Connecting to cs_server url TCP:localhost:0 INFO: [Labtools 27-3417] Launching cs_server... 
+// TclEventType: HW_SERVER_UPDATE
+// Tcl Message: INFO: [Labtools 27-2221] Launch Output:   ******** Xilinx cs_server v2025.2.0   ****** Build date   : Nov 13 2025-16:16:52     **** Build number : 2025.2.1763075812       ** Copyright 2017-2022 Xilinx, Inc. All Rights Reserved.       ** Copyright 2022-2026 Advanced Micro Devices, Inc. All Rights Reserved.    
+// TclEventType: HW_TARGET_CHANGE
+// TclEventType: HW_TARGET_CLOSE
+// TclEventType: HW_DEVICE_CHANGE
+// TclEventType: HW_SYSMON_ADD
+// TclEventType: HW_TARGET_UPDATE
+// Tcl Message: open_hw_target 
+// Tcl Message: INFO: [Labtoolstcl 44-466] Opening hw_target localhost:3121/xilinx_tcf/Digilent/210183BFD3B7A 
+// TclEventType: HW_DEVICE_CHANGE
+// Tcl Message: set_property PROGRAM.FILE {/home/mbrennan/Desktop/MyFirstFPGAProject/MyFirstFPGAProject.runs/impl_1/DebugTest.bit} [get_hw_devices xc7a35t_0] 
+// Tcl Message: current_hw_device [get_hw_devices xc7a35t_0] 
+// TclEventType: HW_DEVICE_CHANGE
+// TclEventType: HW_SYSMON_CHANGE
+// TclEventType: HW_DEVICE_UPDATE
+// TclEventType: HW_DEVICE_CHANGE
+// Tcl Message: refresh_hw_device -update_hw_probes false [lindex [get_hw_devices xc7a35t_0] 0] 
+// Tcl Message: INFO: [Labtools 27-1434] Device xc7a35t (JTAG device index = 0) is programmed with a design that has no supported soft debug core(s) in it. 
+dismissDialog("Auto Connect"); // bk (Auto Connect Progress)
+selectButton(PAResourceOtoP.ProgramDebugTab_PROGRAM_DEVICE, "Program device"); // h (PAResourceOtoP.ProgramDebugTab_PROGRAM_DEVICE)
+// Run Command: PAResourceCommand.PACommandNames_PROGRAM_FPGA
+selectButton(PAResourceOtoP.ProgramFpgaDialog_PROGRAM, "Program", "Program Device"); // f (PAResourceOtoP.ProgramFpgaDialog_PROGRAM, RDIResource.BaseDialog_OK)
+// TclEventType: HW_DEVICE_CHANGE
+dismissDialog("Program Device"); // aT (dialog6)
+// Tcl Message: set_property PROBES.FILE {} [get_hw_devices xc7a35t_0] 
+// Tcl Message: set_property FULL_PROBES.FILE {} [get_hw_devices xc7a35t_0] 
+// TclEventType: HW_DEVICE_CHANGE
+// Tcl Message: set_property PROGRAM.FILE {/home/mbrennan/Desktop/MyFirstFPGAProject/MyFirstFPGAProject.runs/impl_1/DebugTest.bit} [get_hw_devices xc7a35t_0] 
+// TclEventType: HW_DEVICE_CHANGE
+// Tcl Message: program_hw_devices [get_hw_devices xc7a35t_0] 
+// Tcl Message: INFO: [Labtools 27-3164] End of startup status: HIGH 
+// TclEventType: HW_DEVICE_CHANGE
+// TclEventType: HW_SYSMON_CHANGE
+// TclEventType: HW_DEVICE_UPDATE
+// TclEventType: HW_DEVICE_CHANGE
+// TclEventType: HW_DEVICE_PROBES_CHANGE
+// TclEventType: DEBUG_PROBE_SET_CHANGE
+// TclEventType: HW_DEVICE_PROBES_CHANGE
+// Tcl Message: refresh_hw_device [lindex [get_hw_devices xc7a35t_0] 0] 
+// Tcl Message: INFO: [Labtools 27-1434] Device xc7a35t (JTAG device index = 0) is programmed with a design that has no supported soft debug core(s) in it. 
+dismissDialog("Program Device"); // bk (Program Device Progress)
+selectCodeEditor("DebugTest.sv", 552, 325); // ae (DebugTest.sv)
+// HMemoryUtils.trashcanNow. Engine heap size: 2,297 MB. GUI used memory: 91 MB. Current time: 6/9/26, 7:38:21 PM EDT
+// HMemoryUtils.trashcanNow. Engine heap size: 2,297 MB. GUI used memory: 91 MB. Current time: 6/9/26, 7:39:01 PM EDT
+// HMemoryUtils.trashcanNow. Engine heap size: 2,297 MB. GUI used memory: 91 MB. Current time: 6/9/26, 7:39:41 PM EDT
+// HMemoryUtils.trashcanNow. Engine heap size: 2,297 MB. GUI used memory: 91 MB. Current time: 6/9/26, 7:40:21 PM EDT
+// HMemoryUtils.trashcanNow. Engine heap size: 2,297 MB. GUI used memory: 91 MB. Current time: 6/9/26, 7:41:01 PM EDT
+// HMemoryUtils.trashcanNow. Engine heap size: 2,297 MB. GUI used memory: 91 MB. Current time: 6/9/26, 7:41:41 PM EDT
+// TclEventType: DG_GRAPH_STALE
+// TclEventType: FILE_SET_CHANGE
+// Elapsed Time for: 'PAResourceItoN.MsgLongTask_MESSAGE_LONG_TASK/M.f': 12m:02s
+// TclEventType: DG_GRAPH_GENERATED
+// Elapsed Time for: 'PAResourceItoN.MsgLongTask_MESSAGE_LONG_TASK/M.f': 12m:04s
+// Elapsed time: 210 seconds
+selectButton(PAResourceAtoD.AbstractFileView_RELOAD, "Reload"); // h (PAResourceAtoD.AbstractFileView_RELOAD)
+selectCodeEditor("DebugTest.sv", 442, 300); // ae (DebugTest.sv)
+selectCodeEditor("DebugTest.sv", 84, 151); // ae (DebugTest.sv)
+selectButton(PAResourceOtoP.ProgramDebugTab_PROGRAM_DEVICE, "Program device"); // h (PAResourceOtoP.ProgramDebugTab_PROGRAM_DEVICE)
+// Run Command: PAResourceCommand.PACommandNames_PROGRAM_FPGA
+selectButton(PAResourceOtoP.ProgramFpgaDialog_PROGRAM, "Program", "Program Device"); // f (PAResourceOtoP.ProgramFpgaDialog_PROGRAM, RDIResource.BaseDialog_OK)
+dismissDialog("Program Device"); // aT (dialog7)
+// TclEventType: HW_DEVICE_CHANGE
+// Tcl Message: set_property PROBES.FILE {} [get_hw_devices xc7a35t_0] 
+// Tcl Message: set_property FULL_PROBES.FILE {} [get_hw_devices xc7a35t_0] 
+// TclEventType: HW_DEVICE_CHANGE
+// Tcl Message: set_property PROGRAM.FILE {/home/mbrennan/Desktop/MyFirstFPGAProject/MyFirstFPGAProject.runs/impl_1/DebugTest.bit} [get_hw_devices xc7a35t_0] 
+// TclEventType: HW_DEVICE_CHANGE
+// Tcl Message: program_hw_devices [get_hw_devices xc7a35t_0] 
+// Tcl Message: INFO: [Labtools 27-3164] End of startup status: HIGH 
+// TclEventType: HW_DEVICE_CHANGE
+// TclEventType: HW_SYSMON_CHANGE
+// TclEventType: HW_DEVICE_UPDATE
+// TclEventType: HW_DEVICE_CHANGE
+// TclEventType: HW_DEVICE_PROBES_CHANGE
+// TclEventType: DEBUG_PROBE_SET_CHANGE
+// TclEventType: HW_DEVICE_PROBES_CHANGE
+// Tcl Message: refresh_hw_device [lindex [get_hw_devices xc7a35t_0] 0] 
+// Tcl Message: INFO: [Labtools 27-1434] Device xc7a35t (JTAG device index = 0) is programmed with a design that has no supported soft debug core(s) in it. 
+dismissDialog("Program Device"); // bk (Program Device Progress)
+// HMemoryUtils.trashcanNow. Engine heap size: 2,316 MB. GUI used memory: 91 MB. Current time: 6/9/26, 7:42:21 PM EDT
+// HMemoryUtils.trashcanNow. Engine heap size: 2,316 MB. GUI used memory: 91 MB. Current time: 6/9/26, 7:43:01 PM EDT
+// Elapsed time: 96 seconds
+selectButton(PAResourceOtoP.ProgramDebugTab_PROGRAM_DEVICE, "Program device"); // h (PAResourceOtoP.ProgramDebugTab_PROGRAM_DEVICE)
+// Run Command: PAResourceCommand.PACommandNames_PROGRAM_FPGA
+selectButton(PAResourceOtoP.ProgramFpgaDialog_PROGRAM, "Program", "Program Device"); // f (PAResourceOtoP.ProgramFpgaDialog_PROGRAM, RDIResource.BaseDialog_OK)
+// HMemoryUtils.trashcanNow. Engine heap size: 2,316 MB. GUI used memory: 93 MB. Current time: 6/9/26, 7:43:41 PM EDT
+selectButton(RDIResource.BaseDialog_CANCEL, "Cancel", "Program Device"); // f (RDIResource.BaseDialog_CANCEL)
+// 'D' command handler elapsed time: 6 seconds
+dismissDialog("Program Device"); // aT (dialog8)
+// [GUI Memory]: 170 MB (+4941kb) [00:14:06]
+selectButton(PAResourceTtoZ.TaskBanner_CLOSE, (String) null); // k (PAResourceTtoZ.TaskBanner_CLOSE)
+closeTask("Program and Debug", "Hardware Manager", "DesignTask.PROGRAM_DEBUG");
+// TclEventType: HW_OBJECT_DELETE
+// TclEventType: HW_SERVER_CLOSE
+// TclEventType: HW_SYSMON_DELETE
+// TclEventType: HW_TARGET_CLOSE
+// TclEventType: HW_TARGET_UPDATE
+// TclEventType: DEBUG_PROBE_DELETE
+// TclEventType: HW_SESSION_CLOSE
+// Tcl Message: close_hw_manager 
+dismissDialog("Close Hardware Manager"); // bk (Close Hardware Manager Progress)
+selectButton(PAResourceAtoD.AbstractFileView_RELOAD, "Reload"); // h (PAResourceAtoD.AbstractFileView_RELOAD)
+selectTree(PAResourceEtoH.FlowNavigatorTreePanel_FLOW_NAVIGATOR_TREE, "[, Implementation, Run Implementation]", 18, false); // g (PAResourceEtoH.FlowNavigatorTreePanel_FLOW_NAVIGATOR_TREE, Flow Navigator Tree)
+// Run Command: PAResourceCommand.PACommandNames_RUN_IMPLEMENTATION
+selectButton("CANCEL", "Cancel", "Run Implementation"); // JButton (CANCEL)
+selectTree(PAResourceEtoH.FlowNavigatorTreePanel_FLOW_NAVIGATOR_TREE, "[, Synthesis, Run Synthesis]", 15, false); // g (PAResourceEtoH.FlowNavigatorTreePanel_FLOW_NAVIGATOR_TREE, Flow Navigator Tree)
+// Run Command: PAResourceCommand.PACommandNames_RUN_SYNTHESIS
+selectButton("OK", "OK", "Run Synthesis"); // JButton (OK)
+// TclEventType: PAUSE_COMPOSITE_FILE_CHANGE_GUI
+// TclEventType: RUN_MODIFY
+// TclEventType: RUN_RESET
+// TclEventType: RUN_STATUS_CHANGE
+// TclEventType: RUN_RESET
+// TclEventType: RUN_STATUS_CHANGE
+// TclEventType: RUN_RESET
+// TclEventType: RUN_MODIFY
+// TclEventType: PAUSE_COMPOSITE_FILE_CHANGE_GUI
+// Tcl Message: reset_run synth_1 
+// Tcl Message: INFO: [Project 1-1161] Replacing file /home/mbrennan/Desktop/MyFirstFPGAProject/MyFirstFPGAProject.srcs/utils_1/imports/synth_1/Top.dcp with file /home/mbrennan/Desktop/MyFirstFPGAProject/MyFirstFPGAProject.runs/synth_1/DebugTest.dcp 
+selectButton(RDIResource.BaseDialog_OK, "OK", "Launch Runs"); // f (RDIResource.BaseDialog_OK)
+// HMemoryUtils.trashcanNow. Engine heap size: 2,473 MB. GUI used memory: 94 MB. Current time: 6/9/26, 7:43:53 PM EDT
+dismissDialog("Launch Runs"); // g (dialog9)
+// TclEventType: PAUSE_COMPOSITE_FILE_CHANGE_GUI
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: FILESET_TARGET_UCF_CHANGE
+// TclEventType: RUN_LAUNCH
+// TclEventType: RUN_MODIFY
+// TclEventType: RUN_STATUS_CHANGE
+// TclEventType: PAUSE_COMPOSITE_FILE_CHANGE_GUI
+// Tcl Message: launch_runs synth_1 -jobs 6 
+// Tcl Message: [Tue Jun  9 17:43:53 2026] Launched synth_1... Run output will be captured here: /home/mbrennan/Desktop/MyFirstFPGAProject/MyFirstFPGAProject.runs/synth_1/runme.log 
+dismissDialog("Starting Design Runs"); // bk (Starting Design Runs Progress)
+// TclEventType: RUN_STATUS_CHANGE
+// TclEventType: RUN_COMPLETED
+// TclEventType: RUN_STATUS_CHANGE
+// TclEventType: RUN_STEP_COMPLETED
+// Elapsed time: 28 seconds
+selectRadioButton(PAResourceCommand.PACommandNames_RUN_IMPLEMENTATION, "Run Implementation"); // a (PAResourceCommand.PACommandNames_RUN_IMPLEMENTATION)
+// HMemoryUtils.trashcanNow. Engine heap size: 2,306 MB. GUI used memory: 94 MB. Current time: 6/9/26, 7:44:22 PM EDT
+selectButton(RDIResource.BaseDialog_OK, "OK", "Synthesis Completed"); // f (RDIResource.BaseDialog_OK)
+// Run Command: PAResourceCommand.PACommandNames_RUN_IMPLEMENTATION
+selectButton(RDIResource.BaseDialog_OK, "OK", "Launch Runs"); // f (RDIResource.BaseDialog_OK)
+// HMemoryUtils.trashcanNow. Engine heap size: 2,316 MB. GUI used memory: 95 MB. Current time: 6/9/26, 7:44:23 PM EDT
+dismissDialog("Launch Runs"); // g (dialog10)
+// TclEventType: PAUSE_COMPOSITE_FILE_CHANGE_GUI
+// TclEventType: FILESET_TARGET_UCF_CHANGE
+// TclEventType: RUN_LAUNCH
+// TclEventType: RUN_MODIFY
+// TclEventType: RUN_STATUS_CHANGE
+// TclEventType: PAUSE_COMPOSITE_FILE_CHANGE_GUI
+// Tcl Message: launch_runs impl_1 -jobs 6 
+// Tcl Message: [Tue Jun  9 17:44:24 2026] Launched impl_1... Run output will be captured here: /home/mbrennan/Desktop/MyFirstFPGAProject/MyFirstFPGAProject.runs/impl_1/runme.log 
+dismissDialog("Starting Design Runs"); // bk (Starting Design Runs Progress)
+// TclEventType: RUN_STATUS_CHANGE
+// TclEventType: RUN_STEP_COMPLETED
+// TclEventType: RUN_COMPLETED
+// TclEventType: RUN_STATUS_CHANGE
+// TclEventType: RUN_STEP_COMPLETED
+// Elapsed time: 37 seconds
+selectRadioButton(PAResourceCommand.PACommandNames_RUN_BITGEN, "Generate Bitstream"); // a (PAResourceCommand.PACommandNames_RUN_BITGEN)
+// HMemoryUtils.trashcanNow. Engine heap size: 2,307 MB. GUI used memory: 96 MB. Current time: 6/9/26, 7:45:02 PM EDT
+selectButton(RDIResource.BaseDialog_OK, "OK", "Implementation Completed"); // f (RDIResource.BaseDialog_OK)
+// Run Command: PAResourceCommand.PACommandNames_RUN_BITGEN
+// Elapsed time: 16 seconds
+selectButton(RDIResource.BaseDialog_OK, "OK", "Launch Runs"); // f (RDIResource.BaseDialog_OK)
+// 'cU' command handler elapsed time: 16 seconds
+// HMemoryUtils.trashcanNow. Engine heap size: 2,307 MB. GUI used memory: 97 MB. Current time: 6/9/26, 7:45:19 PM EDT
+dismissDialog("Launch Runs"); // cX (dialog11)
+// TclEventType: PAUSE_COMPOSITE_FILE_CHANGE_GUI
+// TclEventType: RUN_LAUNCH
+// TclEventType: RUN_MODIFY
+// TclEventType: PAUSE_COMPOSITE_FILE_CHANGE_GUI
+// Tcl Message: launch_runs impl_1 -to_step write_bitstream -jobs 6 
+// Tcl Message: [Tue Jun  9 17:45:19 2026] Launched impl_1... Run output will be captured here: /home/mbrennan/Desktop/MyFirstFPGAProject/MyFirstFPGAProject.runs/impl_1/runme.log 
+// TclEventType: RUN_STATUS_CHANGE
+// HMemoryUtils.trashcanNow. Engine heap size: 2,307 MB. GUI used memory: 96 MB. Current time: 6/9/26, 7:45:42 PM EDT
+// TclEventType: RUN_COMPLETED
+// TclEventType: RUN_STATUS_CHANGE
+// Elapsed time: 61 seconds
+selectRadioButton(PAResourceCommand.PACommandNames_OPEN_HARDWARE_MANAGER, "Open Hardware Manager"); // a (PAResourceCommand.PACommandNames_OPEN_HARDWARE_MANAGER)
+selectButton(RDIResource.BaseDialog_OK, "OK", "Bitstream Generation Completed"); // f (RDIResource.BaseDialog_OK)
+// Run Command: PAResourceCommand.PACommandNames_OPEN_HARDWARE_MANAGER
+// Tcl (Dont Echo) Command: 'rdi::info_commands get_hw_probes'
+// TclEventType: HW_SESSION_OPEN
+// Tcl Message: open_hw_manager 
+closeView(PAResourceOtoP.PAViews_PROJECT_SUMMARY, "Project Summary"); // x (PAResourceOtoP.PAViews_PROJECT_SUMMARY, PlanAheadTabProject Summary)
+dismissDialog("Open Hardware Manager"); // bk (Open Hardware Manager Progress)
+// HMemoryUtils.trashcanNow. Engine heap size: 2,485 MB. GUI used memory: 99 MB. Current time: 6/9/26, 7:46:22 PM EDT
+selectButton(PAResourceOtoP.ProgramDebugTab_OPEN_TARGET, "Open target"); // h (PAResourceOtoP.ProgramDebugTab_OPEN_TARGET)
+selectMenuItem(PAResourceCommand.PACommandNames_AUTO_CONNECT_TARGET, "Auto Connect"); // ap (PAResourceCommand.PACommandNames_AUTO_CONNECT_TARGET, auto_connect_target_menu)
+// Run Command: PAResourceCommand.PACommandNames_AUTO_CONNECT_TARGET
+// Tcl Message: connect_hw_server -allow_non_jtag 
+// Tcl Message: INFO: [Labtools 27-2285] Connecting to hw_server url TCP:localhost:3121 INFO: [Labtools 27-2222] Launching hw_server... 
+// TclEventType: HW_SERVER_UPDATE
+// Tcl Message: INFO: [Labtools 27-2221] Launch Output:  ****** Xilinx hw_server v2025.2   **** Build date : Oct 28 2025 at 16:07:00     ** Copyright 1986-2022 Xilinx, Inc. All Rights Reserved.   INFO: [Labtools 27-3415] Connecting to cs_server url TCP:localhost:0 INFO: [Labtools 27-3417] Launching cs_server... 
+// TclEventType: HW_SERVER_UPDATE
+// Tcl Message: INFO: [Labtools 27-2221] Launch Output:   ******** Xilinx cs_server v2025.2.0   ****** Build date   : Nov 13 2025-16:16:52     **** Build number : 2025.2.1763075812       ** Copyright 2017-2022 Xilinx, Inc. All Rights Reserved.       ** Copyright 2022-2026 Advanced Micro Devices, Inc. All Rights Reserved.    
+// TclEventType: HW_TARGET_CHANGE
+// TclEventType: HW_TARGET_CLOSE
+// TclEventType: HW_DEVICE_CHANGE
+// TclEventType: HW_SYSMON_ADD
+// TclEventType: HW_TARGET_UPDATE
+// Tcl Message: open_hw_target 
+// Tcl Message: INFO: [Labtoolstcl 44-466] Opening hw_target localhost:3121/xilinx_tcf/Digilent/210183BFD3B7A 
+// TclEventType: HW_DEVICE_CHANGE
+// Tcl Message: set_property PROGRAM.FILE {/home/mbrennan/Desktop/MyFirstFPGAProject/MyFirstFPGAProject.runs/impl_1/DebugTest.bit} [get_hw_devices xc7a35t_0] 
+// Tcl Message: current_hw_device [get_hw_devices xc7a35t_0] 
+// TclEventType: HW_DEVICE_CHANGE
+// TclEventType: HW_SYSMON_CHANGE
+// TclEventType: HW_DEVICE_UPDATE
+// TclEventType: HW_DEVICE_CHANGE
+// Tcl Message: refresh_hw_device -update_hw_probes false [lindex [get_hw_devices xc7a35t_0] 0] 
+// Tcl Message: INFO: [Labtools 27-1434] Device xc7a35t (JTAG device index = 0) is programmed with a design that has no supported soft debug core(s) in it. 
+dismissDialog("Auto Connect"); // bk (Auto Connect Progress)
+selectButton(PAResourceOtoP.ProgramDebugTab_PROGRAM_DEVICE, "Program device"); // h (PAResourceOtoP.ProgramDebugTab_PROGRAM_DEVICE)
+// Run Command: PAResourceCommand.PACommandNames_PROGRAM_FPGA
+selectButton(PAResourceOtoP.ProgramFpgaDialog_PROGRAM, "Program", "Program Device"); // f (PAResourceOtoP.ProgramFpgaDialog_PROGRAM, RDIResource.BaseDialog_OK)
+dismissDialog("Program Device"); // aT (dialog12)
+// TclEventType: HW_DEVICE_CHANGE
+// Tcl Message: set_property PROBES.FILE {} [get_hw_devices xc7a35t_0] 
+// Tcl Message: set_property FULL_PROBES.FILE {} [get_hw_devices xc7a35t_0] 
+// TclEventType: HW_DEVICE_CHANGE
+// Tcl Message: set_property PROGRAM.FILE {/home/mbrennan/Desktop/MyFirstFPGAProject/MyFirstFPGAProject.runs/impl_1/DebugTest.bit} [get_hw_devices xc7a35t_0] 
+// TclEventType: HW_DEVICE_CHANGE
+// Tcl Message: program_hw_devices [get_hw_devices xc7a35t_0] 
+// Tcl Message: INFO: [Labtools 27-3164] End of startup status: HIGH 
+// TclEventType: HW_DEVICE_CHANGE
+// TclEventType: HW_SYSMON_CHANGE
+// TclEventType: HW_DEVICE_UPDATE
+// TclEventType: HW_DEVICE_CHANGE
+// TclEventType: HW_DEVICE_PROBES_CHANGE
+// TclEventType: DEBUG_PROBE_SET_CHANGE
+// TclEventType: HW_DEVICE_PROBES_CHANGE
+// Tcl Message: refresh_hw_device [lindex [get_hw_devices xc7a35t_0] 0] 
+// Tcl Message: INFO: [Labtools 27-1434] Device xc7a35t (JTAG device index = 0) is programmed with a design that has no supported soft debug core(s) in it. 
+dismissDialog("Program Device"); // bk (Program Device Progress)
+selectCodeEditor("DebugTest.sv", 649, 246); // ae (DebugTest.sv)
+// HMemoryUtils.trashcanNow. Engine heap size: 2,318 MB. GUI used memory: 99 MB. Current time: 6/9/26, 7:47:03 PM EDT
+// HMemoryUtils.trashcanNow. Engine heap size: 2,318 MB. GUI used memory: 99 MB. Current time: 6/9/26, 7:47:43 PM EDT
+// HMemoryUtils.trashcanNow. Engine heap size: 2,318 MB. GUI used memory: 99 MB. Current time: 6/9/26, 7:48:23 PM EDT
+// HMemoryUtils.trashcanNow. Engine heap size: 2,318 MB. GUI used memory: 99 MB. Current time: 6/9/26, 7:49:03 PM EDT
+// HMemoryUtils.trashcanNow. Engine heap size: 2,318 MB. GUI used memory: 99 MB. Current time: 6/9/26, 7:49:43 PM EDT
+// HMemoryUtils.trashcanNow. Engine heap size: 2,318 MB. GUI used memory: 99 MB. Current time: 6/9/26, 7:50:23 PM EDT
+// HMemoryUtils.trashcanNow. Engine heap size: 2,318 MB. GUI used memory: 99 MB. Current time: 6/9/26, 7:51:03 PM EDT
+// HMemoryUtils.trashcanNow. Engine heap size: 2,318 MB. GUI used memory: 99 MB. Current time: 6/9/26, 7:51:43 PM EDT
+// HMemoryUtils.trashcanNow. Engine heap size: 2,318 MB. GUI used memory: 99 MB. Current time: 6/9/26, 7:52:23 PM EDT
+// HMemoryUtils.trashcanNow. Engine heap size: 2,318 MB. GUI used memory: 99 MB. Current time: 6/9/26, 7:53:03 PM EDT
+// HMemoryUtils.trashcanNow. Engine heap size: 2,318 MB. GUI used memory: 101 MB. Current time: 6/9/26, 7:53:43 PM EDT
+// HMemoryUtils.trashcanNow. Engine heap size: 2,318 MB. GUI used memory: 99 MB. Current time: 6/9/26, 7:54:23 PM EDT
+// HMemoryUtils.trashcanNow. Engine heap size: 2,318 MB. GUI used memory: 99 MB. Current time: 6/9/26, 7:55:03 PM EDT
+// HMemoryUtils.trashcanNow. Engine heap size: 2,318 MB. GUI used memory: 99 MB. Current time: 6/9/26, 7:55:43 PM EDT
+// HMemoryUtils.trashcanNow. Engine heap size: 2,318 MB. GUI used memory: 99 MB. Current time: 6/9/26, 7:56:23 PM EDT
+// HMemoryUtils.trashcanNow. Engine heap size: 2,318 MB. GUI used memory: 99 MB. Current time: 6/9/26, 7:57:03 PM EDT
+// HMemoryUtils.trashcanNow. Engine heap size: 2,318 MB. GUI used memory: 99 MB. Current time: 6/9/26, 7:57:43 PM EDT
+// HMemoryUtils.trashcanNow. Engine heap size: 2,318 MB. GUI used memory: 99 MB. Current time: 6/9/26, 7:58:23 PM EDT
+// HMemoryUtils.trashcanNow. Engine heap size: 2,318 MB. GUI used memory: 99 MB. Current time: 6/9/26, 7:59:03 PM EDT
+// HMemoryUtils.trashcanNow. Engine heap size: 2,318 MB. GUI used memory: 99 MB. Current time: 6/9/26, 7:59:43 PM EDT
+// HMemoryUtils.trashcanNow. Engine heap size: 2,318 MB. GUI used memory: 99 MB. Current time: 6/9/26, 8:00:23 PM EDT
+// HMemoryUtils.trashcanNow. Engine heap size: 2,318 MB. GUI used memory: 101 MB. Current time: 6/9/26, 8:01:03 PM EDT
+// HMemoryUtils.trashcanNow. Engine heap size: 2,318 MB. GUI used memory: 99 MB. Current time: 6/9/26, 8:01:43 PM EDT
+// HMemoryUtils.trashcanNow. Engine heap size: 2,318 MB. GUI used memory: 99 MB. Current time: 6/9/26, 8:02:23 PM EDT
+// HMemoryUtils.trashcanNow. Engine heap size: 2,318 MB. GUI used memory: 99 MB. Current time: 6/9/26, 8:03:03 PM EDT
+// HMemoryUtils.trashcanNow. Engine heap size: 2,318 MB. GUI used memory: 99 MB. Current time: 6/9/26, 8:03:43 PM EDT
+// HMemoryUtils.trashcanNow. Engine heap size: 2,318 MB. GUI used memory: 99 MB. Current time: 6/9/26, 8:04:23 PM EDT
+// HMemoryUtils.trashcanNow. Engine heap size: 2,318 MB. GUI used memory: 99 MB. Current time: 6/9/26, 8:05:03 PM EDT
+// HMemoryUtils.trashcanNow. Engine heap size: 2,318 MB. GUI used memory: 99 MB. Current time: 6/9/26, 8:05:43 PM EDT
+// HMemoryUtils.trashcanNow. Engine heap size: 2,318 MB. GUI used memory: 99 MB. Current time: 6/9/26, 8:06:24 PM EDT
+// HMemoryUtils.trashcanNow. Engine heap size: 2,318 MB. GUI used memory: 99 MB. Current time: 6/9/26, 8:07:04 PM EDT
+// HMemoryUtils.trashcanNow. Engine heap size: 2,318 MB. GUI used memory: 99 MB. Current time: 6/9/26, 8:07:44 PM EDT
+// HMemoryUtils.trashcanNow. Engine heap size: 2,318 MB. GUI used memory: 99 MB. Current time: 6/9/26, 8:08:24 PM EDT
+// HMemoryUtils.trashcanNow. Engine heap size: 2,318 MB. GUI used memory: 99 MB. Current time: 6/9/26, 8:09:04 PM EDT
+// HMemoryUtils.trashcanNow. Engine heap size: 2,318 MB. GUI used memory: 99 MB. Current time: 6/9/26, 8:09:44 PM EDT
+// HMemoryUtils.trashcanNow. Engine heap size: 2,318 MB. GUI used memory: 99 MB. Current time: 6/9/26, 8:10:24 PM EDT
+// HMemoryUtils.trashcanNow. Engine heap size: 2,318 MB. GUI used memory: 99 MB. Current time: 6/9/26, 8:11:04 PM EDT
+// HMemoryUtils.trashcanNow. Engine heap size: 2,318 MB. GUI used memory: 99 MB. Current time: 6/9/26, 8:11:44 PM EDT
+// HMemoryUtils.trashcanNow. Engine heap size: 2,318 MB. GUI used memory: 99 MB. Current time: 6/9/26, 8:12:24 PM EDT
+// HMemoryUtils.trashcanNow. Engine heap size: 2,318 MB. GUI used memory: 99 MB. Current time: 6/9/26, 8:13:04 PM EDT
+// HMemoryUtils.trashcanNow. Engine heap size: 2,318 MB. GUI used memory: 99 MB. Current time: 6/9/26, 8:13:44 PM EDT
+// HMemoryUtils.trashcanNow. Engine heap size: 2,318 MB. GUI used memory: 99 MB. Current time: 6/9/26, 8:14:24 PM EDT
+// HMemoryUtils.trashcanNow. Engine heap size: 2,318 MB. GUI used memory: 99 MB. Current time: 6/9/26, 8:15:04 PM EDT
+// HMemoryUtils.trashcanNow. Engine heap size: 2,318 MB. GUI used memory: 99 MB. Current time: 6/9/26, 8:15:44 PM EDT
+// HMemoryUtils.trashcanNow. Engine heap size: 2,318 MB. GUI used memory: 99 MB. Current time: 6/9/26, 8:16:24 PM EDT
+// HMemoryUtils.trashcanNow. Engine heap size: 2,318 MB. GUI used memory: 99 MB. Current time: 6/9/26, 8:17:04 PM EDT
+// HMemoryUtils.trashcanNow. Engine heap size: 2,318 MB. GUI used memory: 99 MB. Current time: 6/9/26, 8:17:44 PM EDT
+// HMemoryUtils.trashcanNow. Engine heap size: 2,318 MB. GUI used memory: 99 MB. Current time: 6/9/26, 8:18:24 PM EDT
+// HMemoryUtils.trashcanNow. Engine heap size: 2,318 MB. GUI used memory: 99 MB. Current time: 6/9/26, 8:19:04 PM EDT
+// HMemoryUtils.trashcanNow. Engine heap size: 2,318 MB. GUI used memory: 99 MB. Current time: 6/9/26, 8:19:44 PM EDT
+// HMemoryUtils.trashcanNow. Engine heap size: 2,318 MB. GUI used memory: 99 MB. Current time: 6/9/26, 8:20:24 PM EDT
+// HMemoryUtils.trashcanNow. Engine heap size: 2,318 MB. GUI used memory: 99 MB. Current time: 6/9/26, 8:21:04 PM EDT
+// HMemoryUtils.trashcanNow. Engine heap size: 2,318 MB. GUI used memory: 99 MB. Current time: 6/9/26, 8:21:44 PM EDT
+// HMemoryUtils.trashcanNow. Engine heap size: 2,318 MB. GUI used memory: 99 MB. Current time: 6/9/26, 8:22:24 PM EDT
+// HMemoryUtils.trashcanNow. Engine heap size: 2,318 MB. GUI used memory: 99 MB. Current time: 6/9/26, 8:23:04 PM EDT
+// HMemoryUtils.trashcanNow. Engine heap size: 2,318 MB. GUI used memory: 99 MB. Current time: 6/9/26, 8:23:44 PM EDT
+// HMemoryUtils.trashcanNow. Engine heap size: 2,318 MB. GUI used memory: 99 MB. Current time: 6/9/26, 8:24:24 PM EDT
+// HMemoryUtils.trashcanNow. Engine heap size: 2,318 MB. GUI used memory: 99 MB. Current time: 6/9/26, 8:25:04 PM EDT
+// HMemoryUtils.trashcanNow. Engine heap size: 2,318 MB. GUI used memory: 101 MB. Current time: 6/9/26, 8:25:44 PM EDT
+// HMemoryUtils.trashcanNow. Engine heap size: 2,318 MB. GUI used memory: 99 MB. Current time: 6/9/26, 8:26:24 PM EDT
+// HMemoryUtils.trashcanNow. Engine heap size: 2,318 MB. GUI used memory: 99 MB. Current time: 6/9/26, 8:27:04 PM EDT
+// HMemoryUtils.trashcanNow. Engine heap size: 2,318 MB. GUI used memory: 99 MB. Current time: 6/9/26, 8:27:44 PM EDT
+// HMemoryUtils.trashcanNow. Engine heap size: 2,318 MB. GUI used memory: 99 MB. Current time: 6/9/26, 8:28:24 PM EDT
+// HMemoryUtils.trashcanNow. Engine heap size: 2,318 MB. GUI used memory: 99 MB. Current time: 6/9/26, 8:29:04 PM EDT
+// HMemoryUtils.trashcanNow. Engine heap size: 2,318 MB. GUI used memory: 99 MB. Current time: 6/9/26, 8:29:44 PM EDT
+// HMemoryUtils.trashcanNow. Engine heap size: 2,318 MB. GUI used memory: 99 MB. Current time: 6/9/26, 8:30:24 PM EDT
+// HMemoryUtils.trashcanNow. Engine heap size: 2,318 MB. GUI used memory: 99 MB. Current time: 6/9/26, 8:31:04 PM EDT
+// HMemoryUtils.trashcanNow. Engine heap size: 2,319 MB. GUI used memory: 99 MB. Current time: 6/9/26, 8:31:44 PM EDT
+// HMemoryUtils.trashcanNow. Engine heap size: 2,319 MB. GUI used memory: 99 MB. Current time: 6/9/26, 8:32:24 PM EDT
+// HMemoryUtils.trashcanNow. Engine heap size: 2,319 MB. GUI used memory: 99 MB. Current time: 6/9/26, 8:33:04 PM EDT
+// HMemoryUtils.trashcanNow. Engine heap size: 2,319 MB. GUI used memory: 99 MB. Current time: 6/9/26, 8:33:44 PM EDT
+// HMemoryUtils.trashcanNow. Engine heap size: 2,319 MB. GUI used memory: 99 MB. Current time: 6/9/26, 8:34:24 PM EDT
+// HMemoryUtils.trashcanNow. Engine heap size: 2,319 MB. GUI used memory: 99 MB. Current time: 6/9/26, 8:35:04 PM EDT
+// HMemoryUtils.trashcanNow. Engine heap size: 2,319 MB. GUI used memory: 99 MB. Current time: 6/9/26, 8:35:44 PM EDT
+// HMemoryUtils.trashcanNow. Engine heap size: 2,319 MB. GUI used memory: 99 MB. Current time: 6/9/26, 8:36:24 PM EDT
+// HMemoryUtils.trashcanNow. Engine heap size: 2,319 MB. GUI used memory: 99 MB. Current time: 6/9/26, 8:37:04 PM EDT
+// HMemoryUtils.trashcanNow. Engine heap size: 2,319 MB. GUI used memory: 99 MB. Current time: 6/9/26, 8:37:44 PM EDT
+// HMemoryUtils.trashcanNow. Engine heap size: 2,319 MB. GUI used memory: 99 MB. Current time: 6/9/26, 8:38:24 PM EDT
+// HMemoryUtils.trashcanNow. Engine heap size: 2,319 MB. GUI used memory: 99 MB. Current time: 6/9/26, 8:39:04 PM EDT
+// HMemoryUtils.trashcanNow. Engine heap size: 2,319 MB. GUI used memory: 99 MB. Current time: 6/9/26, 8:39:44 PM EDT
+// HMemoryUtils.trashcanNow. Engine heap size: 2,319 MB. GUI used memory: 99 MB. Current time: 6/9/26, 8:40:24 PM EDT
+// HMemoryUtils.trashcanNow. Engine heap size: 2,319 MB. GUI used memory: 99 MB. Current time: 6/9/26, 8:41:04 PM EDT
+// HMemoryUtils.trashcanNow. Engine heap size: 2,319 MB. GUI used memory: 99 MB. Current time: 6/9/26, 8:41:44 PM EDT
+// HMemoryUtils.trashcanNow. Engine heap size: 2,319 MB. GUI used memory: 99 MB. Current time: 6/9/26, 8:42:24 PM EDT
+// HMemoryUtils.trashcanNow. Engine heap size: 2,319 MB. GUI used memory: 101 MB. Current time: 6/9/26, 8:43:04 PM EDT
+// HMemoryUtils.trashcanNow. Engine heap size: 2,319 MB. GUI used memory: 99 MB. Current time: 6/9/26, 8:43:44 PM EDT
+// HMemoryUtils.trashcanNow. Engine heap size: 2,319 MB. GUI used memory: 99 MB. Current time: 6/9/26, 8:44:25 PM EDT
+// HMemoryUtils.trashcanNow. Engine heap size: 2,319 MB. GUI used memory: 99 MB. Current time: 6/9/26, 8:45:05 PM EDT
+// HMemoryUtils.trashcanNow. Engine heap size: 2,319 MB. GUI used memory: 101 MB. Current time: 6/9/26, 8:45:45 PM EDT
+// HMemoryUtils.trashcanNow. Engine heap size: 2,319 MB. GUI used memory: 99 MB. Current time: 6/9/26, 8:46:25 PM EDT
+// HMemoryUtils.trashcanNow. Engine heap size: 2,319 MB. GUI used memory: 99 MB. Current time: 6/9/26, 8:47:05 PM EDT
+// HMemoryUtils.trashcanNow. Engine heap size: 2,319 MB. GUI used memory: 99 MB. Current time: 6/9/26, 8:47:45 PM EDT
+// HMemoryUtils.trashcanNow. Engine heap size: 2,319 MB. GUI used memory: 99 MB. Current time: 6/9/26, 8:48:25 PM EDT
+// HMemoryUtils.trashcanNow. Engine heap size: 2,319 MB. GUI used memory: 99 MB. Current time: 6/9/26, 8:49:05 PM EDT
+// HMemoryUtils.trashcanNow. Engine heap size: 2,319 MB. GUI used memory: 99 MB. Current time: 6/9/26, 8:49:45 PM EDT
+// HMemoryUtils.trashcanNow. Engine heap size: 2,319 MB. GUI used memory: 99 MB. Current time: 6/9/26, 8:50:25 PM EDT
+// HMemoryUtils.trashcanNow. Engine heap size: 2,319 MB. GUI used memory: 99 MB. Current time: 6/9/26, 8:51:05 PM EDT
+// HMemoryUtils.trashcanNow. Engine heap size: 2,319 MB. GUI used memory: 99 MB. Current time: 6/9/26, 8:51:45 PM EDT
+// HMemoryUtils.trashcanNow. Engine heap size: 2,319 MB. GUI used memory: 99 MB. Current time: 6/9/26, 8:52:25 PM EDT
+// HMemoryUtils.trashcanNow. Engine heap size: 2,319 MB. GUI used memory: 99 MB. Current time: 6/9/26, 8:53:05 PM EDT
+// HMemoryUtils.trashcanNow. Engine heap size: 2,319 MB. GUI used memory: 99 MB. Current time: 6/9/26, 8:53:45 PM EDT
+// HMemoryUtils.trashcanNow. Engine heap size: 2,319 MB. GUI used memory: 99 MB. Current time: 6/9/26, 8:54:25 PM EDT
+// HMemoryUtils.trashcanNow. Engine heap size: 2,319 MB. GUI used memory: 99 MB. Current time: 6/9/26, 8:55:05 PM EDT
+// HMemoryUtils.trashcanNow. Engine heap size: 2,319 MB. GUI used memory: 99 MB. Current time: 6/9/26, 8:55:45 PM EDT
+// HMemoryUtils.trashcanNow. Engine heap size: 2,319 MB. GUI used memory: 99 MB. Current time: 6/9/26, 8:56:25 PM EDT
+// HMemoryUtils.trashcanNow. Engine heap size: 2,319 MB. GUI used memory: 99 MB. Current time: 6/9/26, 8:57:05 PM EDT
+// HMemoryUtils.trashcanNow. Engine heap size: 2,319 MB. GUI used memory: 99 MB. Current time: 6/9/26, 8:57:45 PM EDT
+// HMemoryUtils.trashcanNow. Engine heap size: 2,319 MB. GUI used memory: 99 MB. Current time: 6/9/26, 8:58:25 PM EDT
+// HMemoryUtils.trashcanNow. Engine heap size: 2,319 MB. GUI used memory: 99 MB. Current time: 6/9/26, 8:59:05 PM EDT
+// HMemoryUtils.trashcanNow. Engine heap size: 2,319 MB. GUI used memory: 99 MB. Current time: 6/9/26, 8:59:45 PM EDT
+// HMemoryUtils.trashcanNow. Engine heap size: 2,319 MB. GUI used memory: 99 MB. Current time: 6/9/26, 9:00:25 PM EDT
+// HMemoryUtils.trashcanNow. Engine heap size: 2,319 MB. GUI used memory: 99 MB. Current time: 6/9/26, 9:01:05 PM EDT
+// HMemoryUtils.trashcanNow. Engine heap size: 2,319 MB. GUI used memory: 99 MB. Current time: 6/9/26, 9:01:45 PM EDT
+// HMemoryUtils.trashcanNow. Engine heap size: 2,319 MB. GUI used memory: 99 MB. Current time: 6/9/26, 9:02:25 PM EDT
+// HMemoryUtils.trashcanNow. Engine heap size: 2,319 MB. GUI used memory: 99 MB. Current time: 6/9/26, 9:03:05 PM EDT
+// HMemoryUtils.trashcanNow. Engine heap size: 2,319 MB. GUI used memory: 99 MB. Current time: 6/9/26, 9:03:45 PM EDT
+// HMemoryUtils.trashcanNow. Engine heap size: 2,319 MB. GUI used memory: 99 MB. Current time: 6/9/26, 9:04:25 PM EDT
+// HMemoryUtils.trashcanNow. Engine heap size: 2,319 MB. GUI used memory: 99 MB. Current time: 6/9/26, 9:05:05 PM EDT
+// HMemoryUtils.trashcanNow. Engine heap size: 2,319 MB. GUI used memory: 99 MB. Current time: 6/9/26, 9:05:45 PM EDT
+// HMemoryUtils.trashcanNow. Engine heap size: 2,319 MB. GUI used memory: 99 MB. Current time: 6/9/26, 9:06:25 PM EDT
+// HMemoryUtils.trashcanNow. Engine heap size: 2,319 MB. GUI used memory: 99 MB. Current time: 6/9/26, 9:07:05 PM EDT
+// HMemoryUtils.trashcanNow. Engine heap size: 2,319 MB. GUI used memory: 99 MB. Current time: 6/9/26, 9:07:45 PM EDT
+// HMemoryUtils.trashcanNow. Engine heap size: 2,319 MB. GUI used memory: 99 MB. Current time: 6/9/26, 9:08:25 PM EDT
+// WARNING: HEventQueue.dispatchEvent() is taking  4356 ms.
+// WARNING: HEventQueue.dispatchEvent() is taking  7435 ms.
+// WARNING: HSwingWorker (Monitor File Timestamp Swing Worker) is taking 600 ms to process. Increasing delay to 2000 ms.
+// WARNING: HSwingWorker (Monitor File Timestamp Swing Worker) is taking 746 ms to process. Increasing delay to 2000 ms.
+// WARNING: HSwingWorker (Refresh Filesets Swing Worker) is taking 9743 ms. Increasing delay to 29229 ms.
+// WARNING: HSwingWorker (Monitor File Timestamp Swing Worker) is taking 764 ms to process. Increasing delay to 2000 ms.
+// WARNING: HSwingWorker (Monitor File Timestamp Swing Worker) is taking 675 ms to process. Increasing delay to 2000 ms.
+// WARNING: HSwingWorker (Monitor File Timestamp Swing Worker) is taking 1719 ms to process. Increasing delay to 2000 ms.
+// WARNING: HSwingWorker (Monitor File Timestamp Swing Worker) is taking 1229 ms to process. Increasing delay to 2000 ms.
+// WARNING: HSwingWorker (Monitor File Timestamp Swing Worker) is taking 1701 ms to process. Increasing delay to 2000 ms.
+// WARNING: HSwingWorker (Update Runs Swing Worker) is taking 11438 ms. Increasing delay to 3000 ms.
+// HMemoryUtils.trashcanNow. Engine heap size: 2,320 MB. GUI used memory: 99 MB. Current time: 6/9/26, 9:09:16 PM EDT
+// WARNING: HSwingWorker (Refresh Filesets Swing Worker) is taking 1 ms. Decreasing delay to 2001 ms.
+// HMemoryUtils.trashcanNow. Engine heap size: 2,320 MB. GUI used memory: 99 MB. Current time: 6/9/26, 9:09:56 PM EDT
+// HMemoryUtils.trashcanNow. Engine heap size: 2,320 MB. GUI used memory: 99 MB. Current time: 6/9/26, 9:10:36 PM EDT
+// HMemoryUtils.trashcanNow. Engine heap size: 2,320 MB. GUI used memory: 83 MB. Current time: 6/9/26, 9:11:16 PM EDT
+// HMemoryUtils.trashcanNow. Engine heap size: 2,320 MB. GUI used memory: 82 MB. Current time: 6/9/26, 9:11:56 PM EDT
+// HMemoryUtils.trashcanNow. Engine heap size: 2,320 MB. GUI used memory: 82 MB. Current time: 6/9/26, 9:12:36 PM EDT
+// HMemoryUtils.trashcanNow. Engine heap size: 2,320 MB. GUI used memory: 82 MB. Current time: 6/9/26, 9:13:16 PM EDT
+// HMemoryUtils.trashcanNow. Engine heap size: 2,320 MB. GUI used memory: 82 MB. Current time: 6/9/26, 9:13:56 PM EDT
+// HMemoryUtils.trashcanNow. Engine heap size: 2,320 MB. GUI used memory: 82 MB. Current time: 6/9/26, 9:14:36 PM EDT
+// HMemoryUtils.trashcanNow. Engine heap size: 2,320 MB. GUI used memory: 82 MB. Current time: 6/9/26, 9:15:16 PM EDT
+// HMemoryUtils.trashcanNow. Engine heap size: 2,320 MB. GUI used memory: 82 MB. Current time: 6/9/26, 9:15:56 PM EDT
+// HMemoryUtils.trashcanNow. Engine heap size: 2,320 MB. GUI used memory: 82 MB. Current time: 6/9/26, 9:16:36 PM EDT
+// HMemoryUtils.trashcanNow. Engine heap size: 2,320 MB. GUI used memory: 81 MB. Current time: 6/9/26, 9:17:16 PM EDT
+// HMemoryUtils.trashcanNow. Engine heap size: 2,320 MB. GUI used memory: 83 MB. Current time: 6/9/26, 9:17:56 PM EDT
+// HMemoryUtils.trashcanNow. Engine heap size: 2,320 MB. GUI used memory: 81 MB. Current time: 6/9/26, 9:18:36 PM EDT
+// HMemoryUtils.trashcanNow. Engine heap size: 2,320 MB. GUI used memory: 81 MB. Current time: 6/9/26, 9:19:16 PM EDT
+// HMemoryUtils.trashcanNow. Engine heap size: 2,320 MB. GUI used memory: 81 MB. Current time: 6/9/26, 9:19:56 PM EDT
+// HMemoryUtils.trashcanNow. Engine heap size: 2,320 MB. GUI used memory: 81 MB. Current time: 6/9/26, 9:20:36 PM EDT
+// HMemoryUtils.trashcanNow. Engine heap size: 2,320 MB. GUI used memory: 81 MB. Current time: 6/9/26, 9:21:16 PM EDT
+// HMemoryUtils.trashcanNow. Engine heap size: 2,320 MB. GUI used memory: 81 MB. Current time: 6/9/26, 9:21:56 PM EDT
+// HMemoryUtils.trashcanNow. Engine heap size: 2,320 MB. GUI used memory: 81 MB. Current time: 6/9/26, 9:22:36 PM EDT
+// HMemoryUtils.trashcanNow. Engine heap size: 2,320 MB. GUI used memory: 81 MB. Current time: 6/9/26, 9:23:16 PM EDT
+// HMemoryUtils.trashcanNow. Engine heap size: 2,320 MB. GUI used memory: 81 MB. Current time: 6/9/26, 9:23:56 PM EDT
+// HMemoryUtils.trashcanNow. Engine heap size: 2,320 MB. GUI used memory: 81 MB. Current time: 6/9/26, 9:24:36 PM EDT
+// HMemoryUtils.trashcanNow. Engine heap size: 2,320 MB. GUI used memory: 81 MB. Current time: 6/9/26, 9:25:16 PM EDT
+// HMemoryUtils.trashcanNow. Engine heap size: 2,320 MB. GUI used memory: 81 MB. Current time: 6/9/26, 9:25:56 PM EDT
+// HMemoryUtils.trashcanNow. Engine heap size: 2,320 MB. GUI used memory: 81 MB. Current time: 6/9/26, 9:26:36 PM EDT
+// HMemoryUtils.trashcanNow. Engine heap size: 2,320 MB. GUI used memory: 81 MB. Current time: 6/9/26, 9:27:16 PM EDT
+// HMemoryUtils.trashcanNow. Engine heap size: 2,320 MB. GUI used memory: 81 MB. Current time: 6/9/26, 9:27:56 PM EDT
+// HMemoryUtils.trashcanNow. Engine heap size: 2,320 MB. GUI used memory: 80 MB. Current time: 6/9/26, 9:28:36 PM EDT
+// HMemoryUtils.trashcanNow. Engine heap size: 2,320 MB. GUI used memory: 80 MB. Current time: 6/9/26, 9:29:16 PM EDT
+// HMemoryUtils.trashcanNow. Engine heap size: 2,320 MB. GUI used memory: 80 MB. Current time: 6/9/26, 9:29:56 PM EDT
+// HMemoryUtils.trashcanNow. Engine heap size: 2,320 MB. GUI used memory: 80 MB. Current time: 6/9/26, 9:30:36 PM EDT
+// HMemoryUtils.trashcanNow. Engine heap size: 2,320 MB. GUI used memory: 80 MB. Current time: 6/9/26, 9:31:16 PM EDT
+// HMemoryUtils.trashcanNow. Engine heap size: 2,320 MB. GUI used memory: 80 MB. Current time: 6/9/26, 9:31:56 PM EDT
+// HMemoryUtils.trashcanNow. Engine heap size: 2,320 MB. GUI used memory: 80 MB. Current time: 6/9/26, 9:32:36 PM EDT
+// HMemoryUtils.trashcanNow. Engine heap size: 2,320 MB. GUI used memory: 80 MB. Current time: 6/9/26, 9:33:16 PM EDT
+// HMemoryUtils.trashcanNow. Engine heap size: 2,320 MB. GUI used memory: 80 MB. Current time: 6/9/26, 9:33:56 PM EDT
+// HMemoryUtils.trashcanNow. Engine heap size: 2,320 MB. GUI used memory: 80 MB. Current time: 6/9/26, 9:34:37 PM EDT
+// HMemoryUtils.trashcanNow. Engine heap size: 2,320 MB. GUI used memory: 82 MB. Current time: 6/9/26, 9:35:17 PM EDT
+// HMemoryUtils.trashcanNow. Engine heap size: 2,320 MB. GUI used memory: 80 MB. Current time: 6/9/26, 9:35:57 PM EDT
+// HMemoryUtils.trashcanNow. Engine heap size: 2,320 MB. GUI used memory: 80 MB. Current time: 6/9/26, 9:36:37 PM EDT
+// HMemoryUtils.trashcanNow. Engine heap size: 2,320 MB. GUI used memory: 80 MB. Current time: 6/9/26, 9:37:17 PM EDT
+// HMemoryUtils.trashcanNow. Engine heap size: 2,320 MB. GUI used memory: 80 MB. Current time: 6/9/26, 9:37:57 PM EDT
+// HMemoryUtils.trashcanNow. Engine heap size: 2,320 MB. GUI used memory: 80 MB. Current time: 6/9/26, 9:38:37 PM EDT
+// HMemoryUtils.trashcanNow. Engine heap size: 2,320 MB. GUI used memory: 80 MB. Current time: 6/9/26, 9:39:17 PM EDT
+// HMemoryUtils.trashcanNow. Engine heap size: 2,320 MB. GUI used memory: 80 MB. Current time: 6/9/26, 9:39:57 PM EDT
+// HMemoryUtils.trashcanNow. Engine heap size: 2,320 MB. GUI used memory: 80 MB. Current time: 6/9/26, 9:40:37 PM EDT
+// HMemoryUtils.trashcanNow. Engine heap size: 2,320 MB. GUI used memory: 80 MB. Current time: 6/9/26, 9:41:17 PM EDT
+// HMemoryUtils.trashcanNow. Engine heap size: 2,320 MB. GUI used memory: 80 MB. Current time: 6/9/26, 9:41:57 PM EDT
+// HMemoryUtils.trashcanNow. Engine heap size: 2,320 MB. GUI used memory: 80 MB. Current time: 6/9/26, 9:42:37 PM EDT
+// HMemoryUtils.trashcanNow. Engine heap size: 2,320 MB. GUI used memory: 80 MB. Current time: 6/9/26, 9:43:17 PM EDT
+// HMemoryUtils.trashcanNow. Engine heap size: 2,320 MB. GUI used memory: 80 MB. Current time: 6/9/26, 9:43:57 PM EDT
+// HMemoryUtils.trashcanNow. Engine heap size: 2,320 MB. GUI used memory: 80 MB. Current time: 6/9/26, 9:44:37 PM EDT
+// HMemoryUtils.trashcanNow. Engine heap size: 2,320 MB. GUI used memory: 80 MB. Current time: 6/9/26, 9:45:17 PM EDT
+// HMemoryUtils.trashcanNow. Engine heap size: 2,320 MB. GUI used memory: 80 MB. Current time: 6/9/26, 9:45:57 PM EDT
+// HMemoryUtils.trashcanNow. Engine heap size: 2,320 MB. GUI used memory: 80 MB. Current time: 6/9/26, 9:46:37 PM EDT
+// HMemoryUtils.trashcanNow. Engine heap size: 2,320 MB. GUI used memory: 80 MB. Current time: 6/9/26, 9:47:17 PM EDT
+// HMemoryUtils.trashcanNow. Engine heap size: 2,320 MB. GUI used memory: 80 MB. Current time: 6/9/26, 9:47:57 PM EDT
+// HMemoryUtils.trashcanNow. Engine heap size: 2,320 MB. GUI used memory: 80 MB. Current time: 6/9/26, 9:48:37 PM EDT
+// HMemoryUtils.trashcanNow. Engine heap size: 2,320 MB. GUI used memory: 80 MB. Current time: 6/9/26, 9:49:17 PM EDT
+// HMemoryUtils.trashcanNow. Engine heap size: 2,320 MB. GUI used memory: 80 MB. Current time: 6/9/26, 9:49:57 PM EDT
+// HMemoryUtils.trashcanNow. Engine heap size: 2,320 MB. GUI used memory: 80 MB. Current time: 6/9/26, 9:50:37 PM EDT
+// HMemoryUtils.trashcanNow. Engine heap size: 2,320 MB. GUI used memory: 80 MB. Current time: 6/9/26, 9:51:17 PM EDT
+// HMemoryUtils.trashcanNow. Engine heap size: 2,320 MB. GUI used memory: 80 MB. Current time: 6/9/26, 9:51:57 PM EDT
+// HMemoryUtils.trashcanNow. Engine heap size: 2,320 MB. GUI used memory: 80 MB. Current time: 6/9/26, 9:52:37 PM EDT
+// HMemoryUtils.trashcanNow. Engine heap size: 2,320 MB. GUI used memory: 80 MB. Current time: 6/9/26, 9:53:17 PM EDT
+// HMemoryUtils.trashcanNow. Engine heap size: 2,320 MB. GUI used memory: 80 MB. Current time: 6/9/26, 9:53:57 PM EDT
+// HMemoryUtils.trashcanNow. Engine heap size: 2,320 MB. GUI used memory: 80 MB. Current time: 6/9/26, 9:54:37 PM EDT
+// HMemoryUtils.trashcanNow. Engine heap size: 2,320 MB. GUI used memory: 80 MB. Current time: 6/9/26, 9:55:17 PM EDT
+// HMemoryUtils.trashcanNow. Engine heap size: 2,320 MB. GUI used memory: 80 MB. Current time: 6/9/26, 9:55:57 PM EDT
+// HMemoryUtils.trashcanNow. Engine heap size: 2,320 MB. GUI used memory: 80 MB. Current time: 6/9/26, 9:56:37 PM EDT
+// HMemoryUtils.trashcanNow. Engine heap size: 2,320 MB. GUI used memory: 80 MB. Current time: 6/9/26, 9:57:17 PM EDT
+// HMemoryUtils.trashcanNow. Engine heap size: 2,320 MB. GUI used memory: 80 MB. Current time: 6/9/26, 9:57:57 PM EDT
+// HMemoryUtils.trashcanNow. Engine heap size: 2,320 MB. GUI used memory: 80 MB. Current time: 6/9/26, 9:58:37 PM EDT
+// HMemoryUtils.trashcanNow. Engine heap size: 2,320 MB. GUI used memory: 80 MB. Current time: 6/9/26, 9:59:17 PM EDT
+// HMemoryUtils.trashcanNow. Engine heap size: 2,320 MB. GUI used memory: 80 MB. Current time: 6/9/26, 9:59:57 PM EDT
+// HMemoryUtils.trashcanNow. Engine heap size: 2,320 MB. GUI used memory: 80 MB. Current time: 6/9/26, 10:00:37 PM EDT
+// HMemoryUtils.trashcanNow. Engine heap size: 2,320 MB. GUI used memory: 80 MB. Current time: 6/9/26, 10:01:17 PM EDT
+// HMemoryUtils.trashcanNow. Engine heap size: 2,320 MB. GUI used memory: 80 MB. Current time: 6/9/26, 10:01:57 PM EDT
+// HMemoryUtils.trashcanNow. Engine heap size: 2,320 MB. GUI used memory: 80 MB. Current time: 6/9/26, 10:02:37 PM EDT
+// HMemoryUtils.trashcanNow. Engine heap size: 2,320 MB. GUI used memory: 80 MB. Current time: 6/9/26, 10:03:17 PM EDT
+// TclEventType: DG_GRAPH_STALE
+// TclEventType: FILE_SET_CHANGE
+// HMemoryUtils.trashcanNow. Engine heap size: 2,321 MB. GUI used memory: 80 MB. Current time: 6/9/26, 10:03:57 PM EDT
+// Elapsed Time for: 'PAResourceItoN.MsgLongTask_MESSAGE_LONG_TASK/M.f': 02h:34m:11s
+// TclEventType: DG_GRAPH_GENERATED
+// TclEventType: DG_GRAPH_STALE
+// TclEventType: FILE_SET_CHANGE
+// Elapsed Time for: 'PAResourceItoN.MsgLongTask_MESSAGE_LONG_TASK/M.f': 02h:34m:13s
+// Tcl Message: update_compile_order -fileset sources_1 
+// Elapsed Time for: 'PAResourceItoN.MsgLongTask_MESSAGE_LONG_TASK/M.f': 02h:34m:15s
+// TclEventType: DG_GRAPH_GENERATED
+// Elapsed Time for: 'PAResourceItoN.MsgLongTask_MESSAGE_LONG_TASK/M.f': 02h:34m:17s
+// Elapsed time: 8253 seconds
+selectButton(PAResourceAtoD.AbstractFileView_RELOAD, "Reload"); // h (PAResourceAtoD.AbstractFileView_RELOAD)
+selectButton(PAResourceTtoZ.TaskBanner_CLOSE, (String) null); // k (PAResourceTtoZ.TaskBanner_CLOSE)
+closeTask("Program and Debug", "Hardware Manager", "DesignTask.PROGRAM_DEBUG");
+// TclEventType: HW_OBJECT_DELETE
+// TclEventType: HW_SERVER_CLOSE
+// TclEventType: HW_SYSMON_DELETE
+// TclEventType: HW_TARGET_CLOSE
+// TclEventType: HW_TARGET_UPDATE
+// TclEventType: DEBUG_PROBE_DELETE
+// TclEventType: HW_SESSION_CLOSE
+// Tcl Message: close_hw_manager 
+dismissDialog("Close Hardware Manager"); // bk (Close Hardware Manager Progress)
+selectTree(PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE, "[root, Design Sources, DebugTest (DebugTest.sv), fifo : xil_defaultlib.Fifo]", 3, false); // E (PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE)
+selectTree(PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE, "[root, Design Sources, DebugTest (DebugTest.sv), fifo : xil_defaultlib.Fifo]", 3, false, false, false, false, true, false); // E (PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE) - Popup Trigger
+selectMenu(PAResourceCommand.PACommandNames_AUTO_UPDATE_HIER, "Hierarchy Update"); // am (PAResourceCommand.PACommandNames_AUTO_UPDATE_HIER, Hierarchy Update)
+selectMenu(PAResourceQtoS.SrcMenu_IP_HIERARCHY, "IP Hierarchy"); // am (PAResourceQtoS.SrcMenu_IP_HIERARCHY, IP Hierarchy)
+selectMenuItem(PAResourceCommand.PACommandNames_ADD_SOURCES, "Add Sources..."); // ap (PAResourceCommand.PACommandNames_ADD_SOURCES, add_sources_menu)
+// Run Command: PAResourceCommand.PACommandNames_ADD_SOURCES
+selectButton("NEXT", "Next", "Add Sources"); // JButton (NEXT)
+selectButton(PAResourceQtoS.SrcChooserPanel_ADD_HDL_AND_NETLIST_FILES_TO_YOUR_PROJECT, "Add Files", "Add Sources"); // h (PAResourceQtoS.SrcChooserPanel_ADD_HDL_AND_NETLIST_FILES_TO_YOUR_PROJECT)
+setFileChooser("/home/mbrennan/Desktop/chiseltest/build/sv/EmitDebugTest/Fifo.sv");
+selectButton(PAResourceQtoS.SrcChooserPanel_ADD_OR_CREATE_SOURCE_FILE, "Add", "Add Sources"); // C (PAResourceQtoS.SrcChooserPanel_ADD_OR_CREATE_SOURCE_FILE, Add)
+selectMenuItem(PAResourceQtoS.SrcChooserPanel_ADD_HDL_AND_NETLIST_FILES_TO_YOUR_PROJECT, "Add Files..."); // ap (PAResourceQtoS.SrcChooserPanel_ADD_HDL_AND_NETLIST_FILES_TO_YOUR_PROJECT, Add Files...)
+setFileChooser("/home/mbrennan/Desktop/chiseltest/build/sv/EmitDebugTest/buf_16x8.sv");
+selectButton("FINISH", "Finish", "Add Sources"); // JButton (FINISH)
+// 'f' command handler elapsed time: 12 seconds
+dismissDialog("Add Sources"); // d (dialog13)
+// TclEventType: DG_GRAPH_STALE
+// TclEventType: FILE_SET_CHANGE
+// Tcl Message: add_files -norecurse {/home/mbrennan/Desktop/chiseltest/build/sv/EmitDebugTest/Fifo.sv /home/mbrennan/Desktop/chiseltest/build/sv/EmitDebugTest/buf_16x8.sv} 
+// Elapsed Time for: 'PAResourceItoN.MsgLongTask_MESSAGE_LONG_TASK/M.f': 02h:34m:43s
+// TclEventType: DG_GRAPH_GENERATED
+// TclEventType: FILE_SET_CHANGE
+// Elapsed Time for: 'PAResourceItoN.MsgLongTask_MESSAGE_LONG_TASK/M.f': 02h:34m:45s
+// Tcl Message: update_compile_order -fileset sources_1 
+expandTree(PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE, "[root, Design Sources, DebugTest (DebugTest.sv), fifo : Fifo (Fifo.sv)]", 3); // E (PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE)
+collapseTree(PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE, "[root, Design Sources, DebugTest (DebugTest.sv), fifo : Fifo (Fifo.sv)]", 3); // E (PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE)
+expandTree(PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE, "[root, Design Sources, DebugTest (DebugTest.sv), fifo : Fifo (Fifo.sv)]", 3); // E (PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE)
+selectTree(PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE, "[root, Design Sources, DebugTest (DebugTest.sv), fifo : Fifo (Fifo.sv), buf_ext : buf_16x8 (buf_16x8.sv)]", 4, false); // E (PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE)
+selectTree(PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE, "[root, Design Sources, DebugTest (DebugTest.sv), fifo : Fifo (Fifo.sv)]", 3, true); // E (PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE) - Node
+selectTree(PAResourceEtoH.FlowNavigatorTreePanel_FLOW_NAVIGATOR_TREE, "[, Synthesis, Run Synthesis]", 15, false); // g (PAResourceEtoH.FlowNavigatorTreePanel_FLOW_NAVIGATOR_TREE, Flow Navigator Tree)
+// Run Command: PAResourceCommand.PACommandNames_RUN_SYNTHESIS
+// TclEventType: PAUSE_COMPOSITE_FILE_CHANGE_GUI
+// TclEventType: RUN_MODIFY
+// TclEventType: RUN_RESET
+// TclEventType: RUN_STATUS_CHANGE
+// TclEventType: RUN_RESET
+// TclEventType: RUN_STATUS_CHANGE
+// TclEventType: RUN_RESET
+// TclEventType: RUN_MODIFY
+// TclEventType: PAUSE_COMPOSITE_FILE_CHANGE_GUI
+// Tcl Message: reset_run synth_1 
+// Tcl Message: INFO: [Project 1-1161] Replacing file /home/mbrennan/Desktop/MyFirstFPGAProject/MyFirstFPGAProject.srcs/utils_1/imports/synth_1/Top.dcp with file /home/mbrennan/Desktop/MyFirstFPGAProject/MyFirstFPGAProject.runs/synth_1/DebugTest.dcp 
+// TclEventType: FILE_SET_CHANGE
+// HMemoryUtils.trashcanNow. Engine heap size: 2,368 MB. GUI used memory: 84 MB. Current time: 6/9/26, 10:04:38 PM EDT
+selectButton(RDIResource.BaseDialog_OK, "OK", "Launch Runs"); // f (RDIResource.BaseDialog_OK)
+// HMemoryUtils.trashcanNow. Engine heap size: 2,368 MB. GUI used memory: 83 MB. Current time: 6/9/26, 10:04:39 PM EDT
+dismissDialog("Launch Runs"); // g (dialog14)
+// TclEventType: PAUSE_COMPOSITE_FILE_CHANGE_GUI
+// TclEventType: FILESET_TARGET_UCF_CHANGE
+// TclEventType: RUN_LAUNCH
+// TclEventType: RUN_MODIFY
+// TclEventType: RUN_STATUS_CHANGE
+// TclEventType: PAUSE_COMPOSITE_FILE_CHANGE_GUI
+// Tcl Message: launch_runs synth_1 -jobs 6 
+// Tcl Message: [Tue Jun  9 20:04:39 2026] Launched synth_1... Run output will be captured here: /home/mbrennan/Desktop/MyFirstFPGAProject/MyFirstFPGAProject.runs/synth_1/runme.log 
+dismissDialog("Starting Design Runs"); // bk (Starting Design Runs Progress)
+// TclEventType: RUN_STATUS_CHANGE
+// Elapsed time: 26 seconds
+selectButton(PAResourceItoN.LogPanel_PAUSE_OUTPUT, "Compilation_pause"); // w (PAResourceItoN.LogPanel_PAUSE_OUTPUT, Compilation_pause): TRUE
+// TclEventType: RUN_COMPLETED
+// TclEventType: RUN_STATUS_CHANGE
+// TclEventType: RUN_STEP_COMPLETED
+selectButton(RDIResource.BaseDialog_CANCEL, "Cancel", "Synthesis Completed"); // f (RDIResource.BaseDialog_CANCEL)
+dismissDialog("Synthesis Completed"); // W.a (dialog15)
+// HMemoryUtils.trashcanNow. Engine heap size: 2,359 MB. GUI used memory: 83 MB. Current time: 6/9/26, 10:05:19 PM EDT
+selectCodeEditor(PAResourceItoN.LogMonitor_MONITOR, 362, 338); // B (PAResourceItoN.LogMonitor_MONITOR, Monitor)
+selectCodeEditor(PAResourceItoN.LogMonitor_MONITOR, 385, 302); // B (PAResourceItoN.LogMonitor_MONITOR, Monitor)
+selectCodeEditor(PAResourceItoN.LogMonitor_MONITOR, 393, 312); // B (PAResourceItoN.LogMonitor_MONITOR, Monitor)
+selectCodeEditor(PAResourceItoN.LogMonitor_MONITOR, 391, 209); // B (PAResourceItoN.LogMonitor_MONITOR, Monitor)
+selectTree(PAResourceEtoH.FlowNavigatorTreePanel_FLOW_NAVIGATOR_TREE, "[, Synthesis, Open Synthesized Design]", 16, true); // g (PAResourceEtoH.FlowNavigatorTreePanel_FLOW_NAVIGATOR_TREE, Flow Navigator Tree) - Node
+// Run Command: PAResourceCommand.PACommandNames_GOTO_NETLIST_DESIGN
+// Tcl Message: open_run synth_1 -name synth_1 
+// Tcl Message: Design is defaulting to impl run constrset: constrs_1 Design is defaulting to synth run part: xc7a35tcpg236-1 
+// TclEventType: READ_XDC_FILE_START
+// TclEventType: PLACE_STORAGE_MODIFY_PRE
+// TclEventType: LOC_CONSTRAINT_ADD
+// TclEventType: SIGNAL_MODIFY
+// TclEventType: POWER_CNS_STALE
+// TclEventType: POWER_REPORT_STALE
+// TclEventType: SDC_CONSTRAINT_ADD
+// TclEventType: PLACE_STORAGE_MODIFY_PRE
+// TclEventType: LOC_CONSTRAINT_ADD
+// TclEventType: SIGNAL_MODIFY
+// TclEventType: PLACE_STORAGE_MODIFY_PRE
+// TclEventType: LOC_CONSTRAINT_ADD
+// TclEventType: SIGNAL_MODIFY
+// TclEventType: READ_XDC_FILE_END
+// TclEventType: FLOORPLAN_MODIFY
+// TclEventType: DESIGN_NEW
+// HMemoryUtils.trashcanNow. Engine heap size: 2,750 MB. GUI used memory: 83 MB. Current time: 6/9/26, 10:05:39 PM EDT
+// [Engine Memory]: 2,993 MB (+28237kb) [02:36:04]
+// Xgd.load filename: /home/mbrennan/Desktop/chiseltest/./.Xil/Vivado-481175-mbrennan-ThinkPad-T14s-Gen-4/xc7a35t_detail.xgd_5D66780B elapsed time: 1s
+// DeviceModel: Load Xgds SwingWorker Join Forever elapsed time: 1.2s
+// TclEventType: HFED_INIT_ROUTE_STORAGE_COMPLETED
+// TclEventType: DESIGN_NEW
+// WARNING: HEventQueue.dispatchEvent() is taking  1131 ms.
+// TclEventType: CURR_DESIGN_SET
+// Tcl Message: INFO: [Device 21-403] Loading part xc7a35tcpg236-1 
+// Tcl Message: Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00 . Memory (MB): peak = 10482.016 ; gain = 0.000 ; free physical = 1797 ; free virtual = 6515 
+// Tcl Message: INFO: [Netlist 29-17] Analyzing 7 Unisim elements for replacement INFO: [Netlist 29-28] Unisim Transformation completed in 0 CPU seconds INFO: [Project 1-479] Netlist was created with Vivado 2025.2 INFO: [Project 1-570] Preparing netlist for logic optimization 
+// Tcl Message: Parsing XDC File [/home/mbrennan/Desktop/chiseltest/synth/constraints.xdc] Finished Parsing XDC File [/home/mbrennan/Desktop/chiseltest/synth/constraints.xdc] 
+// Tcl Message: INFO: [Opt 31-138] Pushed 0 inverter(s) to 0 load pin(s). 
+// Tcl Message: Netlist sorting complete. Time (s): cpu = 00:00:00.01 ; elapsed = 00:00:00 . Memory (MB): peak = 10682.691 ; gain = 0.000 ; free physical = 1672 ; free virtual = 6394 
+// Tcl Message: INFO: [Project 1-111] Unisim Transformation Summary:   A total of 3 instances were transformed.   RAM32M => RAM32M (RAMD32(x6), RAMS32(x2)): 1 instance    RAM32X1D => RAM32X1D (RAMD32(x2)): 2 instances  
+closeView(PAResourceOtoP.PAViews_PROJECT_SUMMARY, "Project Summary"); // x (PAResourceOtoP.PAViews_PROJECT_SUMMARY, PlanAheadTabProject Summary)
+// TclEventType: CURR_DESIGN_SET
+// Tcl Message: open_run: Time (s): cpu = 00:00:12 ; elapsed = 00:00:06 . Memory (MB): peak = 11048.309 ; gain = 726.457 ; free physical = 1308 ; free virtual = 6057 
+// 'ef' command handler elapsed time: 6 seconds
+// [Engine Memory]: 3,406 MB (+276206kb) [02:36:05]
+dismissDialog("Open Synthesized Design"); // bk (Open Synthesized Design Progress)
+selectTree(PAResourceEtoH.FlowNavigatorTreePanel_FLOW_NAVIGATOR_TREE, "[, Implementation, Run Implementation]", 31, false); // g (PAResourceEtoH.FlowNavigatorTreePanel_FLOW_NAVIGATOR_TREE, Flow Navigator Tree)
+// Run Command: PAResourceCommand.PACommandNames_RUN_IMPLEMENTATION
+selectButton(RDIResource.BaseDialog_OK, "OK", "Launch Runs"); // f (RDIResource.BaseDialog_OK)
+// HMemoryUtils.trashcanNow. Engine heap size: 3,396 MB. GUI used memory: 109 MB. Current time: 6/9/26, 10:05:49 PM EDT
+// TclEventType: PAUSE_COMPOSITE_FILE_CHANGE_GUI
+dismissDialog("Launch Runs"); // g (dialog16)
+// TclEventType: FILESET_TARGET_UCF_CHANGE
+// Tcl Message: launch_runs impl_1 -jobs 6 
+// Tcl Message: INFO: [Timing 38-480] Writing timing data to binary archive. 
+// Tcl Message: Wrote PlaceDB: Time (s): cpu = 00:00:00 ; elapsed = 00:00:00 . Memory (MB): peak = 11048.309 ; gain = 0.000 ; free physical = 1201 ; free virtual = 5953 Write ShapeDB Complete: Time (s): cpu = 00:00:00 ; elapsed = 00:00:00 . Memory (MB): peak = 11048.309 ; gain = 0.000 ; free physical = 1201 ; free virtual = 5953 Wrote PulsedLatchDB: Time (s): cpu = 00:00:00 ; elapsed = 00:00:00 . Memory (MB): peak = 11048.309 ; gain = 0.000 ; free physical = 1201 ; free virtual = 5953 
+// Tcl Message: Writing XDEF routing. Writing XDEF routing logical nets. Writing XDEF routing special nets. 
+// TclEventType: RUN_LAUNCH
+// TclEventType: RUN_MODIFY
+// TclEventType: RUN_STATUS_CHANGE
+// TclEventType: PAUSE_COMPOSITE_FILE_CHANGE_GUI
+// Tcl Message: [Tue Jun  9 20:05:50 2026] Launched impl_1... Run output will be captured here: /home/mbrennan/Desktop/MyFirstFPGAProject/MyFirstFPGAProject.runs/impl_1/runme.log 
+dismissDialog("Starting Design Runs"); // bk (Starting Design Runs Progress)
+// TclEventType: RUN_STATUS_CHANGE
+selectTab(PAResourceItoN.LogView_TABBED_PANE, PAResourceItoN.LogView_IMPLEMENTATION, "Implementation", 1); // g (PAResourceItoN.LogView_TABBED_PANE, MonitorView)
+selectTab((HResource) null, (HResource) null, "Messages", 1); // ab
+selectTab((HResource) null, (HResource) null, "Log", 2); // ab
+// [GUI Memory]: 183 MB (+4656kb) [02:36:20]
+selectTab(PAResourceItoN.LogView_TABBED_PANE, PAResourceItoN.LogView_SYNTHESIS, "Synthesis", 0); // g (PAResourceItoN.LogView_TABBED_PANE, MonitorView)
+selectButton(PAResourceItoN.LogPanel_PAUSE_OUTPUT, "Compilation_pause"); // w (PAResourceItoN.LogPanel_PAUSE_OUTPUT, Compilation_pause): TRUE
+selectButton(PAResourceItoN.LogPanel_PAUSE_OUTPUT, "Compilation_pause"); // w (PAResourceItoN.LogPanel_PAUSE_OUTPUT, Compilation_pause): FALSE
+// HMemoryUtils.trashcanNow. Engine heap size: 3,102 MB. GUI used memory: 109 MB. Current time: 6/9/26, 10:05:59 PM EDT
+selectTab(PAResourceItoN.LogView_TABBED_PANE, PAResourceItoN.LogView_IMPLEMENTATION, "Implementation", 1); // g (PAResourceItoN.LogView_TABBED_PANE, MonitorView)
+// TclEventType: RUN_STEP_COMPLETED
+// TclEventType: RUN_COMPLETED
+// TclEventType: RUN_STATUS_CHANGE
+// TclEventType: RUN_STEP_COMPLETED
+// Elapsed time: 20 seconds
+selectButton(RDIResource.BaseDialog_OK, "OK", "Implementation Completed"); // f (RDIResource.BaseDialog_OK)
+// Run Command: PAResourceCommand.PACommandNames_GOTO_IMPLEMENTED_DESIGN
+selectButton(RDIResource.BaseDialog_YES, "Yes", "Close Design"); // f (RDIResource.BaseDialog_YES)
+dismissDialog("Close Design"); // a.a (dialog17)
+// TclEventType: DESIGN_CLOSE
+// HMemoryUtils.trashcanNow. Engine heap size: 3,113 MB. GUI used memory: 110 MB. Current time: 6/9/26, 10:06:21 PM EDT
+// Engine heap size: 3,113 MB. GUI used memory: 111 MB. Current time: 6/9/26, 10:06:21 PM EDT
+// TclEventType: CURR_DESIGN_SET
+// Tcl Message: close_design 
+// TclEventType: CURR_DESIGN_SET
+// TclEventType: DESIGN_CLOSE
+dismissDialog("Close"); // bk (Close Progress)
+// Tcl Message: open_run impl_1 
+// TclEventType: SDC_CONSTRAINT_ADD
+// TclEventType: POWER_CNS_STALE
+// TclEventType: FLOORPLAN_MODIFY
+// TclEventType: DESIGN_NEW
+// [Engine Memory]: 4,349 MB (+809962kb) [02:36:49]
+// HMemoryUtils.trashcanNow. Engine heap size: 4,349 MB. GUI used memory: 91 MB. Current time: 6/9/26, 10:06:26 PM EDT
+// TclEventType: DESIGN_NEW
+// Xgd.load filename: /home/mbrennan/Desktop/chiseltest/./.Xil/Vivado-481175-mbrennan-ThinkPad-T14s-Gen-4/xc7a35t_detail.xgd_496AD2B1 elapsed time: 0.8s
+// DeviceModel: Load Xgds SwingWorker Join Forever elapsed time: 0.8s
+// TclEventType: HFED_INIT_ROUTE_STORAGE_COMPLETED
+// DeviceView Instantiated
+// WARNING: HEventQueue.dispatchEvent() is taking  1090 ms.
+// TclEventType: CURR_DESIGN_SET
+// Tcl Message: Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00 . Memory (MB): peak = 11054.316 ; gain = 0.000 ; free physical = 1765 ; free virtual = 6543 
+// Tcl Message: INFO: [Netlist 29-17] Analyzing 7 Unisim elements for replacement INFO: [Netlist 29-28] Unisim Transformation completed in 0 CPU seconds INFO: [Project 1-479] Netlist was created with Vivado 2025.2 INFO: [Project 1-570] Preparing netlist for logic optimization 
+// Tcl Message: Read ShapeDB Complete: Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.01 . Memory (MB): peak = 11054.316 ; gain = 0.000 ; free physical = 1762 ; free virtual = 6540 
+// Tcl Message: INFO: [Timing 38-478] Restoring timing data from binary archive. INFO: [Timing 38-479] Binary timing data restore complete. INFO: [Project 1-856] Restoring constraints from binary archive. INFO: [Project 1-853] Binary constraint restore complete. INFO: [Designutils 20-5722] Start Reading Physical Databases. 
+// Tcl Message: Reading placement. 
+// Tcl Message: Read Netlist Cache: Time (s): cpu = 00:00:00 ; elapsed = 00:00:00 . Memory (MB): peak = 11461.582 ; gain = 0.000 ; free physical = 1337 ; free virtual = 6113 
+// Tcl Message: Reading placer database... 
+// Tcl Message: Read Device Cache: Time (s): cpu = 00:00:00.01 ; elapsed = 00:00:00 . Memory (MB): peak = 11461.582 ; gain = 0.000 ; free physical = 1337 ; free virtual = 6113 Read PlaceDB: Time (s): cpu = 00:00:00 ; elapsed = 00:00:00 . Memory (MB): peak = 11461.582 ; gain = 0.000 ; free physical = 1337 ; free virtual = 6113 Read placeStorage: Time (s): cpu = 00:00:00 ; elapsed = 00:00:00 . Memory (MB): peak = 11461.582 ; gain = 0.000 ; free physical = 1337 ; free virtual = 6113 Read PulsedLatchDB: Time (s): cpu = 00:00:00 ; elapsed = 00:00:00 . Memory (MB): peak = 11461.582 ; gain = 0.000 ; free physical = 1337 ; free virtual = 6113 
+// Tcl Message: Reading routing. 
+// Tcl Message: Read RouteStorage: Time (s): cpu = 00:00:00.01 ; elapsed = 00:00:00 . Memory (MB): peak = 11461.582 ; gain = 0.000 ; free physical = 1337 ; free virtual = 6113 Read Physdb Files: Time (s): cpu = 00:00:00.02 ; elapsed = 00:00:00.02 . Memory (MB): peak = 11461.582 ; gain = 0.000 ; free physical = 1337 ; free virtual = 6113 
+// Tcl Message: Restored from archive | CPU: 0.020000 secs | Memory: 0.108521 MB | 
+// Tcl Message: Finished XDEF File Restore: Time (s): cpu = 00:00:00.02 ; elapsed = 00:00:00.02 . Memory (MB): peak = 11461.582 ; gain = 0.000 ; free physical = 1337 ; free virtual = 6113 Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00 . Memory (MB): peak = 11461.582 ; gain = 0.000 ; free physical = 1337 ; free virtual = 6113 
+// Tcl Message: INFO: [Project 1-111] Unisim Transformation Summary:   A total of 3 instances were transformed.   RAM32M => RAM32M (RAMD32(x6), RAMS32(x2)): 1 instance    RAM32X1D => RAM32X1D (RAMD32(x2)): 2 instances  
+// TclEventType: CURR_DESIGN_SET
+// Device view-level: 0.0
+// RouteApi: Init Delay Mediator Swing Worker Finished
+// TclEventType: DRC_ADDED
+// Tcl Message: open_run: Time (s): cpu = 00:00:07 ; elapsed = 00:00:05 . Memory (MB): peak = 11536.414 ; gain = 482.098 ; free physical = 1276 ; free virtual = 6061 
+// TclEventType: DRC_ADDED
+// TclEventType: METHODOLOGY_ADDED
+// TclEventType: POWER_UPDATED
+// TclEventType: TIMING_SUMMARY_UPDATED
+// 'ef' command handler elapsed time: 8 seconds
+dismissDialog("Open Implemented Design"); // bk (Open Implemented Design Progress)
+// [GUI Memory]: 193 MB (+414kb) [02:36:53]
+selectTab((HResource) null, (HResource) null, "Log", 2); // ab
+// HMemoryUtils.trashcanNow. Engine heap size: 3,784 MB. GUI used memory: 124 MB. Current time: 6/9/26, 10:06:40 PM EDT
+// Elapsed time: 13 seconds
+selectTab((HResource) null, (HResource) null, "Design Runs", 4); // ab
+selectTab((HResource) null, (HResource) null, "Reports", 3); // ab
+selectTreeTable(PAResourceEtoH.ExpReportTreePanel_EXP_REPORT_TREE_TABLE, "Utilization - Synth Design ; report_utilization ;  ; Tue Jun 09 22:05:07 EDT 2026 ; 8864", 2, "Utilization - Synth Design", 0, false); // K (PAResourceEtoH.ExpReportTreePanel_EXP_REPORT_TREE_TABLE)
+expandTreeTable(PAResourceEtoH.ExpReportTreePanel_EXP_REPORT_TREE_TABLE, "Utilization - Synth Design ; report_utilization ;  ; Tue Jun 09 22:05:07 EDT 2026 ; 8864", 2); // K (PAResourceEtoH.ExpReportTreePanel_EXP_REPORT_TREE_TABLE)
+selectTreeTable(PAResourceEtoH.ExpReportTreePanel_EXP_REPORT_TREE_TABLE, "Utilization - Synth Design ; report_utilization ;  ; Tue Jun 09 22:05:07 EDT 2026 ; 8864", 2, "Utilization - Synth Design", 0, false, false, false, false, false, true); // K (PAResourceEtoH.ExpReportTreePanel_EXP_REPORT_TREE_TABLE) - Double Click
+selectTab((HResource) null, (HResource) null, "Methodology", 5); // ab
+selectTab((HResource) null, (HResource) null, "Power", 5); // ab
+selectTab((HResource) null, (HResource) null, "Timing", 6); // ab
+selectCodeEditor("Utilization - Synth Design - synth_1", 293, 242); // I (Utilization - Synth Design - synth_1)
+selectCodeEditor("Utilization - Synth Design - synth_1", 385, 231); // I (Utilization - Synth Design - synth_1)
+selectCodeEditor("Utilization - Synth Design - synth_1", 523, 259); // I (Utilization - Synth Design - synth_1)
+selectTab("PlanAheadTabBaseWorkspace_JideTabbedPane", (HResource) null, "ClockGen.sv", 4); // m (PlanAheadTabBaseWorkspace_JideTabbedPane)
+selectTab("PlanAheadTabBaseWorkspace_JideTabbedPane", (HResource) null, "Utilization - Synth Design - synth_1", 5); // m (PlanAheadTabBaseWorkspace_JideTabbedPane)
+// HMemoryUtils.trashcanNow. Engine heap size: 3,615 MB. GUI used memory: 125 MB. Current time: 6/9/26, 10:07:20 PM EDT
+// Elapsed time: 21 seconds
+selectTab("PlanAheadTabBaseWorkspace_JideTabbedPane", (HResource) null, "ClockGen.sv", 4); // m (PlanAheadTabBaseWorkspace_JideTabbedPane)
+selectTab("PlanAheadTabBaseWorkspace_JideTabbedPane", (HResource) null, "UartTx.sv", 3); // m (PlanAheadTabBaseWorkspace_JideTabbedPane)
+selectTab("PlanAheadTabBaseWorkspace_JideTabbedPane", (HResource) null, "ClockGen.sv", 4); // m (PlanAheadTabBaseWorkspace_JideTabbedPane)
+// Elapsed time: 22 seconds
+selectCodeEditor("ClockGen.sv", 209, 251); // ae (ClockGen.sv)
+selectTree(PAResourceEtoH.FlowNavigatorTreePanel_FLOW_NAVIGATOR_TREE, "[, Program and Debug, Generate Bitstream]", 46, false); // g (PAResourceEtoH.FlowNavigatorTreePanel_FLOW_NAVIGATOR_TREE, Flow Navigator Tree)
+// Run Command: PAResourceCommand.PACommandNames_RUN_BITGEN
+selectButton(RDIResource.BaseDialog_OK, "OK", "Launch Runs"); // f (RDIResource.BaseDialog_OK)
+// HMemoryUtils.trashcanNow. Engine heap size: 3,625 MB. GUI used memory: 128 MB. Current time: 6/9/26, 10:07:53 PM EDT
+// TclEventType: PAUSE_COMPOSITE_FILE_CHANGE_GUI
+dismissDialog("Launch Runs"); // cX (dialog18)
+// TclEventType: RUN_LAUNCH
+// TclEventType: RUN_MODIFY
+// TclEventType: PAUSE_COMPOSITE_FILE_CHANGE_GUI
+// Tcl Message: launch_runs impl_1 -to_step write_bitstream -jobs 6 
+// Tcl Message: [Tue Jun  9 20:07:53 2026] Launched impl_1... Run output will be captured here: /home/mbrennan/Desktop/MyFirstFPGAProject/MyFirstFPGAProject.runs/impl_1/runme.log 
+// TclEventType: RUN_STATUS_CHANGE
+selectCodeEditor("ClockGen.sv", 576, 149); // ae (ClockGen.sv)
+selectCodeEditor("ClockGen.sv", 547, 154); // ae (ClockGen.sv)
+// HMemoryUtils.trashcanNow. Engine heap size: 3,625 MB. GUI used memory: 127 MB. Current time: 6/9/26, 10:08:00 PM EDT
+selectCodeEditor("ClockGen.sv", 547, 141); // ae (ClockGen.sv)
+selectCodeEditor("ClockGen.sv", 561, 124); // ae (ClockGen.sv)
+// TclEventType: RUN_COMPLETED
+// TclEventType: RUN_STATUS_CHANGE
+// HMemoryUtils.trashcanNow. Engine heap size: 3,625 MB. GUI used memory: 127 MB. Current time: 6/9/26, 10:08:40 PM EDT
+// Elapsed time: 44 seconds
+selectRadioButton(PAResourceCommand.PACommandNames_OPEN_HARDWARE_MANAGER, "Open Hardware Manager"); // a (PAResourceCommand.PACommandNames_OPEN_HARDWARE_MANAGER)
+selectButton(RDIResource.BaseDialog_OK, "OK", "Bitstream Generation Completed"); // f (RDIResource.BaseDialog_OK)
+// Run Command: PAResourceCommand.PACommandNames_OPEN_HARDWARE_MANAGER
+// Tcl (Dont Echo) Command: 'rdi::info_commands get_hw_probes'
+// TclEventType: HW_SESSION_OPEN
+closeView(PAResourceOtoP.PAViews_PROJECT_SUMMARY, "Project Summary"); // x (PAResourceOtoP.PAViews_PROJECT_SUMMARY, PlanAheadTabProject Summary)
+// Tcl Message: open_hw_manager 
+dismissDialog("Open Hardware Manager"); // bk (Open Hardware Manager Progress)
+selectButton(PAResourceOtoP.ProgramDebugTab_OPEN_TARGET, "Open target"); // h (PAResourceOtoP.ProgramDebugTab_OPEN_TARGET)
+selectMenuItem(PAResourceCommand.PACommandNames_AUTO_CONNECT_TARGET, "Auto Connect"); // ap (PAResourceCommand.PACommandNames_AUTO_CONNECT_TARGET, auto_connect_target_menu)
+// Run Command: PAResourceCommand.PACommandNames_AUTO_CONNECT_TARGET
+// Tcl Message: connect_hw_server -allow_non_jtag 
+// Tcl Message: INFO: [Labtools 27-2285] Connecting to hw_server url TCP:localhost:3121 INFO: [Labtools 27-2222] Launching hw_server... 
+// TclEventType: HW_SERVER_UPDATE
+// Tcl Message: INFO: [Labtools 27-2221] Launch Output:  ****** Xilinx hw_server v2025.2   **** Build date : Oct 28 2025 at 16:07:00     ** Copyright 1986-2022 Xilinx, Inc. All Rights Reserved.   INFO: [Labtools 27-3415] Connecting to cs_server url TCP:localhost:0 INFO: [Labtools 27-3417] Launching cs_server... 
+// TclEventType: HW_SERVER_UPDATE
+// Tcl Message: INFO: [Labtools 27-2221] Launch Output:   ******** Xilinx cs_server v2025.2.0   ****** Build date   : Nov 13 2025-16:16:52     **** Build number : 2025.2.1763075812       ** Copyright 2017-2022 Xilinx, Inc. All Rights Reserved.       ** Copyright 2022-2026 Advanced Micro Devices, Inc. All Rights Reserved.    
+// TclEventType: HW_TARGET_CHANGE
+// TclEventType: HW_TARGET_CLOSE
+// TclEventType: HW_DEVICE_CHANGE
+// TclEventType: HW_SYSMON_ADD
+// TclEventType: HW_TARGET_UPDATE
+// Tcl Message: open_hw_target 
+// Tcl Message: INFO: [Labtoolstcl 44-466] Opening hw_target localhost:3121/xilinx_tcf/Digilent/210183BFD3B7A 
+// TclEventType: HW_DEVICE_CHANGE
+// Tcl Message: set_property PROGRAM.FILE {/home/mbrennan/Desktop/MyFirstFPGAProject/MyFirstFPGAProject.runs/impl_1/DebugTest.bit} [get_hw_devices xc7a35t_0] 
+// Tcl Message: current_hw_device [get_hw_devices xc7a35t_0] 
+// TclEventType: HW_DEVICE_CHANGE
+// TclEventType: HW_SYSMON_CHANGE
+// TclEventType: HW_DEVICE_UPDATE
+// TclEventType: HW_DEVICE_CHANGE
+// Tcl Message: refresh_hw_device -update_hw_probes false [lindex [get_hw_devices xc7a35t_0] 0] 
+// Tcl Message: INFO: [Labtools 27-1434] Device xc7a35t (JTAG device index = 0) is programmed with a design that has no supported soft debug core(s) in it. 
+dismissDialog("Auto Connect"); // bk (Auto Connect Progress)
+selectButton(PAResourceOtoP.ProgramDebugTab_PROGRAM_DEVICE, "Program device"); // h (PAResourceOtoP.ProgramDebugTab_PROGRAM_DEVICE)
+// Run Command: PAResourceCommand.PACommandNames_PROGRAM_FPGA
+selectButton(PAResourceOtoP.ProgramFpgaDialog_PROGRAM, "Program", "Program Device"); // f (PAResourceOtoP.ProgramFpgaDialog_PROGRAM, RDIResource.BaseDialog_OK)
+dismissDialog("Program Device"); // aT (dialog19)
+// TclEventType: HW_DEVICE_CHANGE
+// Tcl Message: set_property PROBES.FILE {} [get_hw_devices xc7a35t_0] 
+// Tcl Message: set_property FULL_PROBES.FILE {} [get_hw_devices xc7a35t_0] 
+// TclEventType: HW_DEVICE_CHANGE
+// Tcl Message: set_property PROGRAM.FILE {/home/mbrennan/Desktop/MyFirstFPGAProject/MyFirstFPGAProject.runs/impl_1/DebugTest.bit} [get_hw_devices xc7a35t_0] 
+// TclEventType: HW_DEVICE_CHANGE
+// Tcl Message: program_hw_devices [get_hw_devices xc7a35t_0] 
+// Tcl Message: INFO: [Labtools 27-3164] End of startup status: HIGH 
+// TclEventType: HW_DEVICE_CHANGE
+// TclEventType: HW_SYSMON_CHANGE
+// TclEventType: HW_DEVICE_UPDATE
+// TclEventType: HW_DEVICE_CHANGE
+// TclEventType: HW_DEVICE_PROBES_CHANGE
+// TclEventType: DEBUG_PROBE_SET_CHANGE
+// TclEventType: HW_DEVICE_PROBES_CHANGE
+// Tcl Message: refresh_hw_device [lindex [get_hw_devices xc7a35t_0] 0] 
+// Tcl Message: INFO: [Labtools 27-1434] Device xc7a35t (JTAG device index = 0) is programmed with a design that has no supported soft debug core(s) in it. 
+dismissDialog("Program Device"); // bk (Program Device Progress)
+// HMemoryUtils.trashcanNow. Engine heap size: 3,655 MB. GUI used memory: 130 MB. Current time: 6/9/26, 10:09:21 PM EDT
+// HMemoryUtils.trashcanNow. Engine heap size: 3,655 MB. GUI used memory: 130 MB. Current time: 6/9/26, 10:10:01 PM EDT
+// HMemoryUtils.trashcanNow. Engine heap size: 3,655 MB. GUI used memory: 130 MB. Current time: 6/9/26, 10:10:41 PM EDT
+// HMemoryUtils.trashcanNow. Engine heap size: 3,655 MB. GUI used memory: 130 MB. Current time: 6/9/26, 10:11:21 PM EDT
+// Elapsed time: 171 seconds
+selectButton(PAResourceTtoZ.TaskBanner_CLOSE, (String) null); // k (PAResourceTtoZ.TaskBanner_CLOSE)
+closeTask("Program and Debug", "Hardware Manager", "DesignTask.PROGRAM_DEBUG");
+// TclEventType: HW_OBJECT_DELETE
+// TclEventType: HW_SERVER_CLOSE
+// TclEventType: HW_SYSMON_DELETE
+// TclEventType: HW_TARGET_CLOSE
+// TclEventType: HW_TARGET_UPDATE
+// TclEventType: DEBUG_PROBE_DELETE
+// TclEventType: HW_SESSION_CLOSE
+// Tcl Message: close_hw_manager 
+dismissDialog("Close Hardware Manager"); // bk (Close Hardware Manager Progress)
+// TclEventType: DG_GRAPH_STALE
+// TclEventType: FILE_SET_CHANGE
+// Elapsed Time for: 'PAResourceItoN.MsgLongTask_MESSAGE_LONG_TASK/M.f': 02h:42m:06s
+selectButton(PAResourceTtoZ.TaskBanner_CLOSE, (String) null); // k (PAResourceTtoZ.TaskBanner_CLOSE)
+closeTask("Implementation", "Implemented Design", "DesignTask.RESULTS_ANALYSIS");
+// TclEventType: DESIGN_CLOSE
+// TclEventType: DG_GRAPH_GENERATED
+// HMemoryUtils.trashcanNow. Engine heap size: 3,655 MB. GUI used memory: 124 MB. Current time: 6/9/26, 10:11:54 PM EDT
+// TclEventType: TIMING_RESULTS_UNLOAD
+// Engine heap size: 3,655 MB. GUI used memory: 125 MB. Current time: 6/9/26, 10:11:54 PM EDT
+// TclEventType: CURR_DESIGN_SET
+// Tcl Message: close_design 
+// TclEventType: CURR_DESIGN_SET
+// TclEventType: DESIGN_CLOSE
+dismissDialog("Close"); // bk (Close Progress)
+// TclEventType: DG_GRAPH_STALE
+// TclEventType: FILE_SET_CHANGE
+// Elapsed Time for: 'PAResourceItoN.MsgLongTask_MESSAGE_LONG_TASK/M.f': 02h:42m:10s
+// Tcl Message: update_compile_order -fileset sources_1 
+// Elapsed Time for: 'PAResourceItoN.MsgLongTask_MESSAGE_LONG_TASK/M.f': 02h:42m:11s
+selectTree(PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE, "[root, Design Sources, DebugTest (DebugTest.sv), clockGen : ClockGen (ClockGen.sv)]", 2, false); // E (PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE)
+// TclEventType: DG_GRAPH_GENERATED
+selectTree(PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE, "[root, Design Sources, DebugTest (DebugTest.sv), clockGen : ClockGen (ClockGen.sv)]", 2, false, false, false, false, false, true); // E (PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE) - Double Click
+// Elapsed Time for: 'PAResourceItoN.MsgLongTask_MESSAGE_LONG_TASK/M.f': 02h:42m:14s
+// HMemoryUtils.trashcanNow. Engine heap size: 3,675 MB. GUI used memory: 104 MB. Current time: 6/9/26, 10:12:01 PM EDT
+selectTree(PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE, "[root, Design Sources, DebugTest (DebugTest.sv), tx : UartTx (UartTx.sv)]", 3, false); // E (PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE)
+selectTree(PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE, "[root, Design Sources, DebugTest (DebugTest.sv), tx : UartTx (UartTx.sv)]", 3, false, false, false, false, false, true); // E (PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE) - Double Click
+selectCodeEditor("UartTx.sv", 253, 126); // ae (UartTx.sv)
+selectCodeEditor("UartTx.sv", 172, 245); // ae (UartTx.sv)
+selectCodeEditor("UartTx.sv", 277, 273); // ae (UartTx.sv)
+selectCodeEditor("UartTx.sv", 277, 273); // ae (UartTx.sv)
+selectCodeEditor("UartTx.sv", 277, 273); // ae (UartTx.sv)
+selectButton(PAResourceAtoD.AbstractFileView_RELOAD, "Reload"); // h (PAResourceAtoD.AbstractFileView_RELOAD)
+selectTree(PAResourceEtoH.FlowNavigatorTreePanel_FLOW_NAVIGATOR_TREE, "[, Implementation, Run Implementation]", 30, false); // g (PAResourceEtoH.FlowNavigatorTreePanel_FLOW_NAVIGATOR_TREE, Flow Navigator Tree)
+// Run Command: PAResourceCommand.PACommandNames_RUN_IMPLEMENTATION
+selectButton("OK", "OK", "Run Implementation"); // JButton (OK)
+// TclEventType: PAUSE_COMPOSITE_FILE_CHANGE_GUI
+// TclEventType: RUN_MODIFY
+// TclEventType: RUN_RESET
+// TclEventType: RUN_STATUS_CHANGE
+// TclEventType: RUN_RESET
+// TclEventType: RUN_MODIFY
+// TclEventType: PAUSE_COMPOSITE_FILE_CHANGE_GUI
+// Tcl Message: reset_run impl_1 
+selectButton(RDIResource.BaseDialog_OK, "OK", "Launch Runs"); // f (RDIResource.BaseDialog_OK)
+// HMemoryUtils.trashcanNow. Engine heap size: 3,842 MB. GUI used memory: 104 MB. Current time: 6/9/26, 10:12:17 PM EDT
+dismissDialog("Launch Runs"); // g (dialog20)
+// TclEventType: PAUSE_COMPOSITE_FILE_CHANGE_GUI
+// TclEventType: FILESET_TARGET_UCF_CHANGE
+// TclEventType: RUN_LAUNCH
+// TclEventType: RUN_MODIFY
+// TclEventType: RUN_STATUS_CHANGE
+// TclEventType: PAUSE_COMPOSITE_FILE_CHANGE_GUI
+// Tcl Message: launch_runs impl_1 -jobs 6 
+// Tcl Message: [Tue Jun  9 20:12:17 2026] Launched impl_1... Run output will be captured here: /home/mbrennan/Desktop/MyFirstFPGAProject/MyFirstFPGAProject.runs/impl_1/runme.log 
+// 'a' command handler elapsed time: 3 seconds
+dismissDialog("Starting Design Runs"); // bk (Starting Design Runs Progress)
+// TclEventType: RUN_STATUS_CHANGE
+selectTreeTable(PAResourceEtoH.ExpRunTreePanel_EXP_RUN_TREE_TABLE, "synth_1 ; constrs_1 ; synth_design Complete! ;  ;  ;  ;  ;  ;  ;  ;  ;  ;  ;  ; 65 ; 45 ; 0.0 ; 0 ; 0 ; Tue Jun 09 22:04:40 EDT 2026 ; 00:00:27 ; Vivado Synthesis Defaults* (Vivado Synthesis 2025) ; Vivado Synthesis Default Reports (Vivado Synthesis 2025) ; xc7a35tcpg236-1 ; mbrennan-ThinkPad-T14s-Gen-4 ; Vivado Synthesis Defaults", 0, "synth_design Complete!", 2, true); // ar (PAResourceEtoH.ExpRunTreePanel_EXP_RUN_TREE_TABLE) - Node
+selectTreeTable(PAResourceEtoH.ExpRunTreePanel_EXP_RUN_TREE_TABLE, "impl_1 ; constrs_1 ; Running Design Initialization... ;  ;  ;  ;  ;  ;  ;  ;  ;  ;  ;  ;  ;  ;  ;  ;  ; Tue Jun 09 22:12:18 EDT 2026 ; 00:00:00 ; Vivado Implementation Defaults* (Vivado Implementation 2025) ; Vivado Implementation Default Reports (Vivado Implementation 2025) ; xc7a35tcpg236-1 ; mbrennan-ThinkPad-T14s-Gen-4 ; Default settings for Implementation.", 1, "Running Design Initialization...", 2, false); // ar (PAResourceEtoH.ExpRunTreePanel_EXP_RUN_TREE_TABLE)
+selectButton(PAResourceQtoS.SyntheticaStateMonitor_CANCEL, "Cancel"); // j (PAResourceQtoS.SyntheticaStateMonitor_CANCEL, Cancel)
+selectButton(PAResourceQtoS.StateMonitor_RESET_RUN, "Reset Run", "Cancel Implementation"); // f (PAResourceQtoS.StateMonitor_RESET_RUN, RDIResource.BaseDialog_YES)
+dismissDialog("Cancel Implementation"); // aI (dialog21)
+// TclEventType: PAUSE_COMPOSITE_FILE_CHANGE_GUI
+// TclEventType: RUN_MODIFY
+// TclEventType: RUN_RESET
+// Tcl Message: reset_run impl_1 
+// TclEventType: RUN_STATUS_CHANGE
+// TclEventType: RUN_RESET
+// TclEventType: RUN_MODIFY
+// TclEventType: PAUSE_COMPOSITE_FILE_CHANGE_GUI
+dismissDialog("Resetting Runs"); // bk (Resetting Runs Progress)
+selectTree(PAResourceEtoH.FlowNavigatorTreePanel_FLOW_NAVIGATOR_TREE, "[, Synthesis, Run Synthesis]", 15, false); // g (PAResourceEtoH.FlowNavigatorTreePanel_FLOW_NAVIGATOR_TREE, Flow Navigator Tree)
+// Run Command: PAResourceCommand.PACommandNames_RUN_SYNTHESIS
+selectButton("OK", "OK", "Run Synthesis"); // JButton (OK)
+// TclEventType: PAUSE_COMPOSITE_FILE_CHANGE_GUI
+// TclEventType: RUN_MODIFY
+// TclEventType: RUN_RESET
+// TclEventType: RUN_STATUS_CHANGE
+closeView(PAResourceOtoP.PAViews_PAR_REPORT, "PAR Report"); // c (PAResourceOtoP.PAViews_PAR_REPORT, PlanAheadTabPAR Report)
+// TclEventType: RUN_RESET
+// TclEventType: RUN_MODIFY
+// TclEventType: PAUSE_COMPOSITE_FILE_CHANGE_GUI
+// Tcl Message: reset_run synth_1 
+// Tcl Message: INFO: [Project 1-1161] Replacing file /home/mbrennan/Desktop/MyFirstFPGAProject/MyFirstFPGAProject.srcs/utils_1/imports/synth_1/Top.dcp with file /home/mbrennan/Desktop/MyFirstFPGAProject/MyFirstFPGAProject.runs/synth_1/DebugTest.dcp 
+// TclEventType: FILE_SET_CHANGE
+selectButton(RDIResource.BaseDialog_OK, "OK", "Launch Runs"); // f (RDIResource.BaseDialog_OK)
+// HMemoryUtils.trashcanNow. Engine heap size: 4,064 MB. GUI used memory: 109 MB. Current time: 6/9/26, 10:12:29 PM EDT
+// TclEventType: PAUSE_COMPOSITE_FILE_CHANGE_GUI
+dismissDialog("Launch Runs"); // g (dialog22)
+// TclEventType: FILESET_TARGET_UCF_CHANGE
+// TclEventType: RUN_LAUNCH
+// TclEventType: RUN_MODIFY
+// TclEventType: RUN_STATUS_CHANGE
+// TclEventType: PAUSE_COMPOSITE_FILE_CHANGE_GUI
+// Tcl Message: launch_runs synth_1 -jobs 6 
+// Tcl Message: [Tue Jun  9 20:12:29 2026] Launched synth_1... Run output will be captured here: /home/mbrennan/Desktop/MyFirstFPGAProject/MyFirstFPGAProject.runs/synth_1/runme.log 
+dismissDialog("Starting Design Runs"); // bk (Starting Design Runs Progress)
+selectTree(PAResourceEtoH.FlowNavigatorTreePanel_FLOW_NAVIGATOR_TREE, "[, Implementation, Run Implementation]", 30, false); // g (PAResourceEtoH.FlowNavigatorTreePanel_FLOW_NAVIGATOR_TREE, Flow Navigator Tree)
+// Run Command: PAResourceCommand.PACommandNames_RUN_IMPLEMENTATION
+// TclEventType: RUN_STATUS_CHANGE
+// 'a' command handler elapsed time: 3 seconds
+selectButton("CANCEL", "Cancel", "Missing Synthesis Results"); // JButton (CANCEL)
+// HMemoryUtils.trashcanNow. Engine heap size: 3,953 MB. GUI used memory: 105 MB. Current time: 6/9/26, 10:12:42 PM EDT
+// TclEventType: RUN_COMPLETED
+// TclEventType: RUN_STATUS_CHANGE
+// TclEventType: RUN_STEP_COMPLETED
+// Elapsed time: 26 seconds
+selectRadioButton(PAResourceCommand.PACommandNames_GOTO_NETLIST_DESIGN, "Open Synthesized Design"); // a (PAResourceCommand.PACommandNames_GOTO_NETLIST_DESIGN)
+selectRadioButton(PAResourceCommand.PACommandNames_RUN_IMPLEMENTATION, "Run Implementation"); // a (PAResourceCommand.PACommandNames_RUN_IMPLEMENTATION)
+selectButton(RDIResource.BaseDialog_OK, "OK", "Synthesis Completed"); // f (RDIResource.BaseDialog_OK)
+// Run Command: PAResourceCommand.PACommandNames_RUN_IMPLEMENTATION
+selectButton(RDIResource.BaseDialog_OK, "OK", "Launch Runs"); // f (RDIResource.BaseDialog_OK)
+// HMemoryUtils.trashcanNow. Engine heap size: 3,653 MB. GUI used memory: 108 MB. Current time: 6/9/26, 10:13:06 PM EDT
+// TclEventType: PAUSE_COMPOSITE_FILE_CHANGE_GUI
+dismissDialog("Launch Runs"); // g (dialog23)
+// TclEventType: FILESET_TARGET_UCF_CHANGE
+// TclEventType: RUN_LAUNCH
+// TclEventType: RUN_MODIFY
+// TclEventType: RUN_STATUS_CHANGE
+// TclEventType: PAUSE_COMPOSITE_FILE_CHANGE_GUI
+// Tcl Message: launch_runs impl_1 -jobs 6 
+// Tcl Message: [Tue Jun  9 20:13:06 2026] Launched impl_1... Run output will be captured here: /home/mbrennan/Desktop/MyFirstFPGAProject/MyFirstFPGAProject.runs/impl_1/runme.log 
+dismissDialog("Starting Design Runs"); // bk (Starting Design Runs Progress)
+// TclEventType: RUN_STATUS_CHANGE
+// TclEventType: RUN_STEP_COMPLETED
+// HMemoryUtils.trashcanNow. Engine heap size: 3,663 MB. GUI used memory: 106 MB. Current time: 6/9/26, 10:13:22 PM EDT
+// TclEventType: RUN_STEP_COMPLETED
+// TclEventType: RUN_COMPLETED
+// TclEventType: RUN_STATUS_CHANGE
+// TclEventType: RUN_STEP_COMPLETED
+// Elapsed time: 37 seconds
+selectRadioButton(PAResourceCommand.PACommandNames_RUN_BITGEN, "Generate Bitstream"); // a (PAResourceCommand.PACommandNames_RUN_BITGEN)
+selectButton(RDIResource.BaseDialog_OK, "OK", "Implementation Completed"); // f (RDIResource.BaseDialog_OK)
+// Run Command: PAResourceCommand.PACommandNames_RUN_BITGEN
+selectButton(RDIResource.BaseDialog_OK, "OK", "Launch Runs"); // f (RDIResource.BaseDialog_OK)
+// HMemoryUtils.trashcanNow. Engine heap size: 3,654 MB. GUI used memory: 109 MB. Current time: 6/9/26, 10:13:45 PM EDT
+dismissDialog("Launch Runs"); // cX (dialog24)
+// TclEventType: PAUSE_COMPOSITE_FILE_CHANGE_GUI
+// TclEventType: RUN_LAUNCH
+// TclEventType: RUN_MODIFY
+// TclEventType: PAUSE_COMPOSITE_FILE_CHANGE_GUI
+// Tcl Message: launch_runs impl_1 -to_step write_bitstream -jobs 6 
+// Tcl Message: [Tue Jun  9 20:13:45 2026] Launched impl_1... Run output will be captured here: /home/mbrennan/Desktop/MyFirstFPGAProject/MyFirstFPGAProject.runs/impl_1/runme.log 
+// TclEventType: RUN_STATUS_CHANGE
+// HMemoryUtils.trashcanNow. Engine heap size: 3,673 MB. GUI used memory: 109 MB. Current time: 6/9/26, 10:14:02 PM EDT
+// TclEventType: RUN_COMPLETED
+// TclEventType: RUN_STATUS_CHANGE
+// HMemoryUtils.trashcanNow. Engine heap size: 3,654 MB. GUI used memory: 110 MB. Current time: 6/9/26, 10:14:42 PM EDT
+// Elapsed time: 82 seconds
+selectRadioButton(PAResourceCommand.PACommandNames_REPORTS_WINDOW, "View Reports"); // a (PAResourceCommand.PACommandNames_REPORTS_WINDOW)
+selectRadioButton(PAResourceCommand.PACommandNames_WRITE_CONFIG_MEMORY_FILE, "Generate Memory Configuration File"); // a (PAResourceCommand.PACommandNames_WRITE_CONFIG_MEMORY_FILE)
+selectRadioButton(PAResourceCommand.PACommandNames_OPEN_HARDWARE_MANAGER, "Open Hardware Manager"); // a (PAResourceCommand.PACommandNames_OPEN_HARDWARE_MANAGER)
+selectButton(RDIResource.BaseDialog_OK, "OK", "Bitstream Generation Completed"); // f (RDIResource.BaseDialog_OK)
+// Run Command: PAResourceCommand.PACommandNames_OPEN_HARDWARE_MANAGER
+// Tcl (Dont Echo) Command: 'rdi::info_commands get_hw_probes'
+// TclEventType: HW_SESSION_OPEN
+closeView(PAResourceOtoP.PAViews_PROJECT_SUMMARY, "Project Summary"); // x (PAResourceOtoP.PAViews_PROJECT_SUMMARY, PlanAheadTabProject Summary)
+// Tcl Message: open_hw_manager 
+dismissDialog("Open Hardware Manager"); // bk (Open Hardware Manager Progress)
+selectButton(PAResourceOtoP.ProgramDebugTab_OPEN_TARGET, "Open target"); // h (PAResourceOtoP.ProgramDebugTab_OPEN_TARGET)
+selectMenuItem(PAResourceCommand.PACommandNames_AUTO_CONNECT_TARGET, "Auto Connect"); // ap (PAResourceCommand.PACommandNames_AUTO_CONNECT_TARGET, auto_connect_target_menu)
+// Run Command: PAResourceCommand.PACommandNames_AUTO_CONNECT_TARGET
+// TclEventType: HW_SERVER_UPDATE
+// Tcl Message: connect_hw_server -allow_non_jtag 
+// Tcl Message: INFO: [Labtools 27-2285] Connecting to hw_server url TCP:localhost:3121 INFO: [Labtools 27-2222] Launching hw_server... INFO: [Labtools 27-2221] Launch Output:  ****** Xilinx hw_server v2025.2   **** Build date : Oct 28 2025 at 16:07:00     ** Copyright 1986-2022 Xilinx, Inc. All Rights Reserved.   INFO: [Labtools 27-3415] Connecting to cs_server url TCP:localhost:0 INFO: [Labtools 27-3417] Launching cs_server... 
+// TclEventType: HW_SERVER_UPDATE
+// Tcl Message: INFO: [Labtools 27-2221] Launch Output:   ******** Xilinx cs_server v2025.2.0   ****** Build date   : Nov 13 2025-16:16:52     **** Build number : 2025.2.1763075812       ** Copyright 2017-2022 Xilinx, Inc. All Rights Reserved.       ** Copyright 2022-2026 Advanced Micro Devices, Inc. All Rights Reserved.    
+// HMemoryUtils.trashcanNow. Engine heap size: 3,682 MB. GUI used memory: 114 MB. Current time: 6/9/26, 10:15:23 PM EDT
+// TclEventType: HW_TARGET_CHANGE
+// TclEventType: HW_TARGET_CLOSE
+// TclEventType: HW_DEVICE_CHANGE
+// TclEventType: HW_SYSMON_ADD
+// TclEventType: HW_TARGET_UPDATE
+// Tcl Message: open_hw_target 
+// Tcl Message: INFO: [Labtoolstcl 44-466] Opening hw_target localhost:3121/xilinx_tcf/Digilent/210183BFD3B7A 
+// TclEventType: HW_DEVICE_CHANGE
+// Tcl Message: set_property PROGRAM.FILE {/home/mbrennan/Desktop/MyFirstFPGAProject/MyFirstFPGAProject.runs/impl_1/DebugTest.bit} [get_hw_devices xc7a35t_0] 
+// Tcl Message: current_hw_device [get_hw_devices xc7a35t_0] 
+// TclEventType: HW_DEVICE_CHANGE
+// TclEventType: HW_SYSMON_CHANGE
+// TclEventType: HW_DEVICE_UPDATE
+// TclEventType: HW_DEVICE_CHANGE
+// Tcl Message: refresh_hw_device -update_hw_probes false [lindex [get_hw_devices xc7a35t_0] 0] 
+// Tcl Message: INFO: [Labtools 27-1434] Device xc7a35t (JTAG device index = 0) is programmed with a design that has no supported soft debug core(s) in it. 
+dismissDialog("Auto Connect"); // bk (Auto Connect Progress)
+selectButton(PAResourceOtoP.ProgramDebugTab_PROGRAM_DEVICE, "Program device"); // h (PAResourceOtoP.ProgramDebugTab_PROGRAM_DEVICE)
+// Run Command: PAResourceCommand.PACommandNames_PROGRAM_FPGA
+selectButton(PAResourceOtoP.ProgramFpgaDialog_PROGRAM, "Program", "Program Device"); // f (PAResourceOtoP.ProgramFpgaDialog_PROGRAM, RDIResource.BaseDialog_OK)
+dismissDialog("Program Device"); // aT (dialog25)
+// TclEventType: HW_DEVICE_CHANGE
+// Tcl Message: set_property PROBES.FILE {} [get_hw_devices xc7a35t_0] 
+// Tcl Message: set_property FULL_PROBES.FILE {} [get_hw_devices xc7a35t_0] 
+// TclEventType: HW_DEVICE_CHANGE
+// Tcl Message: set_property PROGRAM.FILE {/home/mbrennan/Desktop/MyFirstFPGAProject/MyFirstFPGAProject.runs/impl_1/DebugTest.bit} [get_hw_devices xc7a35t_0] 
+// TclEventType: HW_DEVICE_CHANGE
+// Tcl Message: program_hw_devices [get_hw_devices xc7a35t_0] 
+// Tcl Message: INFO: [Labtools 27-3164] End of startup status: HIGH 
+// TclEventType: HW_DEVICE_CHANGE
+// TclEventType: HW_SYSMON_CHANGE
+// TclEventType: HW_DEVICE_UPDATE
+// TclEventType: HW_DEVICE_CHANGE
+// TclEventType: HW_DEVICE_PROBES_CHANGE
+// TclEventType: DEBUG_PROBE_SET_CHANGE
+// TclEventType: HW_DEVICE_PROBES_CHANGE
+// Tcl Message: refresh_hw_device [lindex [get_hw_devices xc7a35t_0] 0] 
+// Tcl Message: INFO: [Labtools 27-1434] Device xc7a35t (JTAG device index = 0) is programmed with a design that has no supported soft debug core(s) in it. 
+dismissDialog("Program Device"); // bk (Program Device Progress)
+// HMemoryUtils.trashcanNow. Engine heap size: 3,672 MB. GUI used memory: 113 MB. Current time: 6/9/26, 10:16:03 PM EDT
+// HMemoryUtils.trashcanNow. Engine heap size: 3,672 MB. GUI used memory: 113 MB. Current time: 6/9/26, 10:16:43 PM EDT
+// HMemoryUtils.trashcanNow. Engine heap size: 3,672 MB. GUI used memory: 113 MB. Current time: 6/9/26, 10:17:23 PM EDT
+// HMemoryUtils.trashcanNow. Engine heap size: 3,672 MB. GUI used memory: 113 MB. Current time: 6/9/26, 10:18:03 PM EDT
+// HMemoryUtils.trashcanNow. Engine heap size: 3,672 MB. GUI used memory: 113 MB. Current time: 6/9/26, 10:18:43 PM EDT
+// HMemoryUtils.trashcanNow. Engine heap size: 3,672 MB. GUI used memory: 113 MB. Current time: 6/9/26, 10:19:23 PM EDT
+// HMemoryUtils.trashcanNow. Engine heap size: 3,672 MB. GUI used memory: 113 MB. Current time: 6/9/26, 10:20:03 PM EDT
+// HMemoryUtils.trashcanNow. Engine heap size: 3,672 MB. GUI used memory: 114 MB. Current time: 6/9/26, 10:20:43 PM EDT
+// HMemoryUtils.trashcanNow. Engine heap size: 3,672 MB. GUI used memory: 114 MB. Current time: 6/9/26, 10:21:23 PM EDT
+// HMemoryUtils.trashcanNow. Engine heap size: 3,672 MB. GUI used memory: 114 MB. Current time: 6/9/26, 10:22:03 PM EDT
+// HMemoryUtils.trashcanNow. Engine heap size: 3,672 MB. GUI used memory: 113 MB. Current time: 6/9/26, 10:22:43 PM EDT
+// HMemoryUtils.trashcanNow. Engine heap size: 3,672 MB. GUI used memory: 113 MB. Current time: 6/9/26, 10:23:23 PM EDT
+// HMemoryUtils.trashcanNow. Engine heap size: 3,672 MB. GUI used memory: 113 MB. Current time: 6/9/26, 10:24:03 PM EDT
+// HMemoryUtils.trashcanNow. Engine heap size: 3,672 MB. GUI used memory: 114 MB. Current time: 6/9/26, 10:24:43 PM EDT
+// HMemoryUtils.trashcanNow. Engine heap size: 3,672 MB. GUI used memory: 113 MB. Current time: 6/9/26, 10:25:23 PM EDT
+// TclEventType: DG_GRAPH_STALE
+// TclEventType: FILE_SET_CHANGE
+// Elapsed Time for: 'PAResourceItoN.MsgLongTask_MESSAGE_LONG_TASK/M.f': 02h:56m:06s
+// TclEventType: DG_GRAPH_GENERATED
+// Elapsed Time for: 'PAResourceItoN.MsgLongTask_MESSAGE_LONG_TASK/M.f': 02h:56m:08s
+// Elapsed time: 630 seconds
+selectCodeEditor("DebugTest.sv", 1002, 150); // ae (DebugTest.sv)
+selectButton(PAResourceAtoD.AbstractFileView_RELOAD, "Reload"); // h (PAResourceAtoD.AbstractFileView_RELOAD)
+// HMemoryUtils.trashcanNow. Engine heap size: 3,692 MB. GUI used memory: 115 MB. Current time: 6/9/26, 10:26:03 PM EDT
+selectButton(PAResourceTtoZ.TaskBanner_CLOSE, (String) null); // k (PAResourceTtoZ.TaskBanner_CLOSE)
+closeTask("Program and Debug", "Hardware Manager", "DesignTask.PROGRAM_DEBUG");
+// TclEventType: HW_OBJECT_DELETE
+// TclEventType: HW_SERVER_CLOSE
+// TclEventType: HW_SYSMON_DELETE
+// TclEventType: HW_TARGET_CLOSE
+// TclEventType: HW_TARGET_UPDATE
+// TclEventType: DEBUG_PROBE_DELETE
+// TclEventType: HW_SESSION_CLOSE
+// Tcl Message: close_hw_manager 
+dismissDialog("Close Hardware Manager"); // bk (Close Hardware Manager Progress)
+selectCodeEditor("UartTx.sv", 333, 243); // ae (UartTx.sv)
+selectButton(PAResourceAtoD.AbstractFileView_RELOAD, "Reload"); // h (PAResourceAtoD.AbstractFileView_RELOAD)
+selectTree(PAResourceEtoH.FlowNavigatorTreePanel_FLOW_NAVIGATOR_TREE, "[, Synthesis, Run Synthesis]", 15, false); // g (PAResourceEtoH.FlowNavigatorTreePanel_FLOW_NAVIGATOR_TREE, Flow Navigator Tree)
+// Run Command: PAResourceCommand.PACommandNames_RUN_SYNTHESIS
+selectButton("OK", "OK", "Run Synthesis"); // JButton (OK)
+// TclEventType: PAUSE_COMPOSITE_FILE_CHANGE_GUI
+// TclEventType: RUN_MODIFY
+// TclEventType: RUN_RESET
+// TclEventType: RUN_STATUS_CHANGE
+// TclEventType: RUN_RESET
+// TclEventType: RUN_STATUS_CHANGE
+// TclEventType: RUN_RESET
+// TclEventType: RUN_MODIFY
+// TclEventType: PAUSE_COMPOSITE_FILE_CHANGE_GUI
+// Tcl Message: reset_run synth_1 
+// Tcl Message: INFO: [Project 1-1161] Replacing file /home/mbrennan/Desktop/MyFirstFPGAProject/MyFirstFPGAProject.srcs/utils_1/imports/synth_1/Top.dcp with file /home/mbrennan/Desktop/MyFirstFPGAProject/MyFirstFPGAProject.runs/synth_1/DebugTest.dcp 
+// TclEventType: FILE_SET_CHANGE
+selectButton(RDIResource.BaseDialog_OK, "OK", "Launch Runs"); // f (RDIResource.BaseDialog_OK)
+// HMemoryUtils.trashcanNow. Engine heap size: 3,841 MB. GUI used memory: 116 MB. Current time: 6/9/26, 10:26:20 PM EDT
+dismissDialog("Launch Runs"); // g (dialog26)
+// TclEventType: PAUSE_COMPOSITE_FILE_CHANGE_GUI
+// TclEventType: FILESET_TARGET_UCF_CHANGE
+// TclEventType: RUN_LAUNCH
+// TclEventType: RUN_MODIFY
+// TclEventType: RUN_STATUS_CHANGE
+// TclEventType: PAUSE_COMPOSITE_FILE_CHANGE_GUI
+// Tcl Message: launch_runs synth_1 -jobs 6 
+// Tcl Message: [Tue Jun  9 20:26:20 2026] Launched synth_1... Run output will be captured here: /home/mbrennan/Desktop/MyFirstFPGAProject/MyFirstFPGAProject.runs/synth_1/runme.log 
+// 'i' command handler elapsed time: 3 seconds
+dismissDialog("Starting Design Runs"); // bk (Starting Design Runs Progress)
+// TclEventType: RUN_STATUS_CHANGE
+// HMemoryUtils.trashcanNow. Engine heap size: 3,674 MB. GUI used memory: 114 MB. Current time: 6/9/26, 10:26:44 PM EDT
+// TclEventType: RUN_COMPLETED
+// TclEventType: RUN_STATUS_CHANGE
+// TclEventType: RUN_STEP_COMPLETED
+// Elapsed time: 38 seconds
+selectButton(RDIResource.BaseDialog_OK, "OK", "Synthesis Completed"); // f (RDIResource.BaseDialog_OK)
+// Run Command: PAResourceCommand.PACommandNames_RUN_IMPLEMENTATION
+selectButton(RDIResource.BaseDialog_OK, "OK", "Launch Runs"); // f (RDIResource.BaseDialog_OK)
+// HMemoryUtils.trashcanNow. Engine heap size: 3,674 MB. GUI used memory: 117 MB. Current time: 6/9/26, 10:26:59 PM EDT
+dismissDialog("Launch Runs"); // g (dialog27)
+// TclEventType: PAUSE_COMPOSITE_FILE_CHANGE_GUI
+// TclEventType: FILESET_TARGET_UCF_CHANGE
+// TclEventType: RUN_LAUNCH
+// TclEventType: RUN_MODIFY
+// TclEventType: RUN_STATUS_CHANGE
+// TclEventType: PAUSE_COMPOSITE_FILE_CHANGE_GUI
+// Tcl Message: launch_runs impl_1 -jobs 6 
+// Tcl Message: [Tue Jun  9 20:26:59 2026] Launched impl_1... Run output will be captured here: /home/mbrennan/Desktop/MyFirstFPGAProject/MyFirstFPGAProject.runs/impl_1/runme.log 
+dismissDialog("Starting Design Runs"); // bk (Starting Design Runs Progress)
+// TclEventType: RUN_STATUS_CHANGE
+// TclEventType: RUN_STEP_COMPLETED
+// Elapsed time: 10 seconds
+selectTree(PAResourceEtoH.FlowNavigatorTreePanel_FLOW_NAVIGATOR_TREE, "[, Synthesis, Open Synthesized Design, Report Clock Networks]", 22, false); // g (PAResourceEtoH.FlowNavigatorTreePanel_FLOW_NAVIGATOR_TREE, Flow Navigator Tree)
+// Tcl Message: open_run synth_1 -name synth_1 
+// Tcl Message: Design is defaulting to impl run constrset: constrs_1 Design is defaulting to synth run part: xc7a35tcpg236-1 
+// TclEventType: READ_XDC_FILE_START
+// TclEventType: PLACE_STORAGE_MODIFY_PRE
+// TclEventType: LOC_CONSTRAINT_ADD
+// TclEventType: SIGNAL_MODIFY
+// TclEventType: POWER_CNS_STALE
+// TclEventType: POWER_REPORT_STALE
+// TclEventType: SDC_CONSTRAINT_ADD
+// TclEventType: PLACE_STORAGE_MODIFY_PRE
+// TclEventType: LOC_CONSTRAINT_ADD
+// TclEventType: SIGNAL_MODIFY
+// TclEventType: PLACE_STORAGE_MODIFY_PRE
+// TclEventType: LOC_CONSTRAINT_ADD
+// TclEventType: SIGNAL_MODIFY
+// TclEventType: READ_XDC_FILE_END
+// TclEventType: FLOORPLAN_MODIFY
+// TclEventType: DESIGN_NEW
+// HMemoryUtils.trashcanNow. Engine heap size: 3,861 MB. GUI used memory: 116 MB. Current time: 6/9/26, 10:27:11 PM EDT
+// TclEventType: DESIGN_NEW
+// TclEventType: CURR_DESIGN_SET
+// Tcl Message: Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00 . Memory (MB): peak = 11647.828 ; gain = 0.000 ; free physical = 1031 ; free virtual = 5296 
+// Tcl Message: INFO: [Netlist 29-17] Analyzing 8 Unisim elements for replacement INFO: [Netlist 29-28] Unisim Transformation completed in 0 CPU seconds INFO: [Project 1-479] Netlist was created with Vivado 2025.2 INFO: [Project 1-570] Preparing netlist for logic optimization 
+// Tcl Message: Parsing XDC File [/home/mbrennan/Desktop/chiseltest/synth/constraints.xdc] Finished Parsing XDC File [/home/mbrennan/Desktop/chiseltest/synth/constraints.xdc] 
+// Tcl Message: INFO: [Opt 31-138] Pushed 0 inverter(s) to 0 load pin(s). 
+// Tcl Message: Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00 . Memory (MB): peak = 11647.828 ; gain = 0.000 ; free physical = 841 ; free virtual = 5107 
+// Tcl Message: INFO: [Project 1-111] Unisim Transformation Summary:   A total of 3 instances were transformed.   RAM32M => RAM32M (RAMD32(x6), RAMS32(x2)): 1 instance    RAM32X1D => RAM32X1D (RAMD32(x2)): 2 instances  
+closeView(PAResourceOtoP.PAViews_PROJECT_SUMMARY, "Project Summary"); // x (PAResourceOtoP.PAViews_PROJECT_SUMMARY, PlanAheadTabProject Summary)
+// TclEventType: CURR_DESIGN_SET
+// Run Command: PAResourceCommand.PACommandNames_REPORT_CLOCK_NETWORKS
+// Xgd.load filename: /home/mbrennan/Desktop/chiseltest/./.Xil/Vivado-481175-mbrennan-ThinkPad-T14s-Gen-4/xc7a35t_detail.xgd_206FCD0D elapsed time: 1.2s
+// DeviceModel: Load Xgds SwingWorker Join Forever elapsed time: 1.3s
+// TclEventType: HFED_INIT_ROUTE_STORAGE_COMPLETED
+selectButton(RDIResource.BaseDialog_OK, "OK", "Report Clock Networks"); // f (RDIResource.BaseDialog_OK)
+dismissDialog("Report Clock Networks"); // a (dialog28)
+// Tcl Message: report_clock_networks -name {network_1} 
+// TclEventType: RUN_STEP_COMPLETED
+// TclEventType: TIMING_CLOCK_NETWORKS_UPDATED
+// Tcl Message: INFO: [Timing 38-35] Done setting XDC timing constraints. INFO: [Timing 38-2] Deriving generated clocks 
+dismissDialog("Report Clock Networks"); // bk (Report Clock Networks Progress)
+// TclEventType: RUN_STEP_COMPLETED
+selectTree(PAResourceAtoD.ClockNetworksReportView_CLOCK_NETWORK_TREE, "[top objects, sys_clk_pin (100.00 MHz) (drives 63 loads)]", 0); // c.b (PAResourceAtoD.ClockNetworksReportView_CLOCK_NETWORK_TREE)
+expandTree(PAResourceAtoD.ClockNetworksReportView_CLOCK_NETWORK_TREE, "[top objects, sys_clk_pin (100.00 MHz) (drives 63 loads)]", 0); // c.b (PAResourceAtoD.ClockNetworksReportView_CLOCK_NETWORK_TREE)
+selectTree(PAResourceAtoD.ClockNetworksReportView_CLOCK_NETWORK_TREE, "[top objects, sys_clk_pin (100.00 MHz) (drives 63 loads), clock]", 1); // c.b (PAResourceAtoD.ClockNetworksReportView_CLOCK_NETWORK_TREE)
+selectTree(PAResourceAtoD.ClockNetworksReportView_CLOCK_NETWORK_TREE, "[top objects, sys_clk_pin (100.00 MHz) (drives 63 loads), clock, I]", 2); // c.b (PAResourceAtoD.ClockNetworksReportView_CLOCK_NETWORK_TREE)
+selectTree(PAResourceAtoD.ClockNetworksReportView_CLOCK_NETWORK_TREE, "[top objects, sys_clk_pin (100.00 MHz) (drives 63 loads), clock, I]", 2); // c.b (PAResourceAtoD.ClockNetworksReportView_CLOCK_NETWORK_TREE)
+selectTree(PAResourceAtoD.ClockNetworksReportView_CLOCK_NETWORK_TREE, "[top objects, sys_clk_pin (100.00 MHz) (drives 63 loads), clock]", 1); // c.b (PAResourceAtoD.ClockNetworksReportView_CLOCK_NETWORK_TREE)
+selectTree(PAResourceAtoD.ClockNetworksReportView_CLOCK_NETWORK_TREE, "[top objects, sys_clk_pin (100.00 MHz) (drives 63 loads), clock, I, clock_IBUF_inst]", 3); // c.b (PAResourceAtoD.ClockNetworksReportView_CLOCK_NETWORK_TREE)
+// HMemoryUtils.trashcanNow. Engine heap size: 3,903 MB. GUI used memory: 143 MB. Current time: 6/9/26, 10:27:24 PM EDT
+selectTree(PAResourceAtoD.ClockNetworksReportView_CLOCK_NETWORK_TREE, "[top objects, sys_clk_pin (100.00 MHz) (drives 63 loads), clock, I, clock_IBUF_inst, O, clock_IBUF, CLKIN1]", 6); // c.b (PAResourceAtoD.ClockNetworksReportView_CLOCK_NETWORK_TREE)
+selectTree(PAResourceAtoD.ClockNetworksReportView_CLOCK_NETWORK_TREE, "[top objects, sys_clk_pin (100.00 MHz) (drives 63 loads), clock, I, clock_IBUF_inst, O, clock_IBUF, CLKIN1]", 6); // c.b (PAResourceAtoD.ClockNetworksReportView_CLOCK_NETWORK_TREE)
+expandTree(PAResourceAtoD.ClockNetworksReportView_CLOCK_NETWORK_TREE, "[top objects, sys_clk_pin (100.00 MHz) (drives 63 loads), clock, I, clock_IBUF_inst, O, clock_IBUF, CLKIN1, mmcm]", 7); // c.b (PAResourceAtoD.ClockNetworksReportView_CLOCK_NETWORK_TREE)
+selectTree(PAResourceAtoD.ClockNetworksReportView_CLOCK_NETWORK_TREE, "[top objects, sys_clk_pin (100.00 MHz) (drives 63 loads), clock, I, clock_IBUF_inst, O, clock_IBUF, CLKIN1, mmcm]", 7); // c.b (PAResourceAtoD.ClockNetworksReportView_CLOCK_NETWORK_TREE)
+selectTree(PAResourceAtoD.ClockNetworksReportView_CLOCK_NETWORK_TREE, "[top objects, sys_clk_pin (100.00 MHz) (drives 63 loads), clock, I, clock_IBUF_inst, O, clock_IBUF, CLKIN1, mmcm, _mmcm_CLKFBOUT (100.00 MHz) (drives 1 load)]", 8); // c.b (PAResourceAtoD.ClockNetworksReportView_CLOCK_NETWORK_TREE)
+selectTree(PAResourceAtoD.ClockNetworksReportView_CLOCK_NETWORK_TREE, "[top objects, sys_clk_pin (100.00 MHz) (drives 63 loads), clock, I, clock_IBUF_inst, O, clock_IBUF, CLKIN1, mmcm, _mmcm_CLKOUT0 (25.00 MHz) (drives 62 loads)]", 9); // c.b (PAResourceAtoD.ClockNetworksReportView_CLOCK_NETWORK_TREE)
+expandTree(PAResourceAtoD.ClockNetworksReportView_CLOCK_NETWORK_TREE, "[top objects, sys_clk_pin (100.00 MHz) (drives 63 loads), clock, I, clock_IBUF_inst, O, clock_IBUF, CLKIN1, mmcm, _mmcm_CLKFBOUT (100.00 MHz) (drives 1 load)]", 8); // c.b (PAResourceAtoD.ClockNetworksReportView_CLOCK_NETWORK_TREE)
+// TclEventType: RUN_COMPLETED
+// TclEventType: RUN_STATUS_CHANGE
+// TclEventType: RUN_STEP_COMPLETED
+selectTree(PAResourceAtoD.ClockNetworksReportView_CLOCK_NETWORK_TREE, "[top objects, sys_clk_pin (100.00 MHz) (drives 63 loads), clock, I, clock_IBUF_inst, O, clock_IBUF, CLKIN1, mmcm, _mmcm_CLKOUT0 (25.00 MHz) (drives 62 loads)]", 13); // c.b (PAResourceAtoD.ClockNetworksReportView_CLOCK_NETWORK_TREE)
+selectRadioButton(PAResourceCommand.PACommandNames_RUN_BITGEN, "Generate Bitstream"); // a (PAResourceCommand.PACommandNames_RUN_BITGEN)
+selectRadioButton(PAResourceCommand.PACommandNames_GOTO_IMPLEMENTED_DESIGN, "Open Implemented Design"); // a (PAResourceCommand.PACommandNames_GOTO_IMPLEMENTED_DESIGN)
+// [GUI Memory]: 213 MB (+11097kb) [02:57:58]
+selectButton(RDIResource.BaseDialog_OK, "OK", "Implementation Completed"); // f (RDIResource.BaseDialog_OK)
+// Run Command: PAResourceCommand.PACommandNames_GOTO_IMPLEMENTED_DESIGN
+selectButton(RDIResource.BaseDialog_YES, "Yes", "Close Design"); // f (RDIResource.BaseDialog_YES)
+dismissDialog("Close Design"); // a.a (dialog29)
+// TclEventType: DESIGN_CLOSE
+// HMemoryUtils.trashcanNow. Engine heap size: 3,687 MB. GUI used memory: 144 MB. Current time: 6/9/26, 10:27:37 PM EDT
+// Engine heap size: 3,687 MB. GUI used memory: 146 MB. Current time: 6/9/26, 10:27:37 PM EDT
+// TclEventType: CURR_DESIGN_SET
+// Tcl Message: close_design 
+// TclEventType: CURR_DESIGN_SET
+// TclEventType: TIMING_CLOCK_NETWORKS_UNLOAD
+// TclEventType: DESIGN_CLOSE
+dismissDialog("Close"); // bk (Close Progress)
+// Tcl Message: open_run impl_1 
+// TclEventType: SDC_CONSTRAINT_ADD
+// TclEventType: POWER_CNS_STALE
+// TclEventType: FLOORPLAN_MODIFY
+// TclEventType: DESIGN_NEW
+// HMemoryUtils.trashcanNow. Engine heap size: 3,687 MB. GUI used memory: 125 MB. Current time: 6/9/26, 10:27:42 PM EDT
+// TclEventType: DESIGN_NEW
+// Xgd.load filename: /home/mbrennan/Desktop/chiseltest/./.Xil/Vivado-481175-mbrennan-ThinkPad-T14s-Gen-4/xc7a35t_detail.xgd_6ECAAF79 elapsed time: 0.8s
+// DeviceModel: Load Xgds SwingWorker Join Forever elapsed time: 0.8s
+// DeviceView Instantiated
+// TclEventType: CURR_DESIGN_SET
+// Tcl Message: Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00 . Memory (MB): peak = 11647.828 ; gain = 0.000 ; free physical = 1970 ; free virtual = 6123 
+// Tcl Message: INFO: [Netlist 29-17] Analyzing 8 Unisim elements for replacement INFO: [Netlist 29-28] Unisim Transformation completed in 0 CPU seconds INFO: [Project 1-479] Netlist was created with Vivado 2025.2 INFO: [Project 1-570] Preparing netlist for logic optimization 
+// Tcl Message: Read ShapeDB Complete: Time (s): cpu = 00:00:00 ; elapsed = 00:00:00 . Memory (MB): peak = 11647.828 ; gain = 0.000 ; free physical = 1978 ; free virtual = 6132 
+// Tcl Message: INFO: [Timing 38-478] Restoring timing data from binary archive. INFO: [Timing 38-479] Binary timing data restore complete. INFO: [Project 1-856] Restoring constraints from binary archive. INFO: [Project 1-853] Binary constraint restore complete. INFO: [Designutils 20-5722] Start Reading Physical Databases. 
+// Tcl Message: Reading placement. 
+// Tcl Message: Read Netlist Cache: Time (s): cpu = 00:00:00 ; elapsed = 00:00:00 . Memory (MB): peak = 11647.828 ; gain = 0.000 ; free physical = 1959 ; free virtual = 6113 
+// Tcl Message: Reading placer database... 
+// Tcl Message: Read Device Cache: Time (s): cpu = 00:00:00.01 ; elapsed = 00:00:00 . Memory (MB): peak = 11647.828 ; gain = 0.000 ; free physical = 1959 ; free virtual = 6113 Read PlaceDB: Time (s): cpu = 00:00:00 ; elapsed = 00:00:00 . Memory (MB): peak = 11647.828 ; gain = 0.000 ; free physical = 1959 ; free virtual = 6113 Read placeStorage: Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.01 . Memory (MB): peak = 11647.828 ; gain = 0.000 ; free physical = 1959 ; free virtual = 6113 Read PulsedLatchDB: Time (s): cpu = 00:00:00 ; elapsed = 00:00:00 . Memory (MB): peak = 11647.828 ; gain = 0.000 ; free physical = 1959 ; free virtual = 6113 
+// Tcl Message: Reading routing. 
+// Tcl Message: Read RouteStorage: Time (s): cpu = 00:00:00.01 ; elapsed = 00:00:00 . Memory (MB): peak = 11647.828 ; gain = 0.000 ; free physical = 1959 ; free virtual = 6113 Read Physdb Files: Time (s): cpu = 00:00:00.02 ; elapsed = 00:00:00.01 . Memory (MB): peak = 11647.828 ; gain = 0.000 ; free physical = 1959 ; free virtual = 6113 
+// Tcl Message: Restored from archive | CPU: 0.020000 secs | Memory: 0.117157 MB | 
+// Tcl Message: Finished XDEF File Restore: Time (s): cpu = 00:00:00.02 ; elapsed = 00:00:00.01 . Memory (MB): peak = 11647.828 ; gain = 0.000 ; free physical = 1959 ; free virtual = 6113 Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00 . Memory (MB): peak = 11647.828 ; gain = 0.000 ; free physical = 1959 ; free virtual = 6113 
+// Tcl Message: INFO: [Project 1-111] Unisim Transformation Summary:   A total of 3 instances were transformed.   RAM32M => RAM32M (RAMD32(x6), RAMS32(x2)): 1 instance    RAM32X1D => RAM32X1D (RAMD32(x2)): 2 instances  
+// TclEventType: HFED_INIT_ROUTE_STORAGE_COMPLETED
+// TclEventType: CURR_DESIGN_SET
+// Device view-level: 0.0
+// RouteApi: Init Delay Mediator Swing Worker Finished
+// TclEventType: DRC_ADDED
+// TclEventType: METHODOLOGY_ADDED
+// TclEventType: POWER_UPDATED
+// TclEventType: TIMING_SUMMARY_UPDATED
+// 'ef' command handler elapsed time: 8 seconds
+dismissDialog("Open Implemented Design"); // bk (Open Implemented Design Progress)
+// [Engine Memory]: 4,693 MB (+132822kb) [02:58:09]
+selectTab((HResource) null, (HResource) null, "Log", 2); // ab
+selectTab((HResource) null, (HResource) null, "Design Runs", 4); // ab
+// [GUI Memory]: 225 MB (+2010kb) [02:58:12]
+selectTree(PAResourceEtoH.FlowNavigatorTreePanel_FLOW_NAVIGATOR_TREE, "[, Implementation, Run Implementation]", 31, false); // g (PAResourceEtoH.FlowNavigatorTreePanel_FLOW_NAVIGATOR_TREE, Flow Navigator Tree)
+// Run Command: PAResourceCommand.PACommandNames_RUN_IMPLEMENTATION
+selectButton("OK", "OK", "Run Implementation"); // JButton (OK)
+// TclEventType: PAUSE_COMPOSITE_FILE_CHANGE_GUI
+// TclEventType: RUN_MODIFY
+// TclEventType: DESIGN_STALE
+// TclEventType: RUN_RESET
+// TclEventType: RUN_STATUS_CHANGE
+// TclEventType: RUN_RESET
+// TclEventType: RUN_MODIFY
+// TclEventType: PAUSE_COMPOSITE_FILE_CHANGE_GUI
+// Tcl Message: reset_run impl_1 
+selectButton(RDIResource.BaseDialog_OK, "OK", "Launch Runs"); // f (RDIResource.BaseDialog_OK)
+// HMemoryUtils.trashcanNow. Engine heap size: 4,695 MB. GUI used memory: 162 MB. Current time: 6/9/26, 10:27:52 PM EDT
+// TclEventType: PAUSE_COMPOSITE_FILE_CHANGE_GUI
+dismissDialog("Launch Runs"); // g (dialog30)
+// TclEventType: FILESET_TARGET_UCF_CHANGE
+// TclEventType: DESIGN_STALE
+// TclEventType: RUN_LAUNCH
+// TclEventType: RUN_MODIFY
+// TclEventType: RUN_STATUS_CHANGE
+// TclEventType: PAUSE_COMPOSITE_FILE_CHANGE_GUI
+// Tcl Message: launch_runs impl_1 -jobs 6 
+// Tcl Message: [Tue Jun  9 20:27:52 2026] Launched impl_1... Run output will be captured here: /home/mbrennan/Desktop/MyFirstFPGAProject/MyFirstFPGAProject.runs/impl_1/runme.log 
+dismissDialog("Starting Design Runs"); // bk (Starting Design Runs Progress)
+// TclEventType: RUN_STATUS_CHANGE
+// TclEventType: RUN_STEP_COMPLETED
+// HMemoryUtils.trashcanNow. Engine heap size: 3,680 MB. GUI used memory: 161 MB. Current time: 6/9/26, 10:28:05 PM EDT
+// TclEventType: RUN_STEP_COMPLETED
+// TclEventType: DESIGN_STALE
+// TclEventType: RUN_COMPLETED
+// TclEventType: RUN_STATUS_CHANGE
+// TclEventType: RUN_STEP_COMPLETED
+// Elapsed time: 37 seconds
+selectRadioButton(PAResourceCommand.PACommandNames_RUN_BITGEN, "Generate Bitstream"); // a (PAResourceCommand.PACommandNames_RUN_BITGEN)
+selectButton(RDIResource.BaseDialog_OK, "OK", "Implementation Completed"); // f (RDIResource.BaseDialog_OK)
+// Run Command: PAResourceCommand.PACommandNames_RUN_BITGEN
+selectButton(RDIResource.BaseDialog_OK, "OK", "Launch Runs"); // f (RDIResource.BaseDialog_OK)
+// HMemoryUtils.trashcanNow. Engine heap size: 3,678 MB. GUI used memory: 163 MB. Current time: 6/9/26, 10:28:31 PM EDT
+dismissDialog("Launch Runs"); // cX (dialog31)
+// TclEventType: PAUSE_COMPOSITE_FILE_CHANGE_GUI
+// TclEventType: RUN_LAUNCH
+// TclEventType: RUN_MODIFY
+// TclEventType: PAUSE_COMPOSITE_FILE_CHANGE_GUI
+// Tcl Message: launch_runs impl_1 -to_step write_bitstream -jobs 6 
+// Tcl Message: [Tue Jun  9 20:28:31 2026] Launched impl_1... Run output will be captured here: /home/mbrennan/Desktop/MyFirstFPGAProject/MyFirstFPGAProject.runs/impl_1/runme.log 
+// TclEventType: RUN_STATUS_CHANGE
+selectTreeTable(PAResourceEtoH.ExpRunTreePanel_EXP_RUN_TREE_TABLE, "impl_1 ; constrs_1 ; Running write_bitstream... ; 33.72670364379883 ; 0.0 ; 0.12935252487659454 ; 0.0 ;  ; 0.0 ; 0.17807671427726746 ; 0 ;  ;  ;  ; 51 ; 50 ; 0.0 ; 0 ; 0 ; Tue Jun 09 22:27:55 EDT 2026 ; 00:00:24 ; Vivado Implementation Defaults* (Vivado Implementation 2025) ; Vivado Implementation Default Reports (Vivado Implementation 2025) ; xc7a35tcpg236-1 ; mbrennan-ThinkPad-T14s-Gen-4 ; Default settings for Implementation.", 1, "0.0", 10, false); // ar (PAResourceEtoH.ExpRunTreePanel_EXP_RUN_TREE_TABLE)
+// PAPropertyPanels.initPanels (impl_1) elapsed time: 0.2s
+selectTreeTable(PAResourceEtoH.ExpRunTreePanel_EXP_RUN_TREE_TABLE, "synth_1 ; constrs_1 ; synth_design Complete! ;  ;  ;  ;  ;  ;  ;  ;  ;  ;  ;  ; 58 ; 50 ; 0.0 ; 0 ; 0 ; Tue Jun 09 22:26:21 EDT 2026 ; 00:00:25 ; Vivado Synthesis Defaults* (Vivado Synthesis 2025) ; Vivado Synthesis Default Reports (Vivado Synthesis 2025) ; xc7a35tcpg236-1 ; mbrennan-ThinkPad-T14s-Gen-4 ; Vivado Synthesis Defaults", 0, (String) null, 8, true); // ar (PAResourceEtoH.ExpRunTreePanel_EXP_RUN_TREE_TABLE) - Node
+selectTab((HResource) null, (HResource) null, "Power", 5); // ab
+selectTab((HResource) null, (HResource) null, "Design Runs", 4); // ab
+// HMemoryUtils.trashcanNow. Engine heap size: 3,885 MB. GUI used memory: 165 MB. Current time: 6/9/26, 10:28:45 PM EDT
+// TclEventType: RUN_COMPLETED
+// TclEventType: RUN_STATUS_CHANGE
+// Elapsed time: 34 seconds
+selectRadioButton(PAResourceCommand.PACommandNames_OPEN_HARDWARE_MANAGER, "Open Hardware Manager"); // a (PAResourceCommand.PACommandNames_OPEN_HARDWARE_MANAGER)
+selectButton(RDIResource.BaseDialog_OK, "OK", "Bitstream Generation Completed"); // f (RDIResource.BaseDialog_OK)
+// Run Command: PAResourceCommand.PACommandNames_OPEN_HARDWARE_MANAGER
+// Tcl (Dont Echo) Command: 'rdi::info_commands get_hw_probes'
+// TclEventType: HW_SESSION_OPEN
+// Tcl Message: open_hw_manager 
+closeView(PAResourceOtoP.PAViews_PROJECT_SUMMARY, "Project Summary"); // x (PAResourceOtoP.PAViews_PROJECT_SUMMARY, PlanAheadTabProject Summary)
+dismissDialog("Open Hardware Manager"); // bk (Open Hardware Manager Progress)
+// [GUI Memory]: 243 MB (+6887kb) [02:59:41]
+// HMemoryUtils.trashcanNow. Engine heap size: 3,716 MB. GUI used memory: 169 MB. Current time: 6/9/26, 10:29:26 PM EDT
+// HMemoryUtils.trashcanNow. Engine heap size: 3,716 MB. GUI used memory: 169 MB. Current time: 6/9/26, 10:30:06 PM EDT
+// Elapsed time: 50 seconds
+selectButton(PAResourceOtoP.ProgramDebugTab_OPEN_TARGET, "Open target"); // h (PAResourceOtoP.ProgramDebugTab_OPEN_TARGET)
+selectMenuItem(PAResourceCommand.PACommandNames_AUTO_CONNECT_TARGET, "Auto Connect"); // ap (PAResourceCommand.PACommandNames_AUTO_CONNECT_TARGET, auto_connect_target_menu)
+// Run Command: PAResourceCommand.PACommandNames_AUTO_CONNECT_TARGET
+// TclEventType: HW_SERVER_UPDATE
+// Tcl Message: connect_hw_server -allow_non_jtag 
+// Tcl Message: INFO: [Labtools 27-2285] Connecting to hw_server url TCP:localhost:3121 INFO: [Labtools 27-2222] Launching hw_server... INFO: [Labtools 27-2221] Launch Output:  ****** Xilinx hw_server v2025.2   **** Build date : Oct 28 2025 at 16:07:00     ** Copyright 1986-2022 Xilinx, Inc. All Rights Reserved.   INFO: [Labtools 27-3415] Connecting to cs_server url TCP:localhost:0 INFO: [Labtools 27-3417] Launching cs_server... 
+// TclEventType: HW_SERVER_UPDATE
+// Tcl Message: INFO: [Labtools 27-2221] Launch Output:   ******** Xilinx cs_server v2025.2.0   ****** Build date   : Nov 13 2025-16:16:52     **** Build number : 2025.2.1763075812       ** Copyright 2017-2022 Xilinx, Inc. All Rights Reserved.       ** Copyright 2022-2026 Advanced Micro Devices, Inc. All Rights Reserved.    
+// TclEventType: HW_TARGET_CHANGE
+// TclEventType: HW_TARGET_CLOSE
+// TclEventType: HW_DEVICE_CHANGE
+// TclEventType: HW_SYSMON_ADD
+// TclEventType: HW_TARGET_UPDATE
+// Tcl Message: open_hw_target 
+// Tcl Message: INFO: [Labtoolstcl 44-466] Opening hw_target localhost:3121/xilinx_tcf/Digilent/210183BFD3B7A 
+// TclEventType: HW_DEVICE_CHANGE
+// Tcl Message: set_property PROGRAM.FILE {/home/mbrennan/Desktop/MyFirstFPGAProject/MyFirstFPGAProject.runs/impl_1/DebugTest.bit} [get_hw_devices xc7a35t_0] 
+// Tcl Message: current_hw_device [get_hw_devices xc7a35t_0] 
+// TclEventType: HW_DEVICE_CHANGE
+// TclEventType: HW_SYSMON_CHANGE
+// TclEventType: HW_DEVICE_UPDATE
+// TclEventType: HW_DEVICE_CHANGE
+// Tcl Message: refresh_hw_device -update_hw_probes false [lindex [get_hw_devices xc7a35t_0] 0] 
+// Tcl Message: INFO: [Labtools 27-1434] Device xc7a35t (JTAG device index = 0) is programmed with a design that has no supported soft debug core(s) in it. 
+dismissDialog("Auto Connect"); // bk (Auto Connect Progress)
+selectButton(PAResourceOtoP.ProgramDebugTab_PROGRAM_DEVICE, "Program device"); // h (PAResourceOtoP.ProgramDebugTab_PROGRAM_DEVICE)
+// Run Command: PAResourceCommand.PACommandNames_PROGRAM_FPGA
+selectButton(PAResourceOtoP.ProgramFpgaDialog_PROGRAM, "Program", "Program Device"); // f (PAResourceOtoP.ProgramFpgaDialog_PROGRAM, RDIResource.BaseDialog_OK)
+dismissDialog("Program Device"); // aT (dialog32)
+// TclEventType: HW_DEVICE_CHANGE
+// Tcl Message: set_property PROBES.FILE {} [get_hw_devices xc7a35t_0] 
+// Tcl Message: set_property FULL_PROBES.FILE {} [get_hw_devices xc7a35t_0] 
+// TclEventType: HW_DEVICE_CHANGE
+// Tcl Message: set_property PROGRAM.FILE {/home/mbrennan/Desktop/MyFirstFPGAProject/MyFirstFPGAProject.runs/impl_1/DebugTest.bit} [get_hw_devices xc7a35t_0] 
+// TclEventType: HW_DEVICE_CHANGE
+// Tcl Message: program_hw_devices [get_hw_devices xc7a35t_0] 
+// Tcl Message: INFO: [Labtools 27-3164] End of startup status: HIGH 
+// TclEventType: HW_DEVICE_CHANGE
+// TclEventType: HW_SYSMON_CHANGE
+// TclEventType: HW_DEVICE_UPDATE
+// TclEventType: HW_DEVICE_CHANGE
+// TclEventType: HW_DEVICE_PROBES_CHANGE
+// TclEventType: DEBUG_PROBE_SET_CHANGE
+// TclEventType: HW_DEVICE_PROBES_CHANGE
+// Tcl Message: refresh_hw_device [lindex [get_hw_devices xc7a35t_0] 0] 
+// Tcl Message: INFO: [Labtools 27-1434] Device xc7a35t (JTAG device index = 0) is programmed with a design that has no supported soft debug core(s) in it. 
+dismissDialog("Program Device"); // bk (Program Device Progress)
+// HMemoryUtils.trashcanNow. Engine heap size: 3,706 MB. GUI used memory: 170 MB. Current time: 6/9/26, 10:30:47 PM EDT
