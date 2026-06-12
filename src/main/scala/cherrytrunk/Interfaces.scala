@@ -25,11 +25,16 @@ class Request extends Bundle {
 
   // True for write request, false for read request.
   // Must be valid between rising edge of request stb and falling edge of respone ack.
-  val rw = Bool()
+  val we = Bool()
 
   // Start transaction strobe. Is high for exactly one cycle to signal start
   // of transaction.
   val stb = Bool()
+
+  // Transaction cycle. Must be held high for the entirety of a transaction, from stb going high to
+  // ack going high. Pulling this low after stb goes high but before ack goes high signals a
+  // cancellation.
+  val cyc = Bool()
 }
 
 // Response type for cherrytrunk - sent by slaves, received by masters.

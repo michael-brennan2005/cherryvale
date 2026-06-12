@@ -49,6 +49,7 @@ class Dispatcher extends Module {
 
   io.deq.ready := state === State.WaitForControl || state === State.GetAddrBytes || state === State.GetDataBytes
   req.stb := false.B
+  req.cyc := false.B
 
   io.enq.valid := false.B
   io.enq.bits := 0.U
@@ -58,7 +59,7 @@ class Dispatcher extends Module {
       when(io.deq.fire && io.deq.bits(7, 5) === "b100".U) {
         state := State.GetAddrBytes
         req.mask := io.deq.bits(4, 1)
-        req.rw := io.deq.bits(0)
+        req.we := io.deq.bits(0)
         counter := 3.U
       }
     }
@@ -67,10 +68,11 @@ class Dispatcher extends Module {
         req.addr := Cat(io.deq.bits, req.addr(31, 8))
 
         when(counter === 0.U) {
-          when(!req.rw) {
+          when(!req.we) {
             // read
             state := State.WaitForAck
             req.stb := true.B
+            req.cyc := true.B
           }.otherwise {
             // write
             state := State.GetDataBytes
@@ -88,6 +90,7 @@ class Dispatcher extends Module {
         when(counter === 0.U) {
           state := State.WaitForAck
           req.stb := true.B
+          req.cyc := true.B
         }.otherwise {
           counter := counter - 1.U
         }
@@ -96,15 +99,18 @@ class Dispatcher extends Module {
     is(State.WaitForAck) {
       when(io.resp.ack) {
         state := State.SendStatusByte
+        req.cyc := false.B
         resp := io.resp
       }
+
+      req.cyc := true.B
     }
     is(State.SendStatusByte) {
-      io.enq.bits := Cat(req.rw, Mux(resp.err, 1.U(1.W), 0.U(1.W)))
+      io.enq.bits := Cat(req.we, Mux(resp.err, 1.U(1.W), 0.U(1.W)))
       io.enq.valid := true.B
 
       when(io.enq.fire) {
-        state := Mux(req.rw || resp.err, State.WaitForControl, State.SendDataBytes)
+        state := Mux(req.we || resp.err, State.WaitForControl, State.SendDataBytes)
         counter := 3.U
       }
     }

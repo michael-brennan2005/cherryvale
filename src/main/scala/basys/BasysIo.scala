@@ -51,7 +51,7 @@ class BasysIo extends Module {
       )
     )
 
-    when(io.req.rw && io.req.addr === "h0".U) {
+    when(io.req.we && io.req.addr === "h0".U) {
       ledState := io.req.data
     }
   }.otherwise {

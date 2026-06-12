@@ -90,7 +90,7 @@ class DispatcherSpec extends AnyFlatSpec with Matchers with ChiselSim {
       addr: Int,
       data: Option[Int]
   ): Unit = {
-    dut.io.req.rw.expect(rw)
+    dut.io.req.we.expect(rw)
     // what are we doing here
     dut.io.req.addr.expect((addr.toLong & 0xffffffffL).U)
 

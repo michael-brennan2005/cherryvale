@@ -59,7 +59,7 @@ object CherrytrunkProperties {
       val addrStable = !pending || (req.addr === RegNext(req.addr)) // fields held while
       val dataStable = !pending || (req.data === RegNext(req.data)) //   a transaction is
       val maskStable = !pending || (req.mask === RegNext(req.mask)) //   outstanding
-      val rwStable = !pending || (req.rw === RegNext(req.rw))
+      val rwStable = !pending || (req.we === RegNext(req.we))
       val maskValid = !req.stb || maskLegal // legal mask on every strobe
       val masterProps = Seq(stbIsPulse, addrStable, dataStable, maskStable, rwStable, maskValid)
 

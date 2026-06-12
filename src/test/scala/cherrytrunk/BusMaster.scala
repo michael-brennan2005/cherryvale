@@ -21,7 +21,7 @@ class BusMaster(req: Request, resp: Response, clk: Clock, maxCycles: Int = 64) e
   /** Hold the bus idle: deassert the strobe and zero the request fields. */
   def idle(): Unit = {
     req.stb.poke(false.B)
-    req.rw.poke(false.B)
+    req.we.poke(false.B)
     req.addr.poke(0.U)
     req.data.poke(0.U)
     req.mask.poke(0.U)
@@ -35,7 +35,7 @@ class BusMaster(req: Request, resp: Response, clk: Clock, maxCycles: Int = 64) e
     req.addr.poke((addr & mask32).U)
     req.data.poke((data & mask32).U)
     req.mask.poke(mask.U)
-    req.rw.poke(rw.B)
+    req.we.poke(rw.B)
     req.stb.poke(true.B)
     clk.step() // rising edge samples the strobe
 
