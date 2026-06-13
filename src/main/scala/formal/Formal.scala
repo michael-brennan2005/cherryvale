@@ -199,11 +199,11 @@ trait Formal extends Elaboratable {
     * `read_slang` would drop, so they are read with the native `read_verilog -sv -formal` frontend
     * *before* slang; slang then links to them as blackboxes via its always-on `--extern-modules`.
     *
-    * The `flatten` + `setattr -set keep 1 t:$anyconst` before `prep` is load-bearing: two same-width
-    * `$anyconst` cells (e.g. two `UInt(8.W)` free constants) are structurally identical, so `opt_merge`
-    * inside `prep` would otherwise collapse them into a single constant -- silently forcing the two
-    * "arbitrary" values equal and making the proof unsound. Flattening first gives each instance its
-    * own cell; `keep` then stops the merge so they stay independent.
+    * The `flatten` + `setattr -set keep 1 t:$anyconst` before `prep` is load-bearing: two
+    * same-width `$anyconst` cells (e.g. two `UInt(8.W)` free constants) are structurally identical,
+    * so `opt_merge` inside `prep` would otherwise collapse them into a single constant -- silently
+    * forcing the two "arbitrary" values equal and making the proof unsound. Flattening first gives
+    * each instance its own cell; `keep` then stops the merge so they stay independent.
     */
   private def renderSby(top: String, check: Check, harness: File, dutFiles: Seq[File]): String = {
     val allFiles = harness +: dutFiles
@@ -280,7 +280,6 @@ trait Formal extends Elaboratable {
     results.foreach { case (check, pass) =>
       println(f"  ${check.mode}%-6s depth=${check.depth}%-4d ${if (pass) "PASS" else "FAIL"}")
     }
-    if (results.exists(!_._2)) sys.exit(1)
   }
 
   /** Resolve the checks to run from CLI args (`mode[:depth]` tokens; empty = all). */

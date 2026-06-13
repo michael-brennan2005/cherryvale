@@ -31,3 +31,12 @@ sbt "runMain CounterFormal"            # all configured checks
 sbt "runMain CounterFormal bmc"        # one mode
 sbt "runMain CounterFormal bmc:50"     # override that check's depth
 ```
+
+# TODO
+- Sim full debug master - spoof response, keep ack high and special data
+- Sim Soc1 w/ crossbar - spoof basys io slave, keep ack high and special data
+- Soc1 w/ crossbar, no Basys on FPGA; write serial port program
+- Sim Soc1 w/ crossbar and basys IO
+- Code cleanup
+  - Check TODOs
+  - More docs

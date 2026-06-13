@@ -32,8 +32,7 @@ class Request extends Bundle {
   val stb = Bool()
 
   // Transaction cycle. Must be held high for the entirety of a transaction, from stb going high to
-  // ack going high. Pulling this low after stb goes high but before ack goes high signals a
-  // cancellation.
+  // ack going high.
   val cyc = Bool()
 }
 
@@ -41,7 +40,7 @@ class Request extends Bundle {
 class Response extends Bundle {
   // Data returned on read transaction. Is valid only when ack is high, and 0
   // otherwise.
-  // TODO: on writes what should this be? junk value, dont care, etc.
+  // TODO: on writes what should this be? junk value, dont care,  etc.
   val data = UInt(32.W)
 
   // Transaction acknowledgement. Is high for exactly one cycle to signal

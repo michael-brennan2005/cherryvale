@@ -5,6 +5,8 @@ import _root_.circt.stage.ChiselStage
 import chisel3.util._
 import cherrytrunk.Request
 import cherrytrunk.Response
+import formal._
+import formal.Utils.implies
 
 // Decode bytes from UART line into cherrytrunk transactions, and encode those responses
 // back into bytes to be transmitted.
@@ -21,7 +23,7 @@ import cherrytrunk.Response
 //
 // TODO: pipeline this - while waiting for transaction to complete we can be decoding
 // the next operation; we can start a new transaction as we encode the last one
-class Dispatcher extends Module {
+class Dispatcher(emitFormal: Boolean = false) extends Module {
   val io = IO(new Bundle {
     // Bytes coming from Uart RX
     val deq = Flipped(DecoupledIO(UInt(8.W)))
@@ -131,4 +133,48 @@ class Dispatcher extends Module {
   }
 
   io.req := req
+
+  if (emitFormal) {
+    // Assume that the control bit always provides a valid write mask
+    assume(
+      Utils.implies(
+        state === State.WaitForControl && io.deq.fire && io.deq.bits(7, 5) === "b100".U,
+        CherrytrunkProperties.validCherrytrunkMask(io.deq.bits(4, 1))
+      )
+    )
+
+    // Assume non-zero data on a response (so we can verify actual output to FIFO queue),
+    // and that queue will be ready to accept data (so we don't just hang)
+    assume(implies(io.resp.ack, io.resp.data =/= 0.U))
+    assume(implies(state === State.SendStatusByte, io.enq.ready === true.B))
+    assume(implies(state === State.SendDataBytes, io.enq.ready === true.B))
+
+    // Covers - ensure we reach all states
+    cover(state === State.WaitForControl)
+    cover(state === State.GetAddrBytes)
+    cover(state === State.GetDataBytes)
+    cover(state === State.WaitForAck)
+    cover(state === State.SendStatusByte)
+    cover(state === State.SendDataBytes)
+
+    // Ensure we complete a full encode/decode sequence
+    val clockCounter = RegInit(0.U(16.W))
+    clockCounter := clockCounter + 1.U
+    val pastState = RegNext(state)
+    cover(
+      clockCounter > 5.U && pastState === State.SendDataBytes && state === State.WaitForControl
+    )
+
+    // Covers - ensure transaction actually launches and completes
+    cover(io.req.stb)
+    cover(resp.ack)
+
+    CherrytrunkProperties.checkMaster(io.req, io.resp)
+  }
+}
+
+object DispatcherFormal extends Formal {
+  def build = new Dispatcher(emitFormal = true)
+
+  override def checks: Seq[Check] = Seq(Bmc(20), Cover(60), Prove(60))
 }

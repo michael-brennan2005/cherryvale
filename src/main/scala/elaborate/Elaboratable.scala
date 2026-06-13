@@ -39,7 +39,7 @@ trait Elaboratable {
       commonFirtoolOpts ++ Array(
         "-preserve-values=named", // keep named wires/regs
         "-preserve-aggregate=all", // keep bundles/vecs as structs/arrays
-        "--lowering-options=disallowClockedAssertions,disallowLocalVariables,disallowPackedArrays" // for FV
+        "--lowering-options=disallowClockedAssertions,disallowLocalVariables" // for FV
         // location info (@[File.scala 12:3]) is kept by default
       )
     )

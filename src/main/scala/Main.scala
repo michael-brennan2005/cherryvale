@@ -2,7 +2,6 @@ import chisel3._
 import cpu.Utils
 import debug.Fifo
 import debug.UartRx
-import scratch.Counter
 import elaborate.Elaboratable
 import formal.Formal
 
@@ -27,8 +26,4 @@ object EmitTop extends Elaboratable {
 
 object EmitUartRx extends Elaboratable {
   def build = new UartRx(1000)
-}
-
-object EmitCounter extends Elaboratable {
-  def build = new Counter
 }
