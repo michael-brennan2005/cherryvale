@@ -6,8 +6,6 @@ import _root_.circt.stage.ChiselStage
 import chisel3.ltl.AssertProperty
 
 // 8N1 uart receiver
-// TODO: this doesnt really obey decoupled properties - what happens if there's a valid byte received
-// but the consumer isn't ready yet?
 class UartRx(clocksPerBaud: Int, emitFormal: Boolean = true) extends Module {
   val io = IO(new Bundle {
     val rx = Input(Bool())

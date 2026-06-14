@@ -1,21 +1,31 @@
 # About
-Cherryvale is a RISC-V core/SoC implemented in Chisel HDL, and primarily tested on a Digilent Basys3 dev-board.
+CherryVale is a RISC-V core/SoC implemented in Chisel HDL, and primarily tested on a Digilent Basys3 dev-board.
 
-# Features
+# System diagram & features
+TODO: System diagram
 * 5-stage pipelined RISC-V core - fetch, decode, execute, memory, register writeback
-* (in progress) support for full RISCV32I base instruciton set
-* (planned) formal verification
-* (planned) interesting things
+* Full support for RV32I instruction set
+* Custom Wishbone-inspired bus protocol
+* Basys3 I/O support
 
 # Project structure
 ```
-build/
-    chiselsim/        # Outputs generated from ChiselSim
-    sv/               # SystemVerilog outputs generated from Chisel
-    vivado/           # Files generated from Vivado
+build/                # Temp/generated outputs
+    chiselsim/          # ChiselSim outputs
+    formal/             # FV/YoSys outputs
+    sv/                 # SystemVerilog outputs (for synth)
+    vivado/             # Vivado outputs
 src/
-    main/scala/       # Chisel code
-    test/scala/       # Chisel tests
+    main/scala/       # RTL code
+        pit/            # CherryPit - RISCV core
+        trunk/          # CherryTrunk - custom bus protocol
+        vale/           # CherryVale - SoC w/ core & peripherals
+        debug/          # UART debug master for communicating with SoC
+        common/         # One-off and reusable modules
+        harness/        # Tools/utils for generating SV, formal runs, etc.
+    test/scala/       # Testing & simulation code
+software/             # Support tools & FW
+    cv-serial/           # Serial driver/monitor for CherryVale debug master
 synth/
     build.tcl         # Vivado script for synthesis, device upload
     constraints.xdc   # FPGA board file
@@ -31,13 +41,3 @@ sbt "runMain CounterFormal"            # all configured checks
 sbt "runMain CounterFormal bmc"        # one mode
 sbt "runMain CounterFormal bmc:50"     # override that check's depth
 ```
-
-# TODO
-- Sim full debug master - spoof response, keep ack high and special data
-- Sim Soc1 w/ crossbar - spoof basys io slave, keep ack high and special data
-- Soc1 w/ crossbar, no Basys on FPGA; write serial port program
-- Sim Soc1 w/ crossbar and basys IO
-- Code cleanup
-  - Check TODOs
-  - More docs
-  - File directory - rename cpu to core, move stuff out of top directory, fifo should be in common directory

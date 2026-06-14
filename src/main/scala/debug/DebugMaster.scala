@@ -3,8 +3,9 @@ package debug
 import chisel3._
 import _root_.circt.stage.ChiselStage
 import chisel3.util._
-import cherrytrunk.Request
-import cherrytrunk.Response
+import trunk.Request
+import trunk.Response
+import common.Fifo
 
 class DebugMaster(clocksPerBaud: Int = 6, emitFormal: Boolean = false) extends Module {
   val io = IO(new Bundle {

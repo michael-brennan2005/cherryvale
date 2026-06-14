@@ -3,10 +3,12 @@ package debug
 import chisel3._
 import _root_.circt.stage.ChiselStage
 import chisel3.util._
-import cherrytrunk.Request
-import cherrytrunk.Response
-import formal._
-import formal.Utils.implies
+import trunk.Request
+import trunk.Response
+import harness._
+import harness.Utils.implies
+import harness.Utils
+import harness.CherrytrunkProperties
 
 // Decode bytes from UART line into cherrytrunk transactions, and encode those responses
 // back into bytes to be transmitted.
@@ -170,6 +172,8 @@ class Dispatcher(emitFormal: Boolean = false) extends Module {
     cover(resp.ack)
 
     CherrytrunkProperties.checkMaster(io.req, io.resp)
+    DecoupledProperties.emitConsumer(io.deq)
+    DecoupledProperties.emitProducer(io.enq)
   }
 }
 

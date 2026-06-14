@@ -5,8 +5,8 @@ import chisel3.simulator.scalatest.ChiselSim
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
 import chisel3.simulator.PeekPokeAPI
-import cherrytrunk.Request
-import cherrytrunk.Response
+import trunk.Request
+import trunk.Response
 import com.carlosedp.riscvassembler.ObjectUtils.NumericManipulation
 
 // Transactions

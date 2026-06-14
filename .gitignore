@@ -2,8 +2,10 @@
 test_run_dir/*
 build
 
-.metals/*
-.bloop/*
+.metals
+.bloop
+.claude
+.Xil
 
 sby/basysio/*
 

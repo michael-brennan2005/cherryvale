@@ -1,7 +1,7 @@
 import chisel3._
 import org.scalatest.flatspec.AnyFlatSpec
-import cherrytrunk.CherrytrunkSlaveTestBase
-import basys.BasysIo
+import trunk.CherrytrunkSlaveTestBase
+import common.BasysIo
 
 /** Tests for BasysIO * */
 class BasysIoSpec extends AnyFlatSpec with CherrytrunkSlaveTestBase {
