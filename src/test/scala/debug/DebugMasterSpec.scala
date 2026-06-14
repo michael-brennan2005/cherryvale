@@ -79,6 +79,8 @@ class DebugMasterSpec extends AnyFlatSpec with Matchers with ChiselSim {
 
   behavior of "DebugMaster"
 
+  // TODO: DebugMaster works, models & transactions works, but we should put this into
+  // a proper test setup w/ harness
   it should "work" in {
     simulate(new DebugMaster(ClocksPerBaud, emitFormal = false)) { dut =>
       val bus = new BusModel(dut.io.req, dut.io.resp)
@@ -86,7 +88,10 @@ class DebugMasterSpec extends AnyFlatSpec with Matchers with ChiselSim {
       val uartRx = new UartRxMonitor(ClocksPerBaud, dut.io.uartTx)
 
       uartTx.encodeRead(DoRead(4))
-      for (i <- 0 until 600) {
+      uartTx.encodeWrite(DoWrite(4, 55))
+      uartTx.encodeRead(DoRead(4))
+      uartTx.encodeWrite(DoWrite(300, 5500))
+      for (i <- 0 until 1800) {
         uartTx.tick()
         uartRx.tick()
         bus.tick()

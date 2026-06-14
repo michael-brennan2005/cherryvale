@@ -55,16 +55,3 @@ class ClockGen(mult: Double, divide: Double) extends Module {
   io.clockOut := clkbuf.io.O
   io.mmcmLock := mmcm.io.LOCKED
 }
-
-object ClockGen {
-  // Wrap a module so it runs on a clock derived from the current clock domain.
-  // New clock rate is (currentClock * mult) / divide Hz. The wrapped module is
-  // held in reset until the MMCM locks.
-  //   val foo = ClockGen(mult = 8.0, divide = 4.0) { new Foo }
-  def apply[T <: Module](mult: Double, divide: Double)(gen: => T): T = {
-    val clkgen = Module(new ClockGen(mult, divide))
-    withClockAndReset(clkgen.io.clockOut, !clkgen.io.mmcmLock) {
-      Module(gen)
-    }
-  }
-}

@@ -40,3 +40,4 @@ sbt "runMain CounterFormal bmc:50"     # override that check's depth
 - Code cleanup
   - Check TODOs
   - More docs
+  - File directory - rename cpu to core, move stuff out of top directory, fifo should be in common directory
