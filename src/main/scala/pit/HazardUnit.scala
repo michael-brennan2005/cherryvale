@@ -6,6 +6,7 @@ import _root_.circt.stage.ChiselStage
 
 class HazardUnit extends Module {
   val io = IO(new Bundle {
+    val halt = Input(Bool())
     val pcOverride = Input(Bool())
 
     val stallPc = Output(Bool())
@@ -67,7 +68,7 @@ class HazardUnit extends Module {
   val lwStall =
     (io.executeRegFileWriteSrc === RegFileWriteSrc.data) && (io.executeRegDestIdx =/= 0.U) && ((io.decodeReg1Idx === io.executeRegDestIdx) | (io.decodeReg2Idx === io.executeRegDestIdx))
 
-  io.stallPc := lwStall
+  io.stallPc := lwStall || io.halt
   io.stallFetchOutput := lwStall
   io.flushFetchOutput := io.pcOverride
   io.flushDecodeOutput := lwStall | io.pcOverride

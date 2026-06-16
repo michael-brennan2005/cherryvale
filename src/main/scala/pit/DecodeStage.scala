@@ -23,6 +23,7 @@ class DecodeStageOutput extends Bundle {
 class DecodeStage extends Module {
   val io = IO(new Bundle {
     val fetchInput = Flipped(new FetchStageOutput)
+
     val out = new DecodeStageOutput
 
     // Will come from writeback stage
@@ -42,15 +43,15 @@ class DecodeStage extends Module {
 
   // TODO: do we need to set reset for regfile here?
   val regFile = Module(new RegisterFile)
-  regFile.io.i_ra_1 := reg1Idx
-  regFile.io.i_ra_2 := reg2Idx
+  regFile.io.readIdx1 := reg1Idx
+  regFile.io.readIdx2 := reg2Idx
 
-  regFile.io.i_ra_3 := io.regDebugIdx
-  io.regDebugData := regFile.io.o_rd_3
+  regFile.io.readIdx3 := io.regDebugIdx
+  io.regDebugData := regFile.io.readData3
 
-  regFile.io.i_wa := io.regWriteIdx
-  regFile.io.i_wd := io.regWriteData
-  regFile.io.i_w_en := io.regWriteEnable
+  regFile.io.writeIdx := io.regWriteIdx
+  regFile.io.writeData := io.regWriteData
+  regFile.io.writeEn := io.regWriteEnable
 
   val control = Module(new ControlUnit)
 
@@ -71,9 +72,9 @@ class DecodeStage extends Module {
 
   io.out.control := controlSignals
   io.out.reg1Idx := reg1Idx
-  io.out.reg1Data := regFile.io.o_rd_1
+  io.out.reg1Data := regFile.io.readData1
   io.out.reg2Idx := reg2Idx
-  io.out.reg2Data := regFile.io.o_rd_2
+  io.out.reg2Data := regFile.io.readData2
   io.out.regDestIdx := regDestIdx
   io.out.pc := io.fetchInput.pc
   io.out.pcPlusFour := io.fetchInput.pcPlusFour

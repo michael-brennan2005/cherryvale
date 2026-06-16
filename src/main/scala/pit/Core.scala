@@ -5,14 +5,21 @@ import _root_.circt.stage.ChiselStage
 import chisel3.util._
 import chisel3.experimental.BundleLiterals._
 
-class DataPath extends Module {
+// "Core" compute path for CherryPit - contains datapath (fetch -> decode -> execute -> mem),
+// control unit, PC, and reg file.
+// TODO: Fetch stage has now been rewritten to use BadCache, memoryUnit has not.
+class Core(sim: Boolean = false) extends Module {
   val io = IO(new Bundle {
-    val code = Flipped(new ReadPort)
-    val data = Flipped(new ReadWritePort)
+    val halt = Input(Bool())
 
-    // for debug
-    val reg_file_ra = Input(UInt(5.W))
-    val reg_file_rd = Output(UInt(32.W))
+    val codeReq = EnqIO(new MemoryRequest)
+    val codeResp = Flipped(Valid(UInt(32.W)))
+
+    val dataReq = EnqIO(new MemoryRequest)
+    val dataResp = Flipped(Valid(UInt(32.W)))
+
+    val regDebugIdx = if (sim) Some(Input(UInt(5.W))) else None
+    val regDebugData = if (sim) Some(Output(UInt(32.W))) else None
   })
 
   val hazard = Module(new HazardUnit)
@@ -21,13 +28,11 @@ class DataPath extends Module {
   val execute = Module(new ExecuteStage)
   val memory = Module(new MemoryStage)
 
-  val pc = RegInit(0.U(32.W)) // writeback -> fetch (sort of)
-  val ifId = RegInit(0.U.asTypeOf(new FetchStageOutput)) // fetch -> decode
+  val pc = RegInit(0.U(32.W)) // writeback -> fetch
+  val ifId = fetch.io.out // fetch -> decode
   val idEx = RegInit(0.U.asTypeOf(new DecodeStageOutput)) // decode -> execute
   val exMem = RegInit(0.U.asTypeOf(new ExecuteStageOutput)) // execute -> memory
-  val memWb = RegInit(
-    0.U.asTypeOf(new MemoryStageOutput)
-  ) // memory -> writeback
+  val memWb = memory.io.out // memory -> writeback
 
   val pcOverride = Wire(Bool())
   val resultWriteback = Wire(UInt(32.W))
@@ -40,13 +45,12 @@ class DataPath extends Module {
   }
 
   fetch.io.pc := pc
-  fetch.io.code <> io.code
-
-  when(hazard.io.flushFetchOutput) {
-    ifId := 0.U.asTypeOf(new FetchStageOutput)
-  }.elsewhen(!hazard.io.stallFetchOutput) {
-    ifId := fetch.io.out
-  }
+  fetch.io.flush := hazard.io.flushFetchOutput
+  fetch.io.stall := hazard.io.stallFetchOutput
+  io.codeReq.bits := fetch.io.codeReq.bits
+  io.codeReq.valid := fetch.io.codeReq.valid
+  fetch.io.codeReq.ready := io.codeReq.ready
+  fetch.io.codeResp := io.codeResp
 
   // Decode stage
   decode.io.fetchInput := ifId
@@ -55,8 +59,12 @@ class DataPath extends Module {
   decode.io.regWriteEnable := memWb.control.writeToReg
   decode.io.regWriteData := resultWriteback
 
-  decode.io.regDebugIdx := io.reg_file_ra
-  io.reg_file_rd := decode.io.regDebugData
+  if (sim) {
+    decode.io.regDebugIdx := io.regDebugIdx.get
+    io.regDebugData.get := decode.io.regDebugData
+  } else {
+    decode.io.regDebugIdx := 0.U
+  }
 
   when(hazard.io.flushDecodeOutput) {
     idEx := 0.U.asTypeOf(new DecodeStageOutput)
@@ -78,9 +86,10 @@ class DataPath extends Module {
 
   // Memory stage
   memory.io.executeInput := exMem
-  memory.io.data <> io.data
-
-  memWb := memory.io.out
+  io.dataReq.bits := memory.io.dataReq.bits
+  io.dataReq.valid := memory.io.dataReq.valid
+  memory.io.dataReq.ready := io.dataReq.ready
+  memory.io.dataResp := io.dataResp
 
   // Writeback stage
   resultWriteback := MuxLookup(
@@ -96,6 +105,8 @@ class DataPath extends Module {
   )
 
   // Hazard inputs
+  hazard.io.halt := io.halt
+
   hazard.io.pcOverride := pcOverride
   hazard.io.decodeReg1Idx := decode.io.out.reg1Idx
   hazard.io.decodeReg2Idx := decode.io.out.reg2Idx
