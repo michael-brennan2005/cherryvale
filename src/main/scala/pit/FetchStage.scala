@@ -44,7 +44,7 @@ class FetchStage extends Module {
   // the instruction is in the cache itself. So instead of putting instruction in a register we out-
   // put directly
   // TODO: proper no-op instead of 0.U
-  io.out.inst := Mux(squash || !io.codeResp.valid, 0.U, io.codeResp.bits)
+  io.out.inst := Mux(squash || !io.codeResp.valid, RegNext(io.codeResp.bits), io.codeResp.bits)
   io.out.pc := pcReg
   io.out.pcPlusFour := pcPlus4Reg
 }

@@ -28,10 +28,10 @@ class Core(sim: Boolean = false) extends Module {
   val execute = Module(new ExecuteStage)
   val memory = Module(new MemoryStage)
 
-  val pc = RegInit(0.U(32.W)) // writeback -> fetch
+  val pc = Module(new PSR(UInt(32.W))) // writeback -> fetch
   val ifId = fetch.io.out // fetch -> decode
-  val idEx = RegInit(0.U.asTypeOf(new DecodeStageOutput)) // decode -> execute
-  val exMem = RegInit(0.U.asTypeOf(new ExecuteStageOutput)) // execute -> memory
+  val idEx = Module(new PSR(new DecodeStageOutput)) // decode -> execute
+  val exMem = Module(new PSR(new ExecuteStageOutput)) // execute -> memory
   val memWb = memory.io.out // memory -> writeback
 
   val pcOverride = Wire(Bool())
@@ -39,14 +39,14 @@ class Core(sim: Boolean = false) extends Module {
 
   // Fetch stage
   when(!hazard.io.stallPc && pcOverride) {
-    pc := execute.io.pcTarget
+    pc.io.in := execute.io.pcTarget
   }.elsewhen(!hazard.io.stallPc) {
-    pc := pc + 4.U
+    pc.io.in := pc.io.out + 4.U
+  }.otherwise {
+    pc.io.in := pc.io.out
   }
 
-  fetch.io.pc := pc
-  fetch.io.flush := hazard.io.flushFetchOutput
-  fetch.io.stall := hazard.io.stallFetchOutput
+  fetch.io.pc := pc.io.out
   io.codeReq.bits := fetch.io.codeReq.bits
   io.codeReq.valid := fetch.io.codeReq.valid
   fetch.io.codeReq.ready := io.codeReq.ready
@@ -66,26 +66,22 @@ class Core(sim: Boolean = false) extends Module {
     decode.io.regDebugIdx := 0.U
   }
 
-  when(hazard.io.flushDecodeOutput) {
-    idEx := 0.U.asTypeOf(new DecodeStageOutput)
-  }.otherwise {
-    idEx := decode.io.out
-  }
+  idEx.io.in := decode.io.out
 
   // Execute stage
-  execute.io.decodeInput := idEx
+  execute.io.decodeInput := idEx.io.out
 
-  pcOverride := idEx.control.jump | (idEx.control.branch & execute.io.takeBranch)
+  pcOverride := idEx.io.out.control.jump | (idEx.io.out.control.branch & execute.io.takeBranch)
 
   execute.io.aluSrcASelect := hazard.io.executeAInputSel
   execute.io.aluSrcBSelect := hazard.io.executeBInputSel
 
   execute.io.resultWriteback := resultWriteback
-  execute.io.resultMemory := exMem.aluResult
-  exMem := execute.io.out
+  execute.io.resultMemory := exMem.io.out.aluResult
+  exMem.io.in := execute.io.out
 
   // Memory stage
-  memory.io.executeInput := exMem
+  memory.io.executeInput := exMem.io.out
   io.dataReq.bits := memory.io.dataReq.bits
   io.dataReq.valid := memory.io.dataReq.valid
   memory.io.dataReq.ready := io.dataReq.ready
@@ -107,17 +103,32 @@ class Core(sim: Boolean = false) extends Module {
   // Hazard inputs
   hazard.io.halt := io.halt
 
+  pc.io.stall := hazard.io.stallPc
+  pc.io.flush := hazard.io.flushPc
+
+  fetch.io.stall := hazard.io.stallFetch
+  fetch.io.flush := hazard.io.flushFetch
+
+  idEx.io.stall := hazard.io.stallDecode
+  idEx.io.flush := hazard.io.flushDecode
+
+  exMem.io.stall := hazard.io.stallExecute
+  exMem.io.flush := hazard.io.flushExecute
+
+  memory.io.stall := hazard.io.stallMemory
+  memory.io.flush := hazard.io.flushMemory
+
   hazard.io.pcOverride := pcOverride
   hazard.io.decodeReg1Idx := decode.io.out.reg1Idx
   hazard.io.decodeReg2Idx := decode.io.out.reg2Idx
 
-  hazard.io.executeReg1Idx := idEx.reg1Idx
-  hazard.io.executeReg2Idx := idEx.reg2Idx
-  hazard.io.executeRegDestIdx := idEx.regDestIdx
-  hazard.io.executeRegFileWriteSrc := idEx.control.regFileWriteSrc
+  hazard.io.executeReg1Idx := idEx.io.out.reg1Idx
+  hazard.io.executeReg2Idx := idEx.io.out.reg2Idx
+  hazard.io.executeRegDestIdx := idEx.io.out.regDestIdx
+  hazard.io.executeRegFileWriteSrc := idEx.io.out.control.regFileWriteSrc
 
-  hazard.io.memoryRegDestIdx := exMem.regDestIdx
-  hazard.io.memoryWriteToReg := exMem.control.writeToReg
+  hazard.io.memoryRegDestIdx := exMem.io.out.regDestIdx
+  hazard.io.memoryWriteToReg := exMem.io.out.control.writeToReg
 
   hazard.io.writebackRegDestIdx := memWb.regDestIdx
   hazard.io.writebackWriteToReg := memWb.control.writeToReg

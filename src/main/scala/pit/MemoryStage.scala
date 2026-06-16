@@ -20,6 +20,9 @@ class MemoryStage extends Module {
     val executeInput = Flipped(new ExecuteStageOutput)
     val out = new MemoryStageOutput
 
+    val stall = Input(Bool())
+    val flush = Input(Bool())
+
     val dataReq = EnqIO(new MemoryRequest)
     val dataResp = Flipped(Valid(UInt(32.W)))
   })
@@ -51,17 +54,33 @@ class MemoryStage extends Module {
   // )
 
   // See FetchStage for explanation of why we do it like this
-  val controlReg = RegNext(io.executeInput.control)
-  val aluResultReg = RegNext(io.executeInput.aluResult)
-  val regDestIdxReg = RegNext(io.executeInput.regDestIdx)
-  val immediateReg = RegNext(io.executeInput.immediate)
-  val pcPlusFourReg = RegNext(io.executeInput.pcPlusFour)
 
-  io.out.control := controlReg
-  io.out.aluResult := aluResultReg
-  io.out.regDestIdx := regDestIdxReg
-  io.out.immediate := immediateReg
-  io.out.pcPlusFour := pcPlusFourReg
+  private class MemoryStageOutputStub extends Bundle {
+    val control = Output(new ControlSignals)
+
+    val aluResult = Output(UInt(32.W))
+    val regDestIdx = Output(UInt(5.W))
+
+    val immediate = Output(UInt(32.W))
+    val pcPlusFour = Output(UInt(32.W))
+  }
+
+  private val msoPSR = Module(new PSR(new MemoryStageOutputStub))
+  msoPSR.io.stall := io.stall
+  msoPSR.io.flush := io.flush
+
+  msoPSR.io.in.control := io.executeInput.control
+  msoPSR.io.in.aluResult := io.executeInput.aluResult
+  msoPSR.io.in.regDestIdx := io.executeInput.regDestIdx
+  msoPSR.io.in.immediate := io.executeInput.immediate
+  msoPSR.io.in.pcPlusFour := io.executeInput.pcPlusFour
+
+  io.out.control := msoPSR.io.out.control
+  io.out.aluResult := msoPSR.io.out.aluResult
+  io.out.regDestIdx := msoPSR.io.out.regDestIdx
+  io.out.immediate := msoPSR.io.out.immediate
+  io.out.pcPlusFour := msoPSR.io.out.pcPlusFour
+
   io.out.memReadData := io.dataResp.bits
 
   // Handling for lb,lh,lw,sb,etc.

@@ -3,6 +3,9 @@
 ThisBuild / scalaVersion := "2.13.18"
 ThisBuild / version := "0.1.0"
 ThisBuild / organization := "com.github.michaelbrennan2005"
+Global / concurrentRestrictions := Seq(
+  Tags.limitAll(4) // only 4 tests at a time so I dont crash my computer
+)
 
 val chiselVersion = "7.7.0"
 
