@@ -12,94 +12,122 @@ class HazardUnit extends Module {
     val halt = Input(Bool())
 
     // pcOverride - thrown by execute stage when branch should be taken
-    val pcOverride = Input(Bool())
+    // val pcOverride = Input(Bool())
+
+    val iCacheRespValid = Input(Bool())
+    val iCacheReqReady = Input(Bool())
 
     // Stall and flushes for all PSRs.
-    val stallPc = Output(Bool())
-    val flushPc = Output(Bool())
+    val stallPcOut = Output(Bool())
+    val flushPcOut = Output(Bool())
 
-    val stallFetch = Output(Bool())
-    val flushFetch = Output(Bool())
+    val stallICache = Output(Bool())
 
-    val stallDecode = Output(Bool())
-    val flushDecode = Output(Bool())
+    val stallFetchOut = Output(Bool())
+    val flushFetchOut = Output(Bool())
 
-    val stallExecute = Output(Bool())
-    val flushExecute = Output(Bool())
+    // val stallFetch = Output(Bool())
+    // val flushFetch = Output(Bool())
 
-    val stallMemory = Output(Bool())
-    val flushMemory = Output(Bool())
+    // val stallDecode = Output(Bool())
+    // val flushDecode = Output(Bool())
 
-    // Forwarding logic - register indices inputs and ALU slection outputs
-    val decodeReg1Idx = Input(UInt(5.W))
-    val decodeReg2Idx = Input(UInt(5.W))
+    // val stallExecute = Output(Bool())
+    // val flushExecute = Output(Bool())
 
-    val executeReg1Idx = Input(UInt(5.W))
-    val executeReg2Idx = Input(UInt(5.W))
-    val executeRegDestIdx = Input(UInt(5.W))
+    // val stallMemory = Output(Bool())
+    // val flushMemory = Output(Bool())
 
-    // TODO: better names (these are for forwarding)
-    val executeAInputSel = Output(UInt(2.W))
-    val executeBInputSel = Output(UInt(2.W))
-    val executeRegFileWriteSrc = Input(RegFileWriteSrc())
+    // // Forwarding logic - register indices inputs and ALU slection outputs
+    // val decodeReg1Idx = Input(UInt(5.W))
+    // val decodeReg2Idx = Input(UInt(5.W))
 
-    val memoryRegDestIdx = Input(UInt(5.W))
-    val memoryWriteToReg = Input(Bool())
+    // val executeReg1Idx = Input(UInt(5.W))
+    // val executeReg2Idx = Input(UInt(5.W))
+    // val executeRegDestIdx = Input(UInt(5.W))
 
-    val writebackRegDestIdx = Input(UInt(5.W))
-    val writebackWriteToReg = Input(Bool())
+    // // TODO: better names (these are for forwarding)
+    // val executeAInputSel = Output(UInt(2.W))
+    // val executeBInputSel = Output(UInt(2.W))
+    // val executeRegFileWriteSrc = Input(RegFileWriteSrc())
+
+    // val memoryRegDestIdx = Input(UInt(5.W))
+    // val memoryWriteToReg = Input(Bool())
+
+    // val writebackRegDestIdx = Input(UInt(5.W))
+    // val writebackWriteToReg = Input(Bool())
   })
+  val oneTick = RegInit(false.B)
+  oneTick := true.B
 
-  // Thank you Harris & Harris!
+  io.stallPcOut := io.halt || !io.iCacheReqReady
+  io.flushPcOut := false.B
 
-  // Forward for data hazards
-  // format: off
+  io.stallICache := io.halt
 
-  // We should forward result from a stage if that stage will write a destination register and the destination
-  // register matches the source register, so that a preceding stage doesn't use an incorrect value.
-  val forwardFromMemoryA = (io.executeReg1Idx === io.memoryRegDestIdx) && io.memoryWriteToReg
-  val forwardFromWritebackA = (io.executeReg1Idx === io.writebackRegDestIdx) && io.writebackWriteToReg
+  io.stallFetchOut := io.halt
+  io.flushFetchOut := !io.iCacheRespValid
 
-  // Because the memory stage will have the most recently executed instruction, it should take precedence
-  // over writeback. Also, x0 is hardwired to 0 and should never be forwarded, so we check for that.
-  when(forwardFromMemoryA && (io.executeReg1Idx =/= 0.U)) {
-    io.executeAInputSel := "b10".U
-  }.elsewhen(forwardFromWritebackA && (io.executeReg1Idx =/= 0.U)) {
-    io.executeAInputSel := "b01".U
-  }.otherwise {
-    io.executeAInputSel := "b00".U
-  }
+  // io.stallFetch := false.B
+  // io.flushFetch := false.B
 
-  val forwardFromMemoryB = (io.executeReg2Idx === io.memoryRegDestIdx) && io.memoryWriteToReg
-  val forwardFromWritebackB = (io.executeReg2Idx === io.writebackRegDestIdx) && io.writebackWriteToReg
+  // io.stallDecode := false.B
+  // io.flushDecode := false.B
 
-  when(forwardFromMemoryB && (io.executeReg2Idx =/= 0.U)) {
-    io.executeBInputSel := "b10".U
-  }.elsewhen(forwardFromWritebackB && (io.executeReg2Idx =/= 0.U)) {
-    io.executeBInputSel := "b01".U
-  }.otherwise {
-    io.executeBInputSel := "b00".U
-  }
-  // format: on
+  // io.stallExecute := false.B
+  // io.flushExecute := false.B
 
-  // Stall when a load hazard occurs
-  val lwStall =
-    (io.executeRegFileWriteSrc === RegFileWriteSrc.data) && (io.executeRegDestIdx =/= 0.U) && ((io.decodeReg1Idx === io.executeRegDestIdx) | (io.decodeReg2Idx === io.executeRegDestIdx))
+  // io.stallMemory := false.B
+  // io.flushMemory := false.B
 
-  val newExecStall =
-    (io.memoryRegDestIdx =/= 0.U) && ((io.memoryRegDestIdx === io.executeReg1Idx) || (io.memoryRegDestIdx === io.executeReg2Idx))
-  io.stallPc := lwStall || newExecStall || io.halt
-  io.flushPc := false.B
+  // // Forward for data hazards
+  // // format: off
 
-  io.stallFetch := lwStall || newExecStall || io.halt
-  io.flushFetch := io.pcOverride
+  // // We should forward result from a stage if that stage will write a destination register and the destination
+  // // register matches the source register, so that a preceding stage doesn't use an incorrect value.
+  // val forwardFromMemoryA = (io.executeReg1Idx === io.memoryRegDestIdx) && io.memoryWriteToReg
+  // val forwardFromWritebackA = (io.executeReg1Idx === io.writebackRegDestIdx) && io.writebackWriteToReg
 
-  io.stallDecode := lwStall || newExecStall || io.halt
-  io.flushDecode := io.pcOverride
+  // // Because the memory stage will have the most recently executed instruction, it should take precedence
+  // // over writeback. Also, x0 is hardwired to 0 and should never be forwarded, so we check for that.
+  // when(forwardFromMemoryA && (io.executeReg1Idx =/= 0.U)) {
+  //   io.executeAInputSel := "b10".U
+  // }.elsewhen(forwardFromWritebackA && (io.executeReg1Idx =/= 0.U)) {
+  //   io.executeAInputSel := "b01".U
+  // }.otherwise {
+  //   io.executeAInputSel := "b00".U
+  // }
 
-  io.stallExecute := io.halt
-  io.flushExecute := false.B
+  // val forwardFromMemoryB = (io.executeReg2Idx === io.memoryRegDestIdx) && io.memoryWriteToReg
+  // val forwardFromWritebackB = (io.executeReg2Idx === io.writebackRegDestIdx) && io.writebackWriteToReg
 
-  io.stallMemory := io.halt
-  io.flushMemory := false.B
+  // when(forwardFromMemoryB && (io.executeReg2Idx =/= 0.U)) {
+  //   io.executeBInputSel := "b10".U
+  // }.elsewhen(forwardFromWritebackB && (io.executeReg2Idx =/= 0.U)) {
+  //   io.executeBInputSel := "b01".U
+  // }.otherwise {
+  //   io.executeBInputSel := "b00".U
+  // }
+  // // format: on
+
+  // // Stall when a load hazard occurs
+  // val lwStall =
+  //   (io.executeRegFileWriteSrc === RegFileWriteSrc.data) && (io.executeRegDestIdx =/= 0.U) && ((io.decodeReg1Idx === io.executeRegDestIdx) | (io.decodeReg2Idx === io.executeRegDestIdx))
+
+  // val newExecStall =
+  //   (io.memoryRegDestIdx =/= 0.U) && ((io.memoryRegDestIdx === io.executeReg1Idx) || (io.memoryRegDestIdx === io.executeReg2Idx))
+  // io.stallPc := lwStall || newExecStall || io.halt
+  // io.flushPc := false.B
+
+  // io.stallFetch := lwStall || newExecStall || io.halt
+  // io.flushFetch := io.pcOverride
+
+  // io.stallDecode := lwStall || newExecStall || io.halt
+  // io.flushDecode := io.pcOverride
+
+  // io.stallExecute := io.halt
+  // io.flushExecute := false.B
+
+  // io.stallMemory := io.halt
+  // io.flushMemory := false.B
 }
