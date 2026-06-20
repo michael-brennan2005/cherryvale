@@ -22,7 +22,7 @@ class ExecuteStage extends Module {
     val out = new ExecuteStageOutput
 
     // Outputs that aren't used by memory stage
-    val takeBranch = Output(Bool())
+    val pcRedirect = Output(Bool())
     val pcTarget = Output(UInt(32.W))
 
     // These will come from hazard unit
@@ -40,13 +40,15 @@ class ExecuteStage extends Module {
   val alu = Module(new Alu)
   alu.io.i_control := io.decodeInput.control.alu_op
 
-  io.takeBranch := MuxLookup(io.decodeInput.control.branchIf, false.B)(
+  val takeBranch = MuxLookup(io.decodeInput.control.branchIf, false.B)(
     Seq(
       BranchIf.zero -> (alu.io.zero === true.B),
       BranchIf.notZero -> (alu.io.zero === false.B),
       BranchIf.neg -> (alu.io.neg === true.B)
     )
   )
+
+  io.pcRedirect := io.decodeInput.control.jump || (io.decodeInput.control.branch && takeBranch)
 
   val srcA = MuxLookup(io.aluSrcASelect, io.decodeInput.reg1Data)(
     Seq(

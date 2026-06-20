@@ -28,40 +28,124 @@ class Core(sim: Boolean = false) extends Module {
     io.regDebugData.get := 0.U
   }
 
-  // Flow is PC -> I$ -> F/D -> D/E -> E/M -> D$; hazard handles stalls and flushes and (TODO: forwards)
+  // Register Flow is PC -> I$ -> F/D -> D/E -> E/M -> D$; hazard handles stalls and flushes and (TODO: forwards)
   val hazard = Module(new HazardUnit)
+  val decode = Module(new DecodeStage)
+  val execute = Module(new ExecuteStage)
+
   val pc = Module(new PSR(UInt(32.W)))
+  val iCacheAddr = RegInit(0.U(32.W))
+  val fetchOut = Module(new PSR(new FetchStageOutput))
+  val decodeOut = Module(new PSR(new DecodeStageOutput))
+  val executeOut = Module(new PSR(new ExecuteStageOutput))
+  val dCacheReg = RegNext(executeOut.io.out)
+  val memoryOut = Module(new PSR(new MemoryStageOutput))
+  val resultWriteback = WireInit(0.U(32.W))
 
   // Stuff for hazard
   hazard.io.halt := io.halt
   hazard.io.iCacheReqReady := io.codeReq.ready
   hazard.io.iCacheRespValid := io.codeResp.valid
+  hazard.io.dCacheReqReady := io.dataReq.ready
+  hazard.io.dCacheRespValid := io.dataResp.valid
+  hazard.io.pcRedirect := execute.io.pcRedirect
+
+  hazard.io.decodeReg1Idx := decodeOut.io.in.reg1Idx
+  hazard.io.decodeReg2Idx := decodeOut.io.in.reg2Idx
+  hazard.io.decodeOutRegDestIdx := decodeOut.io.out.regDestIdx
+  hazard.io.executeOutRegDestIdx := executeOut.io.out.regDestIdx
+  hazard.io.dCacheRegDestIdx := dCacheReg.regDestIdx
+  hazard.io.memoryOutRegDestIdx := memoryOut.io.out.regDestIdx
 
   // Stuff for PC
-  pc.io.in := pc.io.out + 4.U
+  when(execute.io.pcRedirect) {
+    pc.io.in := execute.io.pcTarget
+  }.otherwise {
+    pc.io.in := pc.io.out + 4.U
+  }
   pc.io.stall := hazard.io.stallPcOut
   pc.io.flush := hazard.io.flushPcOut
 
   // Stuff for I$
-  val iCacheAddr = RegNext(pc.io.out)
-  io.codeReq.bits.addr := pc.io.out
+  // If fetchOut is stalled then we should hold whatever read is currently going on in I$, hence
+  // this when condition and MUX on codeReq.bits.addr
+  when(!hazard.io.stallFetchOut) {
+    iCacheAddr := pc.io.out
+  }
+
+  io.codeReq.bits.addr := Mux(hazard.io.stallFetchOut, iCacheAddr, pc.io.out)
   io.codeReq.bits.we := false.B
   io.codeReq.bits.writeData := 0.U
   io.codeReq.bits.writeMask := 0.U
   io.codeReq.valid := !hazard.io.stallICache
 
   // Stuff for Fetch (not really a "real" stage - just registering the iCache outputs)
-  val fetchOut = Module(new PSR(new FetchStageOutput))
   fetchOut.io.in.inst := io.codeResp.bits
   fetchOut.io.in.pc := iCacheAddr
   fetchOut.io.in.pcPlusFour := iCacheAddr + 4.U
   fetchOut.io.stall := hazard.io.stallFetchOut
   fetchOut.io.flush := hazard.io.flushFetchOut
 
-  // Stuff for decode
-  val wire = dontTouch(fetchOut.io.out.inst)
-  val wire1 = dontTouch(fetchOut.io.out.pc)
-  val wire2 = dontTouch(fetchOut.io.out.pcPlusFour)
+  // Stuff for Decode
+  decode.io.fetchInput := fetchOut.io.out
+  decode.io.regWriteIdx := memoryOut.io.out.regDestIdx
+  decode.io.regWriteData := resultWriteback
+  decode.io.regWriteEnable := memoryOut.io.out.control.writeToReg
+
+  decode.io.regDebugIdx := io.regDebugIdx.getOrElse(0.U)
+  io.regDebugData match {
+    case Some(value) => value := decode.io.regDebugData
+    case None        => {}
+  }
+
+  decodeOut.io.in := decode.io.out
+  decodeOut.io.stall := hazard.io.stallDecodeOut
+  decodeOut.io.flush := hazard.io.flushDecodeOut
+
+  // Stuff for execute
+  execute.io.decodeInput := decodeOut.io.out
+
+  // TODO: real values when we can start to do forwarding
+  execute.io.aluSrcASelect := 0.U
+  execute.io.aluSrcBSelect := 0.U
+  execute.io.resultWriteback := 0.U
+  execute.io.resultMemory := 0.U
+
+  executeOut.io.in := execute.io.out
+  executeOut.io.stall := hazard.io.stallExecuteOut
+  executeOut.io.flush := hazard.io.flushExecuteOut
+
+  // Stuff for data memory
+  io.dataReq.bits.addr := executeOut.io.out.aluResult
+  io.dataReq.bits.we := executeOut.io.out.control.writeToMem
+  io.dataReq.bits.writeData := executeOut.io.out.memWriteData
+  io.dataReq.bits.writeMask := "b1111".U
+  io.dataReq.valid := !hazard.io.stallDCache
+
+  // Stuff for memory (not really a "real" stage - just registering the dCache outputs)
+  memoryOut.io.in.control := dCacheReg.control
+  memoryOut.io.in.aluResult := dCacheReg.aluResult
+  memoryOut.io.in.immediate := dCacheReg.immediate
+  memoryOut.io.in.pcPlusFour := dCacheReg.pcPlusFour
+  memoryOut.io.in.regDestIdx := dCacheReg.regDestIdx
+
+  memoryOut.io.in.memReadData := io.dataResp.bits
+
+  memoryOut.io.stall := hazard.io.stallMemoryOut
+  memoryOut.io.flush := hazard.io.flushMemoryOut
+
+  // Stuff for writeback
+  resultWriteback := MuxLookup(
+    memoryOut.io.out.control.regFileWriteSrc,
+    0.U(32.W)
+  )(
+    Seq(
+      RegFileWriteSrc.data -> memoryOut.io.out.memReadData,
+      RegFileWriteSrc.aluResult -> memoryOut.io.out.aluResult,
+      RegFileWriteSrc.pcPlusFour -> memoryOut.io.out.pcPlusFour,
+      RegFileWriteSrc.immediate -> memoryOut.io.out.immediate
+    )
+  )
 
   // val hazard = Module(new HazardUnit)
   // val fetch = Module(new FetchStage)
