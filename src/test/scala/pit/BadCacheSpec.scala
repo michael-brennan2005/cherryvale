@@ -1,265 +1,215 @@
 package pit
 
 import chisel3._
-import chisel3.simulator.scalatest.ChiselSim
 import org.scalatest.flatspec.AnyFlatSpec
-import org.scalatest.matchers.should.Matchers
+import trunk.{BusMaster, Request, Response, CherrytrunkSlaveTestBase}
 
-/** Tests for [[BadCache]] -- the synchronous-read, byte-masked, stall-capable memory.
+/** Tests for [[BadCache]] -- the synchronous-read, byte-masked, stall-capable memory, now a
+  * cherrytrunk slave.
   *
   * Contract under test (see BadCache.scala):
-  *   - req/valid/stall handshake; poll for `valid`, never hand-count cycles.
+  *   - cherrytrunk handshake: a transaction starts on req.stb and ends on the one-cycle resp.ack
+  *     pulse; poll for ack, never hand-count cycles. resp.data is 0 unless ack is high.
   *   - writes honor the 4-bit byte-enable mask (lane i = bits [8i+7:8i]); reads return the full
   *     word.
   *   - write data is lane-aligned by the caller; `addr` only selects the word (addr >> 2).
-  *   - reads are synchronous (registered); a positive `responseLatency` injects stall cycles.
+  *   - reads are synchronous (registered); ack lands `responseLatency + 1` cycles after the strobe.
   */
-class BadCacheSpec extends AnyFlatSpec with Matchers with ChiselSim {
+class BadCacheSpec extends AnyFlatSpec with CherrytrunkSlaveTestBase {
   behavior of "BadCache"
 
   private val maxCycles = 64
 
-  // --- Handshake helpers: latency-agnostic, they poll `valid` (works at any responseLatency). ---
+  private def bus(d: BadCache): (Request, Response) = (d.io.req, d.io.resp)
+  private def hex(s: String): BigInt = BigInt(s, 16)
 
-  /** Drive a write through the handshake and wait for completion. */
-  private def doWrite(dut: BadCache, byteAddr: Int, data: UInt, mask: Int): Unit = {
-    dut.io.req.valid.poke(true.B)
-    dut.io.req.bits.we.poke(true.B)
-    dut.io.req.bits.addr.poke(byteAddr.U)
-    dut.io.req.bits.writeData.poke(data)
-    dut.io.req.bits.writeMask.poke(mask.U)
-    var i = 0
-    while (dut.io.resp.valid.peek().litValue == 0 && i < maxCycles) { dut.clock.step(); i += 1 }
-    assert(
-      dut.io.resp.valid.peek().litValue == 1,
-      s"write to 0x${byteAddr.toHexString} never completed"
-    )
-    // Deassert before the final step so the cycle after completion can't start a phantom access.
-    dut.io.req.valid.poke(false.B)
-    dut.io.req.bits.we.poke(false.B)
-    dut.clock.step()
-  }
-
-  /** Drive a read through the handshake and return the word captured on the `valid` cycle. */
-  private def doRead(dut: BadCache, byteAddr: Int): BigInt = {
-    dut.io.req.valid.poke(true.B)
-    dut.io.req.bits.we.poke(false.B)
-    dut.io.req.bits.addr.poke(byteAddr.U)
-    var i = 0
-    while (dut.io.resp.valid.peek().litValue == 0 && i < maxCycles) { dut.clock.step(); i += 1 }
-    assert(
-      dut.io.resp.valid.peek().litValue == 1,
-      s"read from 0x${byteAddr.toHexString} never completed"
-    )
-    val v = dut.io.resp.bits.peek().litValue
-    dut.io.req.valid.poke(false.B)
-    dut.clock.step()
-    v
-  }
-
-  private def seedWord(dut: BadCache, byteAddr: Int, value: UInt): Unit =
-    doWrite(dut, byteAddr, value, 0xf)
-
-  /** Seed a full image (words(i) -> byte address 4*i), reusing the Utils.buildMemInit format. */
-  private def seed(dut: BadCache, words: Seq[UInt]): Unit =
-    for ((w, i) <- words.zipWithIndex) doWrite(dut, 4 * i, w, 0xf)
-
-  private def idle(dut: BadCache, cycles: Int = 2): Unit = {
-    dut.io.req.valid.poke(false.B)
-    dut.io.req.bits.we.poke(false.B)
-    dut.clock.step(cycles)
-  }
-
-  // --- Functional cases (responseLatency = 0), via the polling helpers -------------------------
+  // --- Functional cases (responseLatency = 0), via the latency-agnostic BusMaster ---------------
 
   it should "round-trip a full word (mask 0xf)" in {
-    simulate(new BadCache(None)) { dut =>
-      doWrite(dut, 0, "hDEADBEEF".U, 0xf)
-      doRead(dut, 0) shouldBe BigInt("DEADBEEF", 16)
+    withMaster(new BadCache(None), bus) { (_, m) =>
+      m.write(0, hex("DEADBEEF"))
+      val (data, err) = m.read(0)
+      err shouldBe false
+      data shouldBe hex("DEADBEEF")
     }
   }
 
   it should "write only the masked byte lane and preserve the others" in {
     val cases = Seq(
-      (0x1, "h000000AA".U, BigInt("FFFFFFAA", 16)),
-      (0x2, "h0000BB00".U, BigInt("FFFFBBFF", 16)),
-      (0x4, "h00CC0000".U, BigInt("FFCCFFFF", 16)),
-      (0x8, "hDD000000".U, BigInt("DDFFFFFF", 16))
+      (0x1, hex("000000AA"), hex("FFFFFFAA")),
+      (0x2, hex("0000BB00"), hex("FFFFBBFF")),
+      (0x4, hex("00CC0000"), hex("FFCCFFFF")),
+      (0x8, hex("DD000000"), hex("DDFFFFFF"))
     )
     for ((mask, wd, expected) <- cases) {
-      simulate(new BadCache(None)) { dut =>
-        seedWord(dut, 0, "hFFFFFFFF".U)
-        doWrite(dut, 0, wd, mask)
-        doRead(dut, 0) shouldBe expected
+      withMaster(new BadCache(None), bus) { (_, m) =>
+        m.write(0, hex("FFFFFFFF"))
+        m.write(0, wd, mask)
+        m.read(0)._1 shouldBe expected
       }
     }
   }
 
   it should "write only the masked halfword and preserve the other half" in {
-    simulate(new BadCache(None)) { dut =>
-      seedWord(dut, 0, "hFFFFFFFF".U)
-      doWrite(dut, 0, "h00001234".U, 0x3) // lower half
-      doRead(dut, 0) shouldBe BigInt("FFFF1234", 16)
+    withMaster(new BadCache(None), bus) { (_, m) =>
+      m.write(0, hex("FFFFFFFF"))
+      m.write(0, hex("00001234"), 0x3) // lower half
+      m.read(0)._1 shouldBe hex("FFFF1234")
     }
-    simulate(new BadCache(None)) { dut =>
-      seedWord(dut, 0, "hFFFFFFFF".U)
-      doWrite(dut, 0, "h56780000".U, 0xc) // upper half
-      doRead(dut, 0) shouldBe BigInt("5678FFFF", 16)
+    withMaster(new BadCache(None), bus) { (_, m) =>
+      m.write(0, hex("FFFFFFFF"))
+      m.write(0, hex("56780000"), 0xc) // upper half
+      m.read(0)._1 shouldBe hex("5678FFFF")
     }
   }
 
-  // The headline case: a halfword store to a 2-byte-aligned but NOT 4-byte-aligned address.
-  // The byte address (0x2 vs 0x0) only changes the mask + the lane the data sits in; BadCache does
-  // not shift internally. Both target word index 0.
+  // The headline case: a halfword store to a 2-byte-aligned but NOT 4-byte-aligned address. The
+  // byte address (0x2 vs 0x0) only changes the mask + the lane the data sits in; BadCache does not
+  // shift internally. Both target word index 0.
   it should "store a halfword to a non-4-byte-aligned address (byte addr 0x2, upper half)" in {
-    simulate(new BadCache(None)) { dut =>
-      seedWord(dut, 0, "hFFFFFFFF".U)
-      doWrite(dut, 0x2, "hBBBB0000".U, 0xc)
-      doRead(dut, 0) shouldBe BigInt("BBBBFFFF", 16)
+    withMaster(new BadCache(None), bus) { (_, m) =>
+      m.write(0, hex("FFFFFFFF"))
+      m.write(0x2, hex("BBBB0000"), 0xc)
+      m.read(0)._1 shouldBe hex("BBBBFFFF")
     }
   }
 
   it should "store a halfword to a 4-byte-aligned address (byte addr 0x0, lower half)" in {
-    simulate(new BadCache(None)) { dut =>
-      seedWord(dut, 0, "hFFFFFFFF".U)
-      doWrite(dut, 0x0, "h0000BBBB".U, 0x3)
-      doRead(dut, 0) shouldBe BigInt("FFFFBBBB", 16)
+    withMaster(new BadCache(None), bus) { (_, m) =>
+      m.write(0, hex("FFFFFFFF"))
+      m.write(0x0, hex("0000BBBB"), 0x3)
+      m.read(0)._1 shouldBe hex("FFFFBBBB")
     }
   }
 
-  it should "not modify memory on a request with we=false" in {
-    simulate(new BadCache(None)) { dut =>
-      seedWord(dut, 0, "h12345678".U)
-      // Drive a read-shaped access that also presents write data/mask but keeps we low.
-      dut.io.req.valid.poke(true.B)
-      dut.io.req.bits.we.poke(false.B)
-      dut.io.req.bits.addr.poke(0.U)
-      dut.io.req.bits.writeData.poke("hFFFFFFFF".U)
-      dut.io.req.bits.writeMask.poke(0xf.U)
-      var i = 0
-      while (dut.io.resp.valid.peek().litValue == 0 && i < maxCycles) { dut.clock.step(); i += 1 }
-      dut.io.req.valid.poke(false.B)
+  it should "not modify memory on a read that also presents junk write data/mask" in {
+    withMaster(new BadCache(None), bus) { (dut, m) =>
+      m.write(0, hex("12345678"))
+      // Drive a read (we=false) that nonetheless presents write data/mask, by hand.
+      dut.io.req.we.poke(false.B)
+      dut.io.req.addr.poke(0.U)
+      dut.io.req.data.poke("hFFFFFFFF".U)
+      dut.io.req.mask.poke(0xf.U)
+      dut.io.req.stb.poke(true.B)
       dut.clock.step()
-      doRead(dut, 0) shouldBe BigInt("12345678", 16)
+      dut.io.req.stb.poke(false.B)
+      var i = 0
+      while (dut.io.resp.ack.peek().litValue == 0 && i < maxCycles) { dut.clock.step(); i += 1 }
+      dut.io.resp.ack.expect(true.B)
+      m.idle()
+      dut.clock.step()
+      m.read(0)._1 shouldBe hex("12345678")
     }
   }
 
   it should "keep distinct words at distinct addresses and ignore addr[1:0] for word select" in {
-    simulate(new BadCache(None)) { dut =>
-      seedWord(dut, 0, "h11111111".U)
-      seedWord(dut, 4, "h22222222".U)
-      seedWord(dut, 8, "h33333333".U)
-      doRead(dut, 0) shouldBe BigInt("11111111", 16)
-      doRead(dut, 4) shouldBe BigInt("22222222", 16)
-      doRead(dut, 8) shouldBe BigInt("33333333", 16)
+    withMaster(new BadCache(None), bus) { (_, m) =>
+      m.write(0, hex("11111111"))
+      m.write(4, hex("22222222"))
+      m.write(8, hex("33333333"))
+      m.read(0)._1 shouldBe hex("11111111")
+      m.read(4)._1 shouldBe hex("22222222")
+      m.read(8)._1 shouldBe hex("33333333")
       // addr 0x1/0x2/0x3 all index word 0.
-      doRead(dut, 0x1) shouldBe BigInt("11111111", 16)
-      doRead(dut, 0x2) shouldBe BigInt("11111111", 16)
-      doRead(dut, 0x3) shouldBe BigInt("11111111", 16)
+      m.read(0x1)._1 shouldBe hex("11111111")
+      m.read(0x2)._1 shouldBe hex("11111111")
+      m.read(0x3)._1 shouldBe hex("11111111")
     }
   }
 
   it should "seed a full image via the write port (memInit-in-test path)" in {
-    simulate(new BadCache(None)) { dut =>
+    withMaster(new BadCache(None), bus) { (_, m) =>
       val image =
-        Utils.buildMemInit("addi x1, x0, 5\naddi x2, x0, 6", Seq(0x50 -> BigInt("CAFEBABE", 16)))
-      seed(dut, image)
-      doRead(dut, 0x50) shouldBe BigInt("CAFEBABE", 16)
-      doRead(dut, 0) should not be BigInt(0) // word 0 holds the first assembled instruction
+        Utils.buildMemInit("addi x1, x0, 5\naddi x2, x0, 6", Seq(0x50 -> hex("CAFEBABE")))
+      for ((w, i) <- image.zipWithIndex) m.write(4 * i, w.litValue)
+      m.read(0x50)._1 shouldBe hex("CAFEBABE")
+      m.read(0)._1 should not be BigInt(0) // word 0 holds the first assembled instruction
     }
   }
 
-  // --- Handshake / stall timing cases (assert valid/stall cycle-by-cycle) ----------------------
+  // --- Handshake / latency timing cases (assert ack cycle-by-cycle) -----------------------------
 
-  it should "complete a hit one cycle after req and sustain one access per cycle" in {
-    simulate(new BadCache(None)) { dut =>
-      // Seed two adjacent words.
-      seedWord(dut, 0, "hAAAAAAAA".U)
-      seedWord(dut, 4, "hBBBBBBBB".U)
-      idle(dut)
-
-      // Cycle C0: issue a read of addr 0. valid is still low (data not ready), so stall is high.
-      dut.io.req.valid.poke(true.B)
-      dut.io.req.bits.we.poke(false.B)
-      dut.io.req.bits.addr.poke(0.U)
-      dut.io.resp.valid.expect(false.B)
+  it should "ack exactly one cycle after the strobe for a hit (minimum latency)" in {
+    withMaster(new BadCache(None), bus) { (dut, m) =>
+      m.write(0, hex("AAAAAAAA"))
+      m.idle()
       dut.clock.step()
 
-      // C1: data for addr 0 is valid; pivot to addr 4 while holding req.
-      dut.io.resp.valid.expect(true.B)
-      dut.io.resp.bits.expect("hAAAAAAAA".U)
-      dut.io.req.bits.addr.poke(4.U)
+      // C0: strobe in; ack is not asserted until the cycle after.
+      dut.io.req.we.poke(false.B)
+      dut.io.req.addr.poke(0.U)
+      dut.io.req.mask.poke(0xf.U)
+      dut.io.req.stb.poke(true.B)
+      dut.io.resp.ack.expect(false.B)
       dut.clock.step()
 
-      // C2: back-to-back hit -- valid stays high, now serving addr 4 (1 access/cycle).
-      dut.io.resp.valid.expect(true.B)
-      dut.io.resp.bits.expect("hBBBBBBBB".U)
-      dut.io.req.valid.poke(false.B)
+      // C1: ack + data for the requested word.
+      dut.io.req.stb.poke(false.B)
+      dut.io.resp.ack.expect(true.B)
+      dut.io.resp.data.expect("hAAAAAAAA".U)
     }
   }
 
-  it should "hold stall high for responseLatency+1 cycles, then complete a read" in {
+  it should "hold ack low for responseLatency cycles, then complete a read" in {
     val latency = 5
-    simulate(new BadCache(None, responseLatency = latency)) { dut =>
-      seedWord(dut, 0, "hCAFEBABE".U)
-      idle(dut)
+    withMaster(new BadCache(None, responseLatency = latency), bus) { (dut, m) =>
+      m.write(0, hex("CAFEBABE"))
+      m.idle()
+      dut.clock.step()
 
-      dut.io.req.valid.poke(true.B)
-      dut.io.req.bits.we.poke(false.B)
-      dut.io.req.bits.addr.poke(0.U)
-      for (_ <- 0 until (latency + 1)) {
-        dut.io.resp.valid.expect(false.B)
+      dut.io.req.we.poke(false.B)
+      dut.io.req.addr.poke(0.U)
+      dut.io.req.mask.poke(0xf.U)
+      dut.io.req.stb.poke(true.B)
+      dut.clock.step()
+      dut.io.req.stb.poke(false.B)
+
+      // ack stays low through the stall, then asserts on the (latency+1)-th cycle after the strobe.
+      for (_ <- 0 until latency) {
+        dut.io.resp.ack.expect(false.B)
         dut.clock.step()
       }
-      dut.io.resp.valid.expect(true.B)
-      dut.io.resp.bits.expect("hCAFEBABE".U)
-      dut.io.req.valid.poke(false.B)
+      dut.io.resp.ack.expect(true.B)
+      dut.io.resp.data.expect("hCAFEBABE".U)
     }
   }
 
-  it should "not complete a stalled write until the valid cycle" in {
+  it should "not ack a stalled write until completion, then commit it" in {
     val latency = 5
-    simulate(new BadCache(None, responseLatency = latency)) { dut =>
-      seedWord(dut, 0, "h00000000".U)
-      idle(dut)
-
-      dut.io.req.valid.poke(true.B)
-      dut.io.req.bits.we.poke(true.B)
-      dut.io.req.bits.addr.poke(0.U)
-      dut.io.req.bits.writeData.poke("h99999999".U)
-      dut.io.req.bits.writeMask.poke(0xf.U)
-      for (_ <- 0 until (latency + 1)) {
-        dut.io.resp.valid.expect(false.B) // write not "done" while stalled
-        dut.clock.step()
-      }
-      dut.io.resp.valid.expect(true.B) // completes here
-      dut.io.req.valid.poke(false.B)
-      dut.io.req.bits.we.poke(false.B)
+    withMaster(new BadCache(None, responseLatency = latency), bus) { (dut, m) =>
+      m.write(0, BigInt(0))
+      m.idle()
       dut.clock.step()
 
-      doRead(dut, 0) shouldBe BigInt("99999999", 16)
+      dut.io.req.we.poke(true.B)
+      dut.io.req.addr.poke(0.U)
+      dut.io.req.data.poke("h99999999".U)
+      dut.io.req.mask.poke(0xf.U)
+      dut.io.req.stb.poke(true.B)
+      dut.clock.step()
+      dut.io.req.stb.poke(false.B)
+
+      for (_ <- 0 until latency) {
+        dut.io.resp.ack.expect(false.B) // write not "done" while stalled
+        dut.io.resp.data.expect(0.U) // and data stays 0 (slave obligation)
+        dut.clock.step()
+      }
+      dut.io.resp.ack.expect(true.B) // completes here
+      dut.io.resp.data.expect(0.U) // a write acks with no data
+
+      m.idle()
+      dut.clock.step()
+      m.read(0)._1 shouldBe hex("99999999")
     }
   }
 
   it should "return the originally-requested word across a stall and then return to idle" in {
     val latency = 5
-    simulate(new BadCache(None, responseLatency = latency)) { dut =>
-      seedWord(dut, 8, "h0BADF00D".U)
-      idle(dut)
-
-      // Hold req + fields stable across the whole stall.
-      dut.io.req.valid.poke(true.B)
-      dut.io.req.bits.we.poke(false.B)
-      dut.io.req.bits.addr.poke(8.U)
-      var i = 0
-      while (dut.io.resp.valid.peek().litValue == 0 && i < maxCycles) { dut.clock.step(); i += 1 }
-      dut.io.resp.valid.expect(true.B)
-      dut.io.resp.bits.expect("h0BADF00D".U)
-      dut.io.req.valid.poke(false.B)
-      dut.clock.step()
-
+    withMaster(new BadCache(None, responseLatency = latency), bus) { (_, m) =>
+      m.write(8, hex("0BADF00D"))
+      m.read(8)._1 shouldBe hex("0BADF00D")
       // FSM is idle again: a fresh transaction still works.
-      doRead(dut, 8) shouldBe BigInt("0BADF00D", 16)
+      m.read(8)._1 shouldBe hex("0BADF00D")
     }
   }
 }

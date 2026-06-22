@@ -5,8 +5,12 @@ import chisel3.util._
 import _root_.circt.stage.ChiselStage
 import chisel3.util.experimental.loadMemoryFromFileInline
 import harness.Elaboratable
+import trunk.Request
+import trunk.Response
 
-// Memory request interface, which will be wrapped in a Decoupled interface by the cache.
+// Memory request interface for the sim back-door port only. The real core<->cache interface is
+// cherrytrunk (see io.req/io.resp); this is a separate, always-0-latency port tests use to seed and
+// inspect memory without going through the bus handshake.
 class MemoryRequest extends Bundle {
   // Read/write address - The memory unit expects a 4-byte aligned address - lower 2 bits of any
   // address will be ignored.
@@ -39,16 +43,19 @@ class MemoryRequest extends Bundle {
 // have completely separate address spaces for a "true" Harvard architecture, which is a compromise
 // I'm willing to make right now.
 //
-// responseLatency is for testing, to simulate a future bus fetch that may take multiple cycles.
-// responseLatency = 0 results in plain synchronous read behavior, or one access per cycle.
+// The core-facing port speaks cherrytrunk (Request/Response): a transaction starts on req.stb and
+// completes on the single-cycle resp.ack pulse. The cache is a single-outstanding slave - it holds
+// one transaction at a time and acks `responseLatency + 1` cycles after the strobe (the +1 is the
+// inherent SyncReadMem read latency). responseLatency is a test knob simulating a future bus fetch;
+// masters/tests must poll resp.ack, never hand-count cycles.
 class BadCache(memInitFile: Option[String], responseLatency: Int = 0, sim: Boolean = false)
     extends Module {
   require(responseLatency >= 0, "responseLatency must be non-negative")
 
   val io = IO(new Bundle {
-    val req = DeqIO(new MemoryRequest)
-    // Data is REGISTERED output, because we are using SyncReadMem which does a synchronous read.
-    val resp = Valid(UInt(32.W))
+    // we use cherrytrunk for the core<->cache interface
+    val req = Input(new Request)
+    val resp = Output(new Response)
 
     val simReq = if (sim) Some(DeqIO(new MemoryRequest)) else None
     val simResp = if (sim) Some(Valid(UInt(32.W))) else None
@@ -70,7 +77,7 @@ class BadCache(memInitFile: Option[String], responseLatency: Int = 0, sim: Boole
     VecInit(Seq.tabulate(4)(i => mask(i)))
 
   if (sim) {
-    // The exposed port for sim is always 0 responseLatency
+    // The exposed sim back-door port is always 0 responseLatency and independent of the bus FSM.
     val req = io.simReq.get
     val resp = io.simResp.get
 
@@ -82,65 +89,58 @@ class BadCache(memInitFile: Option[String], responseLatency: Int = 0, sim: Boole
       mem.write(wordIdx, laneData(req.bits.writeData), laneMask(req.bits.writeMask))
     }
     // An access issued this cycle completes next cycle (the inherent SyncReadMem read latency).
-    resp.valid := RegNext(io.req.fire, false.B)
+    resp.valid := RegNext(req.fire, false.B)
   }
 
+  // ---- Cherrytrunk slave: single-outstanding transaction FSM ----
+  // `busy` is the transaction-in-progress flag (the role the protocol's `cyc` plays master-side):
+  // set on the strobe, cleared on ack. `cnt` counts down the artificial stall to the ack cycle.
+  val busy = RegInit(false.B)
+  val cnt = RegInit(0.U(32.W))
+  val addrReg = Reg(UInt(32.W))
+  val weReg = Reg(Bool())
+  val maskReg = Reg(UInt(4.W))
+  val wdReg = Reg(UInt(32.W))
+
+  // A strobe while idle starts a transaction. (A well-behaved master also holds cyc; we key off stb
+  // like the other slaves in the SoC.) `completing` is the single ack cycle.
+  val accept = !busy && io.req.stb
+  val completing = busy && (cnt === 0.U)
+
+  when(accept) {
+    busy := true.B
+    cnt := responseLatency.U
+    addrReg := io.req.addr
+    weReg := io.req.we
+    maskReg := io.req.mask
+    wdReg := io.req.data
+  }.elsewhen(busy) {
+    when(completing) { busy := false.B }
+      .otherwise { cnt := cnt - 1.U }
+  }
+
+  // The SyncReadMem read must fire one cycle before `completing` so its registered output is ready
+  // on the ack cycle. At responseLatency==0 that cycle is the accept cycle itself (read the live
+  // request fields); otherwise it is the cnt===1 cycle (read the latched fields).
+  val readData = Wire(UInt(32.W))
   if (responseLatency == 0) {
-    // ---- Hit path: plain synchronous SRAM, one access per cycle ----
-    io.req.ready := true.B // always ready
-
-    val wordIdx = io.req.bits.addr >> 2
-    val readFire = io.req.fire && !io.req.bits.we
-    io.resp.bits := mem.read(wordIdx, readFire).asUInt
-    when(io.req.fire && io.req.bits.we) {
-      mem.write(wordIdx, laneData(io.req.bits.writeData), laneMask(io.req.bits.writeMask))
-    }
-    // An access issued this cycle completes next cycle (the inherent SyncReadMem read latency).
-    io.resp.valid := RegNext(io.req.fire, false.B)
+    val readFire = accept && !io.req.we
+    readData := mem.read(io.req.addr >> 2, readFire).asUInt
   } else {
-    // ---- Stall path: single-outstanding FSM, holds `valid` low for `responseLatency` cycles ----
-    val busy = RegInit(false.B)
-    val cnt = RegInit(0.U(32.W))
-    val addrReg = Reg(UInt(32.W))
-    val weReg = Reg(Bool())
-    val maskReg = Reg(UInt(4.W))
-    val wdReg = Reg(UInt(32.W))
-
-    val accept = !busy && io.req.fire
-    val completing = busy && (cnt === 0.U)
-    val preDone = busy && (cnt === 1.U) // cycle before completion: issue the read so data is
-    // ready on the completion cycle.
-
-    io.req.ready := !busy
-
-    when(accept) {
-      busy := true.B
-      cnt := responseLatency.U
-      addrReg := io.req.bits.addr
-      weReg := io.req.bits.we
-      maskReg := io.req.bits.writeMask
-      wdReg := io.req.bits.writeData
-    }.elsewhen(busy) {
-      when(completing) { busy := false.B }
-        .otherwise { cnt := cnt - 1.U }
-    }
-
-    // responseLatency == 1 completes the cycle after accept, so its read must fire at accept; for
-    // larger latencies it fires one cycle before completion (cnt === 1). Neither coincides with the
-    // write commit (completion cycle), so there is no same-address read/write collision.
-    val readFire =
-      if (responseLatency == 1) accept && !io.req.bits.we
-      else preDone && !weReg
-    val readIdx = Mux(accept, io.req.bits.addr >> 2, addrReg >> 2)
-    io.resp.bits := mem.read(readIdx, readFire).asUInt
-
-    when(completing && weReg) {
-      mem.write(addrReg >> 2, laneData(wdReg), laneMask(maskReg))
-    }
-
-    io.resp.valid := completing
+    val readFire = busy && (cnt === 1.U) && !weReg
+    readData := mem.read(addrReg >> 2, readFire).asUInt
   }
 
+  // Commit a write on the ack cycle. Read and write never coincide within a transaction (one is
+  // gated by we, the other by !we), and single-outstanding rules out cross-transaction collisions.
+  when(completing && weReg) {
+    mem.write(addrReg >> 2, laneData(wdReg), laneMask(maskReg))
+  }
+
+  io.resp.ack := completing
+  // resp.data must be 0 whenever ack is low (cherrytrunk slave obligation); a write acks with 0.
+  io.resp.data := Mux(completing && !weReg, readData, 0.U)
+  io.resp.err := false.B // this memory never errs
 }
 
 object EmitBadCache extends Elaboratable {
