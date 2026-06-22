@@ -14,11 +14,11 @@ class HazardUnit extends Module {
     // pcRedirect - thrown by execute stage, used to check if branch or jump should be taken
     val pcRedirect = Input(Bool())
 
-    // ready/valid signals of I$, used to know if memory load/store is completed or still in progress
+    // ready/valid signals of I$ & D$, used to know if memory load/store is completed or still in progress
     val iCacheRespValid = Input(Bool())
-    val iCacheReqReady = Input(Bool())
+    val iCacheReqFire = Input(Bool())
     val dCacheRespValid = Input(Bool())
-    val dCacheReqReady = Input(Bool())
+    val dCacheReqValid = Input(Bool())
 
     // see registerUpdateStall for why these inputs are necessary.
     // These need to come from decode stage, not decode stage's output PSR!
@@ -35,8 +35,6 @@ class HazardUnit extends Module {
     val stallPcOut = Output(Bool())
     val flushPcOut = Output(Bool())
 
-    val stallICache = Output(Bool())
-
     val stallFetchOut = Output(Bool())
     val flushFetchOut = Output(Bool())
 
@@ -45,8 +43,6 @@ class HazardUnit extends Module {
 
     val stallExecuteOut = Output(Bool())
     val flushExecuteOut = Output(Bool())
-
-    val stallDCache = Output(Bool())
 
     val stallMemoryOut = Output(Bool())
     val flushMemoryOut = Output(Bool())
@@ -78,6 +74,9 @@ class HazardUnit extends Module {
     (reg1NotZero && reg1Invalid) || (reg2NotZero && reg2Invalid)
   }
 
+  // D$ is busy with a request if the reqeust is valid but the response is not.
+  val dCacheStall = dontTouch(io.dCacheReqValid && !io.dCacheRespValid)
+
   // General stall logic is that if any stage is taking multiple cycles, then all preceding stages
   // should be stalled. General flush logic is that if any stage is taking multiple cycles, its output
   // register should be flushed (so bogus data does not proceed through the pipeline as though it
@@ -87,18 +86,13 @@ class HazardUnit extends Module {
   // - I$ is busy with memory request
   // - D$ is busy with memory request
   // - The proper register operands have not been computed yet (see registerUpdateStall)
-  io.stallPcOut := io.halt || !io.iCacheReqReady || !io.dCacheReqReady || registerUpdateStall
+  io.stallPcOut := io.halt || !io.iCacheReqFire || dCacheStall /// registerUpdateStall
   io.flushPcOut := false.B
-
-  // Stall I$ if:
-  // - D$ is busy with memory request
-  // - The proper register operands have not been computed yet (see registerUpdateStall)
-  io.stallICache := io.halt
 
   // Stall fetchOut if:
   // - D$ is busy with memory request
   // - The proper register operands have not been computed yet (see registerUpdateStall)
-  io.stallFetchOut := io.halt || !io.dCacheReqReady || registerUpdateStall
+  io.stallFetchOut := io.halt || dCacheStall // y ||*/ registerUpdateStall
   // Flush fetchOut if:
   // - A valid memory read is not being outputted by I$
   // - A branch has been taken (fetchOut now contains code that shouldn't be executed). The RegNext
@@ -106,13 +100,13 @@ class HazardUnit extends Module {
   //   There's no way to really flush the output register of I$ so this workaround suffices (TODO:
   //   does it?)
   io.flushFetchOut :=
-    (!io.iCacheRespValid && !io.stallFetchOut) ||
+    !io.iCacheRespValid ||
       io.pcRedirect ||
       RegNext(io.pcRedirect, false.B)
 
   // Stall decodeOut if:
   // - D$ is busy with memory request.
-  io.stallDecodeOut := io.halt || !io.dCacheReqReady
+  io.stallDecodeOut := io.halt || dCacheStall
   // Flush decodeOut if:
   // - A branch has been taken (decodeOut now contains code that shouldn't be executed).
   // - The proper register operands have not been computed yet (see registerUpdateStall)
@@ -120,15 +114,13 @@ class HazardUnit extends Module {
 
   // Stall executeOut if:
   // - D$ is busy with memory request.
-  io.stallExecuteOut := io.halt || !io.dCacheReqReady
+  io.stallExecuteOut := io.halt || dCacheStall
   io.flushExecuteOut := false.B
-
-  io.stallDCache := io.halt
 
   io.stallMemoryOut := io.halt
   // Flush memoryOut if:
   // - A valid memory read is not being outputted by D$
-  io.flushMemoryOut := false.B || !io.dCacheRespValid
+  io.flushMemoryOut := !io.dCacheRespValid
 
   // // Forward for data hazards
   // // format: off

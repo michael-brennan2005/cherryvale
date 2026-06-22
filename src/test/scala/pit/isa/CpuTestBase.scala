@@ -108,7 +108,7 @@ trait CpuTestBase extends Matchers with ChiselSim { self: org.scalatest.TestSuit
       steps: Int = 40
   )(check: Tile => Unit): Unit = {
     val image = Utils.buildMemInit(program + "\n" + Trap, data)
-    simulate(new Tile(None, sim = true, simCacheLatency = 0)) { dut =>
+    simulate(new Tile(None, sim = true, simCacheLatency = 2)) { dut =>
       // 1. Hold the core so seeding doesn't contend with fetch / load-store.
       dut.io.halt.poke(true.B)
       idleDebug(dut)
@@ -118,7 +118,7 @@ trait CpuTestBase extends Matchers with ChiselSim { self: org.scalatest.TestSuit
 
       // 3. Release halt and run the program.
       dut.io.halt.poke(false.B)
-      dut.clock.step(steps)
+      dut.clock.step(steps * 2) // throwing this *2 in here just because of the new latency
 
       // 4. Halt again for a clean snapshot, then check.
       dut.io.halt.poke(true.B)

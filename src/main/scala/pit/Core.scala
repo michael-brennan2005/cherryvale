@@ -38,15 +38,15 @@ class Core(sim: Boolean = false) extends Module {
   val fetchOut = Module(new PSR(new FetchStageOutput))
   val decodeOut = Module(new PSR(new DecodeStageOutput))
   val executeOut = Module(new PSR(new ExecuteStageOutput))
-  val dCacheReg = RegNext(executeOut.io.out)
+  val dCacheReg = RegInit(0.U.asTypeOf(new ExecuteStageOutput))
   val memoryOut = Module(new PSR(new MemoryStageOutput))
-  val resultWriteback = WireInit(0.U(32.W))
+  val resultWriteback = dontTouch(WireInit(0.U(32.W)))
 
   // Stuff for hazard
   hazard.io.halt := io.halt
-  hazard.io.iCacheReqReady := io.codeReq.ready
+  hazard.io.iCacheReqFire := io.codeReq.ready && io.codeReq.valid
   hazard.io.iCacheRespValid := io.codeResp.valid
-  hazard.io.dCacheReqReady := io.dataReq.ready
+  hazard.io.dCacheReqValid := io.dataReq.valid
   hazard.io.dCacheRespValid := io.dataResp.valid
   hazard.io.pcRedirect := execute.io.pcRedirect
 
@@ -67,9 +67,10 @@ class Core(sim: Boolean = false) extends Module {
   pc.io.flush := hazard.io.flushPcOut
 
   // Stuff for I$
-  // If fetchOut is stalled then we should hold whatever read is currently going on in I$, hence
-  // this when condition and MUX on codeReq.bits.addr
-  when(!hazard.io.stallFetchOut) {
+  // iCacheAddr should hold the address of the data that will *eventually* be added outputted by I$;
+  // it should thus only advance once we have a valid response, and thus a new request is going to
+  // be issued.
+  when(io.codeResp.valid) {
     iCacheAddr := pc.io.out
   }
 
@@ -77,7 +78,7 @@ class Core(sim: Boolean = false) extends Module {
   io.codeReq.bits.we := false.B
   io.codeReq.bits.writeData := 0.U
   io.codeReq.bits.writeMask := 0.U
-  io.codeReq.valid := !hazard.io.stallICache
+  io.codeReq.valid := !io.halt
 
   // Stuff for Fetch (not really a "real" stage - just registering the iCache outputs)
   fetchOut.io.in.inst := io.codeResp.bits
@@ -116,11 +117,15 @@ class Core(sim: Boolean = false) extends Module {
   executeOut.io.flush := hazard.io.flushExecuteOut
 
   // Stuff for data memory
+  when(io.dataResp.valid) {
+    dCacheReg := executeOut.io.out
+  }
+
   io.dataReq.bits.addr := executeOut.io.out.aluResult
   io.dataReq.bits.we := executeOut.io.out.control.writeToMem
   io.dataReq.bits.writeData := executeOut.io.out.memWriteData
   io.dataReq.bits.writeMask := "b1111".U
-  io.dataReq.valid := !hazard.io.stallDCache
+  io.dataReq.valid := !io.halt && (executeOut.io.out.control.writeToMem || executeOut.io.out.control.regFileWriteSrc === RegFileWriteSrc.data)
 
   // Stuff for memory (not really a "real" stage - just registering the dCache outputs)
   memoryOut.io.in.control := dCacheReg.control
