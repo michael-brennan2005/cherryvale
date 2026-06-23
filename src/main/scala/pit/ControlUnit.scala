@@ -140,7 +140,7 @@ class ControlUnit extends Module {
   //
   //                           regFileWriteSrc,             alu1stOperand,                alu2ndOperand,                immEncoding,                  aluOp,            jump,     jalr,     branch,   wToMem,   wToReg,   memAccess,                branchIf
   //
-                          List(RegFileWriteSrc.data,        Alu1stOperand.registerValue,  Alu2ndOperand.immediate,      ImmediateEncoding.sType,      AluOp.add,        false.B,  false.B,  false.B,  false.B,  false.B,  MemAccess.dontCare,       BranchIf.dontCare)
+                          List(RegFileWriteSrc.dontCare,    Alu1stOperand.registerValue,  Alu2ndOperand.immediate,      ImmediateEncoding.sType,      AluOp.add,        false.B,  false.B,  false.B,  false.B,  false.B,  MemAccess.dontCare,       BranchIf.dontCare)
 
   val map = Array(
     Instructions.add ->   List(RegFileWriteSrc.aluResult,   Alu1stOperand.registerValue,  Alu2ndOperand.registerValue,  ImmediateEncoding.dontCare,   AluOp.add,        false.B,  false.B,  false.B,  false.B,  true.B,   MemAccess.dontCare,       BranchIf.dontCare),

@@ -5,8 +5,27 @@ import _root_.circt.stage.ChiselStage
 import chisel3.util._
 import chisel3.experimental.BundleLiterals._
 
+class FetchStageOutput extends Bundle {
+  val inst = Output(UInt(32.W))
+  val pc = Output(UInt(32.W))
+  val pcPlusFour = Output(UInt(32.W))
+}
+
+class MemoryStageOutput extends Bundle {
+  val control = Output(new ControlSignals)
+
+  val aluResult = Output(UInt(32.W))
+  val memReadData = Output(UInt(32.W))
+  val regDestIdx = Output(UInt(5.W))
+
+  val immediate = Output(UInt(32.W))
+  val pcPlusFour = Output(UInt(32.W))
+}
+
 // "Core" compute path for CherryPit - contains datapath (fetch -> decode -> execute -> mem),
 // control unit, PC, and reg file.
+// This core assumes a max 1-cycle latency for I$ and D$ (data appears on the cycle immediately after
+// address). If a cache needs longer than 1-cycle then it should issue a halt to the CPU.
 class Core(sim: Boolean = false) extends Module {
   val io = IO(new Bundle {
     val halt = Input(Bool())
@@ -116,10 +135,21 @@ class Core(sim: Boolean = false) extends Module {
   executeOut.io.flush := hazard.io.flushExecuteOut
 
   // Stuff for data memory
-  io.dataReq.bits.addr := executeOut.io.out.aluResult
+  val addr = executeOut.io.out.aluResult & (~"b11".U(32.W)) // what is sent to D$
+  val subaddr = executeOut.io.out.aluResult(1, 0) // for byte & half reads
+  val writeData = executeOut.io.out.memWriteData << (subaddr << 3.U)
+  val writeMask = MuxLookup(executeOut.io.out.control.memAccess, "b0000".U)(
+    Seq(
+      MemAccess.byte -> ("b1".U << subaddr),
+      MemAccess.half -> ("b11".U << subaddr),
+      MemAccess.word -> "b1111".U
+    )
+  )
+
+  io.dataReq.bits.addr := addr
   io.dataReq.bits.we := executeOut.io.out.control.writeToMem
-  io.dataReq.bits.writeData := executeOut.io.out.memWriteData
-  io.dataReq.bits.writeMask := "b1111".U
+  io.dataReq.bits.writeData := writeData
+  io.dataReq.bits.writeMask := writeMask
   io.dataReq.valid := !hazard.io.stallDCache
 
   // Stuff for memory (not really a "real" stage - just registering the dCache outputs)
@@ -135,126 +165,30 @@ class Core(sim: Boolean = false) extends Module {
   memoryOut.io.flush := hazard.io.flushMemoryOut
 
   // Stuff for writeback
+  val addrWB = memoryOut.io.out.aluResult & (~"b11".U(32.W)) // what is sent to D$
+  val subaddrWB = memoryOut.io.out.aluResult(1, 0) // for byte & half reads
+  val rawMemWB = memoryOut.io.out.memReadData
+  val accessType = memoryOut.io.out.control.memAccess
+  val shifted = rawMemWB >> (subaddrWB << 3.U) // align selected byte/half to LSBs
+  val data = MuxLookup(accessType, rawMemWB)(
+    Seq(
+      MemAccess.byte -> shifted(7, 0).asSInt.pad(32).asUInt,
+      MemAccess.byteUnsigned -> shifted(7, 0),
+      MemAccess.half -> shifted(15, 0).asSInt.pad(32).asUInt,
+      MemAccess.halfUnsigned -> shifted(15, 0),
+      MemAccess.word -> rawMemWB
+    )
+  )
+
   resultWriteback := MuxLookup(
     memoryOut.io.out.control.regFileWriteSrc,
     0.U(32.W)
   )(
     Seq(
-      RegFileWriteSrc.data -> memoryOut.io.out.memReadData,
+      RegFileWriteSrc.data -> data,
       RegFileWriteSrc.aluResult -> memoryOut.io.out.aluResult,
       RegFileWriteSrc.pcPlusFour -> memoryOut.io.out.pcPlusFour,
       RegFileWriteSrc.immediate -> memoryOut.io.out.immediate
     )
   )
-
-  // val hazard = Module(new HazardUnit)
-  // val fetch = Module(new FetchStage)
-  // val decode = Module(new DecodeStage)
-  // val execute = Module(new ExecuteStage)
-  // val memory = Module(new MemoryStage)
-
-  // val pc = Module(new PSR(UInt(32.W))) // writeback -> fetch
-  // val ifId = fetch.io.out // fetch -> decode
-  // val idEx = Module(new PSR(new DecodeStageOutput)) // decode -> execute
-  // val exMem = Module(new PSR(new ExecuteStageOutput)) // execute -> memory
-  // val memWb = memory.io.out // memory -> writeback
-
-  // val pcOverride = Wire(Bool())
-  // val resultWriteback = Wire(UInt(32.W))
-
-  // // Fetch stage
-  // when(!hazard.io.stallPc && pcOverride) {
-  //   pc.io.in := execute.io.pcTarget
-  // }.elsewhen(!hazard.io.stallPc) {
-  //   pc.io.in := pc.io.out + 4.U
-  // }.otherwise {
-  //   pc.io.in := pc.io.out
-  // }
-
-  // fetch.io.pc := pc.io.out
-  // io.codeReq.bits := fetch.io.codeReq.bits
-  // io.codeReq.valid := fetch.io.codeReq.valid
-  // fetch.io.codeReq.ready := io.codeReq.ready
-  // fetch.io.codeResp := io.codeResp
-
-  // // Decode stage
-  // decode.io.fetchInput := ifId
-
-  // decode.io.regWriteIdx := memWb.regDestIdx
-  // decode.io.regWriteEnable := memWb.control.writeToReg
-  // decode.io.regWriteData := resultWriteback
-
-  // if (sim) {
-  //   decode.io.regDebugIdx := io.regDebugIdx.get
-  //   io.regDebugData.get := decode.io.regDebugData
-  // } else {
-  //   decode.io.regDebugIdx := 0.U
-  // }
-
-  // idEx.io.in := decode.io.out
-
-  // // Execute stage
-  // execute.io.decodeInput := idEx.io.out
-
-  // pcOverride := idEx.io.out.control.jump | (idEx.io.out.control.branch & execute.io.takeBranch)
-
-  // execute.io.aluSrcASelect := hazard.io.executeAInputSel
-  // execute.io.aluSrcBSelect := hazard.io.executeBInputSel
-
-  // execute.io.resultWriteback := resultWriteback
-  // execute.io.resultMemory := exMem.io.out.aluResult
-  // exMem.io.in := execute.io.out
-
-  // // Memory stage
-  // memory.io.executeInput := exMem.io.out
-  // io.dataReq.bits := memory.io.dataReq.bits
-  // io.dataReq.valid := memory.io.dataReq.valid
-  // memory.io.dataReq.ready := io.dataReq.ready
-  // memory.io.dataResp := io.dataResp
-
-  // // Writeback stage
-  // resultWriteback := MuxLookup(
-  //   memWb.control.regFileWriteSrc,
-  //   0.U(32.W)
-  // )(
-  //   Seq(
-  //     RegFileWriteSrc.data -> memWb.memReadData,
-  //     RegFileWriteSrc.aluResult -> memWb.aluResult,
-  //     RegFileWriteSrc.pcPlusFour -> memWb.pcPlusFour,
-  //     RegFileWriteSrc.immediate -> memWb.immediate
-  //   )
-  // )
-
-  // // Hazard inputs
-  // hazard.io.halt := io.halt
-
-  // pc.io.stall := hazard.io.stallPc
-  // pc.io.flush := hazard.io.flushPc
-
-  // fetch.io.stall := hazard.io.stallFetch
-  // fetch.io.flush := hazard.io.flushFetch
-
-  // idEx.io.stall := hazard.io.stallDecode
-  // idEx.io.flush := hazard.io.flushDecode
-
-  // exMem.io.stall := hazard.io.stallExecute
-  // exMem.io.flush := hazard.io.flushExecute
-
-  // memory.io.stall := hazard.io.stallMemory
-  // memory.io.flush := hazard.io.flushMemory
-
-  // hazard.io.pcOverride := pcOverride
-  // hazard.io.decodeReg1Idx := decode.io.out.reg1Idx
-  // hazard.io.decodeReg2Idx := decode.io.out.reg2Idx
-
-  // hazard.io.executeReg1Idx := idEx.io.out.reg1Idx
-  // hazard.io.executeReg2Idx := idEx.io.out.reg2Idx
-  // hazard.io.executeRegDestIdx := idEx.io.out.regDestIdx
-  // hazard.io.executeRegFileWriteSrc := idEx.io.out.control.regFileWriteSrc
-
-  // hazard.io.memoryRegDestIdx := exMem.io.out.regDestIdx
-  // hazard.io.memoryWriteToReg := exMem.io.out.control.writeToReg
-
-  // hazard.io.writebackRegDestIdx := memWb.regDestIdx
-  // hazard.io.writebackWriteToReg := memWb.control.writeToReg
 }
