@@ -23,6 +23,7 @@ class BadCacheSpec extends AnyFlatSpec with Matchers with ChiselSim {
 
   /** Drive a write through the handshake and wait for completion. */
   private def doWrite(dut: BadCache, byteAddr: Int, data: UInt, mask: Int): Unit = {
+    dut.io.resp.ready.poke(true.B) // consume the completion as soon as it appears
     dut.io.req.valid.poke(true.B)
     dut.io.req.bits.we.poke(true.B)
     dut.io.req.bits.addr.poke(byteAddr.U)
@@ -42,6 +43,7 @@ class BadCacheSpec extends AnyFlatSpec with Matchers with ChiselSim {
 
   /** Drive a read through the handshake and return the word captured on the `valid` cycle. */
   private def doRead(dut: BadCache, byteAddr: Int): BigInt = {
+    dut.io.resp.ready.poke(true.B) // consume the response as soon as it appears
     dut.io.req.valid.poke(true.B)
     dut.io.req.bits.we.poke(false.B)
     dut.io.req.bits.addr.poke(byteAddr.U)
@@ -67,6 +69,7 @@ class BadCacheSpec extends AnyFlatSpec with Matchers with ChiselSim {
   private def idle(dut: BadCache, cycles: Int = 2): Unit = {
     dut.io.req.valid.poke(false.B)
     dut.io.req.bits.we.poke(false.B)
+    dut.io.resp.ready.poke(true.B) // default to a consuming master unless a test overrides
     dut.clock.step(cycles)
   }
 
@@ -260,6 +263,79 @@ class BadCacheSpec extends AnyFlatSpec with Matchers with ChiselSim {
 
       // FSM is idle again: a fresh transaction still works.
       doRead(dut, 8) shouldBe BigInt("0BADF00D", 16)
+    }
+  }
+
+  // --- Back-pressure cases: a low resp.ready must hold the response and stall new requests -------
+
+  it should "hold the response and back-pressure req while resp.ready is low (hit path)" in {
+    simulate(new BadCache(None)) { dut =>
+      seedWord(dut, 0, "hAAAAAAAA".U)
+      seedWord(dut, 4, "hBBBBBBBB".U)
+      idle(dut)
+
+      // C0: issue a read of addr 0 with the consumer NOT ready. The slot is empty, so req is taken.
+      dut.io.resp.ready.poke(false.B)
+      dut.io.req.valid.poke(true.B)
+      dut.io.req.bits.we.poke(false.B)
+      dut.io.req.bits.addr.poke(0.U)
+      dut.io.req.ready.expect(true.B)
+      dut.clock.step()
+
+      // C1: data for addr 0 is valid, but the consumer can't take it -- req is back-pressured.
+      // Attempt to pivot to addr 4; it must be ignored while stalled.
+      dut.io.resp.valid.expect(true.B)
+      dut.io.resp.bits.expect("hAAAAAAAA".U)
+      dut.io.req.ready.expect(false.B)
+      dut.io.req.bits.addr.poke(4.U)
+      dut.clock.step()
+
+      // C2: still holding the ORIGINAL word; the addr-4 request did not take effect.
+      dut.io.resp.valid.expect(true.B)
+      dut.io.resp.bits.expect("hAAAAAAAA".U)
+      dut.io.req.ready.expect(false.B)
+
+      // Drain: with resp.ready high the held word transfers AND the addr-4 request is accepted
+      // the same cycle (pipe behavior).
+      dut.io.resp.ready.poke(true.B)
+      dut.clock.step()
+
+      // C3: addr 4's data arrives back-to-back.
+      dut.io.resp.valid.expect(true.B)
+      dut.io.resp.bits.expect("hBBBBBBBB".U)
+      dut.io.req.valid.poke(false.B)
+    }
+  }
+
+  it should "hold a completed access while resp.ready is low (stall path)" in {
+    val latency = 3
+    simulate(new BadCache(None, responseLatency = latency)) { dut =>
+      seedWord(dut, 0xc, "hABCDEF12".U)
+      idle(dut)
+
+      // Issue a read but keep the consumer not ready; wait out the latency.
+      dut.io.resp.ready.poke(false.B)
+      dut.io.req.valid.poke(true.B)
+      dut.io.req.bits.we.poke(false.B)
+      dut.io.req.bits.addr.poke(0xc.U)
+      var i = 0
+      while (dut.io.resp.valid.peek().litValue == 0 && i < maxCycles) { dut.clock.step(); i += 1 }
+      dut.io.resp.valid.expect(true.B)
+      dut.io.resp.bits.expect("hABCDEF12".U)
+      dut.io.req.ready.expect(false.B) // not idle: holding the completed response
+
+      // Hold for several cycles with ready low; the value persists, req stays back-pressured.
+      dut.clock.step(3)
+      dut.io.resp.valid.expect(true.B)
+      dut.io.resp.bits.expect("hABCDEF12".U)
+      dut.io.req.ready.expect(false.B)
+
+      // Drain and return to idle.
+      dut.io.resp.ready.poke(true.B)
+      dut.clock.step()
+      dut.io.resp.valid.expect(false.B)
+      dut.io.req.ready.expect(true.B)
+      dut.io.req.valid.poke(false.B)
     }
   }
 }

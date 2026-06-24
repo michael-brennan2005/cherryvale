@@ -48,7 +48,9 @@ class BadCache(memInitFile: Option[String], responseLatency: Int = 0, sim: Boole
   val io = IO(new Bundle {
     val req = DeqIO(new MemoryRequest)
     // Data is REGISTERED output, because we are using SyncReadMem which does a synchronous read.
-    val resp = Valid(UInt(32.W))
+    // Decoupled (not bare Valid): a low `resp.ready` back-pressures the cache so the response is
+    // held and no new request is accepted, making the read losslessly stallable end-to-end.
+    val resp = EnqIO(UInt(32.W))
 
     val simReq = if (sim) Some(DeqIO(new MemoryRequest)) else None
     val simResp = if (sim) Some(Valid(UInt(32.W))) else None
@@ -87,31 +89,48 @@ class BadCache(memInitFile: Option[String], responseLatency: Int = 0, sim: Boole
 
   if (responseLatency == 0) {
     // ---- Hit path: plain synchronous SRAM, one access per cycle ----
-    io.req.ready := true.B // always ready
+    // 1-deep response holding stage. We accept a new request only when that slot is empty or being
+    // drained this cycle, so a stalled consumer (resp.ready low) is lossless: req is back-pressured
+    // and the captured result is held. With resp.ready high it accepts one request per cycle, as
+    // before.
+    val respValid = RegInit(false.B)
+    val respData = Reg(UInt(32.W))
+    io.req.ready := !respValid || io.resp.ready
 
     val wordIdx = io.req.bits.addr >> 2
     val readFire = io.req.fire && !io.req.bits.we
-    io.resp.bits := mem.read(wordIdx, readFire).asUInt
+    val memOut = mem.read(wordIdx, readFire).asUInt
     when(io.req.fire && io.req.bits.we) {
       mem.write(wordIdx, laneData(io.req.bits.writeData), laneMask(io.req.bits.writeMask))
     }
-    // An access issued this cycle completes next cycle (the inherent SyncReadMem read latency).
-    io.resp.valid := RegNext(io.req.fire, false.B)
+
+    // SyncReadMem's output is live only the cycle after a read fires, so capture it into respData;
+    // that captured copy is what survives a multi-cycle stall.
+    val resultLive = RegNext(io.req.fire, false.B)
+    when(resultLive) { respData := memOut }
+
+    // An accepted access completes next cycle (the inherent SyncReadMem read latency); the result
+    // is then held until the consumer takes it.
+    when(io.req.fire) { respValid := true.B }
+      .elsewhen(io.resp.ready) { respValid := false.B }
+    io.resp.valid := respValid
+    io.resp.bits := Mux(resultLive, memOut, respData)
   } else {
     // ---- Stall path: single-outstanding FSM, holds `valid` low for `responseLatency` cycles ----
     val busy = RegInit(false.B)
+    val done = RegInit(false.B) // completed, response held until the consumer takes it
     val cnt = RegInit(0.U(32.W))
     val addrReg = Reg(UInt(32.W))
     val weReg = Reg(Bool())
     val maskReg = Reg(UInt(4.W))
     val wdReg = Reg(UInt(32.W))
 
-    val accept = !busy && io.req.fire
+    val accept = !busy && !done && io.req.fire
     val completing = busy && (cnt === 0.U)
     val preDone = busy && (cnt === 1.U) // cycle before completion: issue the read so data is
     // ready on the completion cycle.
 
-    io.req.ready := !busy
+    io.req.ready := !busy && !done
 
     when(accept) {
       busy := true.B
@@ -120,10 +139,15 @@ class BadCache(memInitFile: Option[String], responseLatency: Int = 0, sim: Boole
       weReg := io.req.bits.we
       maskReg := io.req.bits.writeMask
       wdReg := io.req.bits.writeData
+    }.elsewhen(completing) {
+      // Finish the access; latch `done` to hold the result if the consumer can't take it now.
+      busy := false.B
+      done := !io.resp.ready
     }.elsewhen(busy) {
-      when(completing) { busy := false.B }
-        .otherwise { cnt := cnt - 1.U }
+      cnt := cnt - 1.U
     }
+
+    when(done && io.resp.ready) { done := false.B }
 
     // responseLatency == 1 completes the cycle after accept, so its read must fire at accept; for
     // larger latencies it fires one cycle before completion (cnt === 1). Neither coincides with the
@@ -132,13 +156,18 @@ class BadCache(memInitFile: Option[String], responseLatency: Int = 0, sim: Boole
       if (responseLatency == 1) accept && !io.req.bits.we
       else preDone && !weReg
     val readIdx = Mux(accept, io.req.bits.addr >> 2, addrReg >> 2)
-    io.resp.bits := mem.read(readIdx, readFire).asUInt
+    val memOut = mem.read(readIdx, readFire).asUInt
 
     when(completing && weReg) {
       mem.write(addrReg >> 2, laneData(wdReg), laneMask(maskReg))
     }
 
-    io.resp.valid := completing
+    // The read result is live on the completing cycle; capture it so it survives the `done` hold
+    // when the consumer back-pressures (resp.ready low).
+    val respData = Reg(UInt(32.W))
+    when(completing) { respData := memOut }
+    io.resp.valid := completing || done
+    io.resp.bits := Mux(completing, memOut, respData)
   }
 
 }
