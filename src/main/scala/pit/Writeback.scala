@@ -16,12 +16,12 @@ class Writeback extends Module {
     val in = DeqIO(new ExecuteOutput)
 
     // Writeback data to ReadOperands stage
-    val regDestIdx = Input(UInt(5.W))
-    val regDestData = Input(UInt(32.W))
-    val regDestEn = Input(Bool())
+    val regDestIdx = Output(UInt(5.W))
+    val regDestData = Output(UInt(32.W))
+    val regDestEn = Output(Bool())
   })
 
-  // Cycle and instruction counting - (TODO: )
+  // Cycle and instruction counting - (TODO: connect these somewhere)
   val cycles = RegInit(0.U(64.W))
   val insts = RegInit(0.U(64.W))
 
@@ -35,6 +35,10 @@ class Writeback extends Module {
   // We can accept data if:
   // - we are not in halt or clear
   io.in.ready := !io.halt && !io.clear
+
+  io.regDestEn := false.B
+  io.regDestIdx := 0.U
+  io.regDestData := 0.U
 
   when(io.clear || io.halt) {
     // Do not allow a write on halt or clear
@@ -53,5 +57,14 @@ class Writeback extends Module {
         RegFileWriteSrc.immediate -> io.in.bits.immediate
       )
     )
+
+    insts := insts + 1.U
   }
+
+  // For debugging: inst and pc gets optimized out as later stages don't use them - wrap in dontTouch
+  // so they stay through the entire pipeline and its easy to see which stage is at which instruction
+  val wire = dontTouch(io.in.bits.fetch.inst)
+  val wire1 = dontTouch(io.in.bits.fetch.pc)
+  val wire2 = dontTouch(cycles)
+  val wire3 = dontTouch(insts)
 }

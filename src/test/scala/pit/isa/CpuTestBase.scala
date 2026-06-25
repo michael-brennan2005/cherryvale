@@ -41,8 +41,8 @@ trait CpuTestBase extends Matchers with ChiselSim { self: org.scalatest.TestSuit
 
   /** Read register `idx` (x0..x31) via the (combinational) register debug port. */
   protected def readReg(dut: Tile, idx: Int): BigInt = {
-    dut.io.regDebugIdx.get.poke(idx.U)
-    dut.io.regDebugData.get.peek().litValue
+    dut.io.regSimIdx.get.poke(idx.U)
+    dut.io.regSimData.get.peek().litValue
   }
 
   /** Read the data-memory word at BYTE address `addr` via the dCache debug port. The debug read is
@@ -58,7 +58,7 @@ trait CpuTestBase extends Matchers with ChiselSim { self: org.scalatest.TestSuit
     p.bits.writeMask.poke(0.U)
     p.valid.poke(true.B)
     dut.clock.step() // sync-read latency: data valid the cycle after the request
-    val v = dut.io.dCacheResp.get.peek().litValue
+    val v = dut.io.dCacheResp.get.bits.peek().litValue
     p.valid.poke(false.B)
     v
   }
@@ -105,10 +105,10 @@ trait CpuTestBase extends Matchers with ChiselSim { self: org.scalatest.TestSuit
   protected def run(
       program: String,
       data: Seq[(Int, BigInt)] = Seq.empty,
-      steps: Int = 40
+      steps: Int = 200
   )(check: Tile => Unit): Unit = {
     val image = Utils.buildMemInit(program + "\n" + Trap, data)
-    simulate(new Tile(None, sim = true, simCacheLatency = 0)) { dut =>
+    simulate(new Tile(None, exposeSimPorts = true, simCacheLatency = 0)) { dut =>
       // 1. Hold the core so seeding doesn't contend with fetch / load-store.
       dut.io.halt.poke(true.B)
       idleDebug(dut)

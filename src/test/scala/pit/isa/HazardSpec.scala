@@ -118,7 +118,7 @@ class HazardSpec extends AnyFlatSpec with CpuTestBase {
          sw x2, 0x50(x0)
       """,
       data = Seq(0x50 -> BigInt(0)),
-      steps = 80
+      steps = 160
     ) { dut =>
       readMem(dut, 0x50) shouldBe BigInt(15)
     }

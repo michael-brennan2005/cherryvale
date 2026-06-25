@@ -137,6 +137,7 @@ class ReadOperands(exposeSimPorts: Boolean = false) extends Module {
       outBits.aluSrcA := aluSrcA
       outBits.aluSrcB := aluSrcB
       outBits.memWriteData := reg2Data
+      outBits.immediate := io.in.bits.immediate
       outBits.memAddress := memAddress
       outBits.jumpAddress := jumpAddress
       outBits.regDestIdx := io.in.bits.regDestIdx
