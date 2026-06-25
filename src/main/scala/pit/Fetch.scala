@@ -74,7 +74,7 @@ class Fetch extends Module {
 
   // We take a response from the cache into the output register when it is a wanted, ready response and
   // the output slot is free (empty, or being consumed by the sink this cycle). Frozen under halt.
-  val outFree = !outValid || io.out.ready
+  val outFree = !(outValid && !io.out.ready)
   val load = !io.halt && !flush && inFlight && io.resp.valid && outFree
 
   // PC counter. Flush wins over the sequential increment; the increment only happens when a request is

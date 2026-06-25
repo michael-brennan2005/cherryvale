@@ -37,59 +37,59 @@ class ExecuteStage extends Module {
     val resultMemory = Input(UInt(32.W))
   })
 
-  val alu = Module(new Alu)
-  alu.io.i_control := io.decodeInput.control.alu_op
+  // val alu = Module(new Alu)
+  // alu.io.i_control := io.decodeInput.control.alu_op
 
-  val takeBranch = MuxLookup(io.decodeInput.control.branchIf, false.B)(
-    Seq(
-      BranchIf.zero -> (alu.io.zero === true.B),
-      BranchIf.notZero -> (alu.io.zero === false.B),
-      BranchIf.neg -> (alu.io.neg === true.B)
-    )
-  )
+  // val takeBranch = MuxLookup(io.decodeInput.control.branchIf, false.B)(
+  //   Seq(
+  //     BranchIf.zero -> (alu.io.zero === true.B),
+  //     BranchIf.notZero -> (alu.io.zero === false.B),
+  //     BranchIf.neg -> (alu.io.neg === true.B)
+  //   )
+  // )
 
-  io.pcRedirect := io.decodeInput.control.jump || (io.decodeInput.control.branch && takeBranch)
+  // io.pcRedirect := io.decodeInput.control.jump || (io.decodeInput.control.branch && takeBranch)
 
-  val srcA = MuxLookup(io.aluSrcASelect, io.decodeInput.reg1Data)(
-    Seq(
-      "b00".U -> io.decodeInput.reg1Data,
-      "b01".U -> io.resultWriteback,
-      "b10".U -> io.resultMemory
-    )
-  )
-  alu.io.i_src_a := MuxLookup(io.decodeInput.control.alu1stOperand, srcA)(
-    Seq(
-      Alu1stOperand.registerValue -> srcA,
-      Alu1stOperand.pc -> io.decodeInput.pc
-    )
-  )
+  // val srcA = MuxLookup(io.aluSrcASelect, io.decodeInput.reg1Data)(
+  //   Seq(
+  //     "b00".U -> io.decodeInput.reg1Data,
+  //     "b01".U -> io.resultWriteback,
+  //     "b10".U -> io.resultMemory
+  //   )
+  // )
+  // alu.io.i_src_a := MuxLookup(io.decodeInput.control.alu1stOperand, srcA)(
+  //   Seq(
+  //     Alu1stOperand.registerValue -> srcA,
+  //     Alu1stOperand.pc -> io.decodeInput.pc
+  //   )
+  // )
 
-  val srcB = MuxLookup(io.aluSrcBSelect, io.decodeInput.reg2Data)(
-    Seq(
-      "b00".U -> io.decodeInput.reg2Data,
-      "b01".U -> io.resultWriteback,
-      "b10".U -> io.resultMemory
-    )
-  )
-  alu.io.i_src_b := MuxLookup(io.decodeInput.control.alu2ndOperand, srcB)(
-    Seq(
-      Alu2ndOperand.registerValue -> srcB,
-      Alu2ndOperand.immediate -> io.decodeInput.immediate
-    )
-  )
+  // val srcB = MuxLookup(io.aluSrcBSelect, io.decodeInput.reg2Data)(
+  //   Seq(
+  //     "b00".U -> io.decodeInput.reg2Data,
+  //     "b01".U -> io.resultWriteback,
+  //     "b10".U -> io.resultMemory
+  //   )
+  // )
+  // alu.io.i_src_b := MuxLookup(io.decodeInput.control.alu2ndOperand, srcB)(
+  //   Seq(
+  //     Alu2ndOperand.registerValue -> srcB,
+  //     Alu2ndOperand.immediate -> io.decodeInput.immediate
+  //   )
+  // )
 
-  io.out.control := io.decodeInput.control
-  io.out.aluResult := alu.io.o_result
-  io.out.memWriteData := srcB
+  // io.out.control := io.decodeInput.control
+  // io.out.aluResult := alu.io.o_result
+  // io.out.memWriteData := srcB
 
-  when(io.decodeInput.control.jalr) {
-    io.pcTarget := io.decodeInput.reg1Data + io.decodeInput.immediate
-  }.otherwise {
-    io.pcTarget := io.decodeInput.pc + io.decodeInput.immediate
-  }
+  // when(io.decodeInput.control.jalr) {
+  //   io.pcTarget := io.decodeInput.reg1Data + io.decodeInput.immediate
+  // }.otherwise {
+  //   io.pcTarget := io.decodeInput.pc + io.decodeInput.immediate
+  // }
 
-  io.out.immediate := io.decodeInput.immediate
-  io.out.pcPlusFour := io.decodeInput.pcPlusFour
+  // io.out.immediate := io.decodeInput.immediate
+  // io.out.pcPlusFour := io.decodeInput.pcPlusFour
 
-  io.out.regDestIdx := io.decodeInput.regDestIdx
+  // io.out.regDestIdx := io.decodeInput.regDestIdx
 }

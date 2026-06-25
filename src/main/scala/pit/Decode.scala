@@ -5,24 +5,28 @@ import _root_.circt.stage.ChiselStage
 import chisel3.util._
 
 class DecodeOutput extends Bundle {
-  val control = Output(new ControlSignals)
+  val control = new ControlSignals
 
-  val reg1Idx = Output(UInt(5.W))
-  val reg2Idx = Output(UInt(5.W))
-  val regDestIdx = Output(UInt(5.W))
+  val reg1Idx = UInt(5.W)
+  val reg2Idx = UInt(5.W)
+  val regDestIdx = UInt(5.W)
 
-  val immediate = Output(UInt(32.W))
+  val immediate = UInt(32.W)
 
   // pc, pc+4, instruction
   val fetch = new FetchOutput
 }
-// Decode stage - handles control signal generation, and getting register operand indices and
+// Decode stage - handles control signal generation, getting register operand indices and computing
 // instruction immediate
 class Decode extends Module {
   val io = IO(new Bundle {
     // Global CPU signals
     val halt = Input(Bool())
     val clear = Input(Bool())
+
+    // PC redirection - comes from execute. When a branch/jump is taken, the instruction held in our
+    // output register is on the wrong path, so we flush it (same machinery as `clear`).
+    val redirectPc = Input(Bool())
 
     // Pipeline I/O
     val in = DeqIO(new FetchOutput)
@@ -54,9 +58,13 @@ class Decode extends Module {
   )
   // format: on
 
+  // A redirect or clear flushes the held output this cycle. `clear` is a full pipeline reset;
+  // `redirectPc` squashes the wrong-path instruction behind a taken branch. They share flush machinery.
+  val flush = io.redirectPc || io.clear
+
   // Output register. Priority: flush discards, halt freezes, otherwise load the next decoded
   // instruction or drain the current one.
-  when(io.clear) {
+  when(flush) {
     outValid := false.B
   }.elsewhen(io.halt) {
     /* hold the output registers*/
@@ -76,7 +84,6 @@ class Decode extends Module {
 
   // We can accept data if:
   // - we are not in halt or clear
-  // - we can move the decoded result into output reg - NOT(output isnt ready but output is valid)
-  io.in.ready := !io.halt && !io.clear && !(!io.out.ready && outValid)
-
+  // - we can move the decoded result into output reg - NOT(output consumer isnt ready but output is valid)
+  io.in.ready := !io.halt && !flush && !(!io.out.ready && outValid)
 }

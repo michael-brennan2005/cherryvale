@@ -21,33 +21,33 @@ object AluOp extends ChiselEnum {
 
 class Alu extends Module {
   val io = IO(new Bundle {
-    val i_src_a = Input(UInt(32.W))
-    val i_src_b = Input(UInt(32.W))
-    val i_control = Input(AluOp())
+    val srcA = Input(UInt(32.W))
+    val srcB = Input(UInt(32.W))
+    val control = Input(AluOp())
 
-    val o_result = Output(UInt(32.W))
+    val result = Output(UInt(32.W))
     val zero = Output(Bool()) // ALU result is zero
     val neg = Output(Bool()) // ALU result is negative (bit 31 == 1)
   })
 
   val result = Wire(UInt(32.W))
 
-  result := MuxLookup(io.i_control, 0.U)(
+  result := MuxLookup(io.control, 0.U)(
     Seq(
-      AluOp.add -> (io.i_src_a + io.i_src_b),
-      AluOp.sub -> (io.i_src_a - io.i_src_b),
-      AluOp.xor -> (io.i_src_a ^ io.i_src_b),
-      AluOp.or -> (io.i_src_a | io.i_src_b),
-      AluOp.and -> (io.i_src_a & io.i_src_b),
-      AluOp.sll -> (io.i_src_a << io.i_src_b(4, 0)),
-      AluOp.srl -> (io.i_src_a >> io.i_src_b(4, 0)),
-      AluOp.sra -> (io.i_src_a.asSInt >> io.i_src_b(4, 0)).asUInt,
-      AluOp.slt -> (io.i_src_a.asSInt < io.i_src_b.asSInt),
-      AluOp.sltu -> (io.i_src_a < io.i_src_b)
+      AluOp.add -> (io.srcA + io.srcB),
+      AluOp.sub -> (io.srcA - io.srcB),
+      AluOp.xor -> (io.srcA ^ io.srcB),
+      AluOp.or -> (io.srcA | io.srcB),
+      AluOp.and -> (io.srcA & io.srcB),
+      AluOp.sll -> (io.srcA << io.srcB(4, 0)),
+      AluOp.srl -> (io.srcA >> io.srcB(4, 0)),
+      AluOp.sra -> (io.srcA.asSInt >> io.srcB(4, 0)).asUInt,
+      AluOp.slt -> (io.srcA.asSInt < io.srcB.asSInt),
+      AluOp.sltu -> (io.srcA < io.srcB)
     )
   )
 
-  io.o_result := result
+  io.result := result
   io.zero := result === 0.U
   io.neg := result(31) === 1.U
 }

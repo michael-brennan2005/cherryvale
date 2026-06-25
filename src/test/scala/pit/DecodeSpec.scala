@@ -18,16 +18,20 @@ import org.scalatest.matchers.should.Matchers
   *   - Registered output: an instruction accepted on `in` this cycle (in.valid && in.ready) appears
   *     on `out` the NEXT cycle. out.valid is a register, never a combinational view of in.
   *   - `in.ready` is a promise to capture: it is high only when Decode will actually load the input
-  *     this cycle, i.e. `!halt && !clear && (out.ready || !outValid)`. It is therefore LOW whenever
-  *     the stage is frozen (halt), flushing (clear), or full and not draining.
+  *     this cycle, i.e. `!halt && !flush && (out.ready || !outValid)` where `flush = clear ||
+  *     redirectPc`. It is therefore LOW whenever the stage is frozen (halt), flushing, or full and
+  *     not draining.
   *   - Backpressure: while the sink holds out.ready low, out.bits/out.valid are held stable and no
   *     instruction is dropped; in.ready falls so the producer (Fetch) stalls.
   *   - Halt = FREEZE (held, not hidden): output is held exactly as-is, the drain is blocked even when
   *     out.ready is high, and no new input is accepted (even into an empty slot). Resumes cleanly.
-  *   - Clear = FLUSH (discard): the held output is dropped (out.valid -> false), no input is accepted
-  *     during the flush, and fetching resumes from empty afterwards.
-  *   - Precedence: clear outranks halt; on the simultaneous drain+load cycle, load wins (no bubble,
-  *     no duplicate).
+  *   - Clear / redirectPc = FLUSH (discard): the held output is dropped (out.valid -> false), no
+  *     input is accepted during the flush, and fetching resumes from empty afterwards. `clear` is a
+  *     full pipeline reset; `redirectPc` squashes the wrong-path instruction behind a taken branch.
+  *     The two are interchangeable inside Decode (both feed the same flush), so the redirectPc cases
+  *     mirror the clear cases.
+  *   - Precedence: flush (clear/redirectPc) outranks halt; on the simultaneous drain+load cycle, load
+  *     wins (no bubble, no duplicate).
   */
 class DecodeSpec extends AnyFlatSpec with Matchers with ChiselSim {
   behavior of "Decode"
@@ -46,6 +50,7 @@ class DecodeSpec extends AnyFlatSpec with Matchers with ChiselSim {
   private def park(dut: Decode): Unit = {
     dut.io.halt.poke(false.B)
     dut.io.clear.poke(false.B)
+    dut.io.redirectPc.poke(false.B)
     dut.io.in.valid.poke(false.B)
     dut.io.in.bits.pc.poke(0.U)
     dut.io.in.bits.pcPlus4.poke(0.U)
@@ -264,15 +269,96 @@ class DecodeSpec extends AnyFlatSpec with Matchers with ChiselSim {
     }
   }
 
-  // === 8. in.ready equation: combinational in out.ready, gated by halt/clear =====================
-  it should "drive in.ready as !halt && !clear && (out.ready || !outValid)" in {
+  // === 8. redirectPc discards the held output (branch flush) ====================================
+  it should "discard the held output under redirectPc and resume from empty" in {
     simulate(new Decode) { dut =>
       park(dut)
 
-      // Empty slot: out.ready||!outValid == true, so in.ready tracks !halt && !clear.
+      driveIn(dut, 0x30, instA)
+      dut.io.out.ready.poke(true.B)
+      dut.clock.step()
+      dut.io.out.valid.expect(true.B)
+
+      // Redirect for one cycle with the sink stalled, so the drop is due to flush, not a normal drain.
+      // This is the wrong-path instruction in Decode's output register being squashed by a taken branch.
+      dut.io.out.ready.poke(false.B)
+      dut.io.redirectPc.poke(true.B)
+      dut.io.in.ready.expect(false.B) // flushing -> not accepting
+      dut.clock.step()
+      dut.io.redirectPc.poke(false.B)
+
+      // The held instruction is gone (not frozen, not delivered).
+      dut.io.out.valid.expect(false.B)
+
+      // A fresh (correct-path) instruction flows through normally afterwards.
+      driveIn(dut, 0x34, instB)
+      dut.io.out.ready.poke(true.B)
+      dut.io.in.ready.expect(true.B)
+      dut.clock.step()
+      dut.io.out.valid.expect(true.B)
+      dut.io.out.bits.fetch.inst.expect(instB)
+    }
+  }
+
+  // === 9. redirectPc refuses a wrong-path instruction offered on the input ======================
+  it should "refuse new input during a redirectPc flush so a wrong-path instruction is never latched" in {
+    simulate(new Decode) { dut =>
+      park(dut)
+
+      // Output slot empty, but a (wrong-path) instruction is being offered with the sink ready.
+      // Even with an empty slot, the redirect must keep in.ready low so the offered instruction
+      // is not accepted into the pipeline.
+      dut.io.redirectPc.poke(true.B)
+      driveIn(dut, 0x50, instA)
+      dut.io.out.ready.poke(true.B)
+      dut.io.in.ready.expect(false.B) // flushing -> not accepting, even into an empty slot
+      dut.clock.step()
+
+      // The instruction was never captured: output stays empty.
+      dut.io.out.valid.expect(false.B)
+
+      // Drop the redirect; now the next (correct-path) instruction is accepted.
+      dut.io.redirectPc.poke(false.B)
+      driveIn(dut, 0x54, instB)
+      dut.io.in.ready.expect(true.B)
+      dut.clock.step()
+      dut.io.out.valid.expect(true.B)
+      dut.io.out.bits.fetch.inst.expect(instB)
+    }
+  }
+
+  // === 10. redirectPc outranks halt (flush beats freeze) ========================================
+  it should "let redirectPc win when halt and redirectPc assert on the same cycle" in {
+    simulate(new Decode) { dut =>
+      park(dut)
+
+      driveIn(dut, 0x40, instA)
+      dut.io.out.ready.poke(true.B)
+      dut.clock.step()
+      dut.io.out.valid.expect(true.B)
+
+      // Both asserted: discard must beat freeze. If halt won, the output would be held.
+      dut.io.halt.poke(true.B)
+      dut.io.redirectPc.poke(true.B)
+      dut.io.out.ready.poke(false.B)
+      dut.clock.step()
+      dut.io.halt.poke(false.B)
+      dut.io.redirectPc.poke(false.B)
+
+      dut.io.out.valid.expect(false.B) // flushed, not frozen
+    }
+  }
+
+  // === 11. in.ready equation: combinational in out.ready, gated by halt/clear/redirectPc =========
+  it should "drive in.ready as !halt && !clear && !redirectPc && (out.ready || !outValid)" in {
+    simulate(new Decode) { dut =>
+      park(dut)
+
+      // Empty slot: out.ready||!outValid == true, so in.ready tracks !halt && !clear && !redirectPc.
       dut.io.in.ready.expect(true.B)
       dut.io.halt.poke(true.B); dut.io.in.ready.expect(false.B); dut.io.halt.poke(false.B)
       dut.io.clear.poke(true.B); dut.io.in.ready.expect(false.B); dut.io.clear.poke(false.B)
+      dut.io.redirectPc.poke(true.B); dut.io.in.ready.expect(false.B); dut.io.redirectPc.poke(false.B)
 
       // Fill the slot.
       driveIn(dut, 0x0, instA)
@@ -284,6 +370,9 @@ class DecodeSpec extends AnyFlatSpec with Matchers with ChiselSim {
       // Full slot: in.ready now follows out.ready combinationally (no clock step between pokes).
       dut.io.out.ready.poke(false.B); dut.io.in.ready.expect(false.B)
       dut.io.out.ready.poke(true.B); dut.io.in.ready.expect(true.B)
+
+      // ...but a redirect still forces it low regardless of out.ready.
+      dut.io.redirectPc.poke(true.B); dut.io.in.ready.expect(false.B); dut.io.redirectPc.poke(false.B)
     }
   }
 
