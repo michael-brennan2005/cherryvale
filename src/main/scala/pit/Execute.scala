@@ -100,20 +100,6 @@ class Execute extends Module {
     inFlight := false.B
   }
 
-  // MARK: ALU logic - combinationally evaluates the instruction currently at the input.
-  val alu = Module(new Alu)
-  alu.io.control := io.in.bits.control.alu_op
-  alu.io.srcA := io.in.bits.aluSrcA
-  alu.io.srcB := io.in.bits.aluSrcB
-
-  val takeBranch = MuxLookup(io.in.bits.control.branchIf, false.B)(
-    Seq(
-      BranchIf.zero -> (alu.io.zero === true.B),
-      BranchIf.notZero -> (alu.io.zero === false.B),
-      BranchIf.neg -> (alu.io.neg === true.B)
-    )
-  )
-
   // Loaded value for the in-flight request: extract the addressed byte/half from the cache word
   // (little-endian lanes: lane k = bits[8k+7:8k]) and sign/zero-extend per the access type. This is
   // the value that will be written back, so it is what both memResult and the load forward carry.
@@ -126,6 +112,20 @@ class Execute extends Module {
       MemAccess.half -> respShifted(15, 0).asSInt.pad(32).asUInt,
       MemAccess.halfUnsigned -> respShifted(15, 0).pad(32),
       MemAccess.word -> io.resp.bits
+    )
+  )
+
+  // MARK: ALU logic - combinationally evaluates the instruction currently at the input.
+  val alu = Module(new Alu)
+  alu.io.control := io.in.bits.control.alu_op
+  alu.io.srcA := io.in.bits.aluSrcA
+  alu.io.srcB := io.in.bits.aluSrcB
+
+  val takeBranch = MuxLookup(io.in.bits.control.branchIf, false.B)(
+    Seq(
+      BranchIf.zero -> (alu.io.zero === true.B),
+      BranchIf.notZero -> (alu.io.zero === false.B),
+      BranchIf.neg -> (alu.io.neg === true.B)
     )
   )
 
