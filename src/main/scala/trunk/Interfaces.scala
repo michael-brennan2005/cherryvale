@@ -10,6 +10,8 @@ class Request extends Bundle {
   val addr = UInt(32.W)
 
   // Data to send on writes. Must be valid between rising edge of request stb and falling edge of respone ack.
+  // TODO: this should probably mirror what the core expects, which is lane-aligned write data ("A halfword store to address 0x2 should be encoded as writeMask=0b1100,
+  // writeData(31,16) = data.")
   val data = UInt(32.W)
 
   // For writes: which bytes to actually write to. For reads: which bytes
