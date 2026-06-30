@@ -1,12 +1,33 @@
 # About
 CherryVale is a RISC-V core/SoC implemented in Chisel HDL, and primarily tested on a Digilent Basys3 dev-board.
 
-# System diagram & features
-TODO: System diagram
-* 5-stage pipelined RISC-V core - fetch, decode, execute, memory, register writeback
+# Features
+* 5-stage pipelined RISC-V core - Fetch, Decode, Read Operands, Execute/Mem, Writeback
 * Full support for RV32I instruction set
 * Custom Wishbone-inspired bus protocol
 * Basys3 I/O support
+
+# Big fun todo list
+- [ ] Current core integration
+  - [ ] FPGA BRAM slave device
+  - [ ] CPU control unit - halt/reset/perf counters accessed via bus/UART
+  - [ ] Flash utility
+- [ ] Core improvements, RISCV features
+  - [ ] registered stall signals + skidbuffers to optimize timing
+  - [ ] proper caches
+  - [ ] mulitply, float, divde units
+  - [ ] CSR support
+  - [ ] M-mode support
+  - [ ] newlib/C toolchain
+- [ ] FV/simulation
+  - [ ] Proper Cherrytrunk bus models/sim, UVM-style
+  - [ ] Verify core stages
+- [ ] Basys3 Peripherals
+  - [ ] VGA
+  - [ ] USB HID
+  - [ ] SPI ROM
+  - [ ] Switches,LEDs,8-segment
+  - [ ] PMOD SPI and I2C
 
 # Project structure
 ```
